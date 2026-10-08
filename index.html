@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    CSP：允许页面向两家模型服务商发起请求。
+    保留 127.0.0.1:* / localhost:* 是因为本地代理（proxy_server.py）跑在同机，
+    预览环境的服务端响应头也会下发 CSP，多策略取交集，漏了它代理反而会被拦。
+
+    ⚠️ CSP 多策略取交集：<meta> 只能比响应头更严、不能更松。
+       直连两家 API 若仍被拦，说明是服务端响应头在限制，此时请运行 proxy_server.py
+       走本地代理（127.0.0.1:* 在白名单里）。
+
+    新增服务商时：把域名加进 connect-src，同时在 js/ai.js 的 AI_CONFIG 里加
+    对应 provider（baseUrl + proxyPath），并在 proxy_server.py 的 UPSTREAM 加路由。
+  -->
+  <meta http-equiv="Content-Security-Policy" content="connect-src 'self' http://127.0.0.1:* http://localhost:* https://open.bigmodel.cn https://api.deepseek.com;">
+  <meta name="theme-color" content="#2563eb">
+    <!-- iOS 添加到主屏幕的图标。不配的话 iOS 会截页面首屏当图标，
+         白底上几乎不可辨；192 那张是 iOS 唯一认可的尺寸。 -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <title>AI 新闻背单词 · 每日阅读</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- 顶部状态栏 -->
+    <header class="topbar">
+      <div class="date" id="topDate">—</div>
+      <div class="meta">
+        <span>累计学习 <b id="streakDays">0</b> 天</span>
+        <span>今日 <b id="todayCount">0</b> 词</span>
+      </div>
+      <button class="profile-btn" id="profileBtn" type="button" aria-label="个人中心">
+        <svg class="profile-btn-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" />
+        </svg>
+        <span>个人中心</span>
+      </button>
+      <!-- 词汇量测试结果行：有结果才显示（由 VocabTest 维护） -->
+      <div class="vt-top-line hidden" id="vocabTestLine"></div>
+    </header>
+
+    <!-- 离线状态横幅：默认 hidden，由 js/app.js 的 setupNetworkWatcher 控制。
+放在 topbar 之后、tabs 之前：日期/累计天数在离线时仍然正确，不该被顶掉；
+       tabs 在横幅下面，点了「换一篇」立刻能看见内容变化。 -->
+    <div class="net-offline-bar hidden" id="netOfflineBar" role="status" aria-live="polite">
+      <b>离线中</b><span>— AI 新闻生成不可用，单词本 / 刷词 / 词汇量测试均可正常使用</span>
+    </div>
+
+  <!-- Tab 导航（锚点跳转用，下滑自动隐藏 / 上滑显示） -->
+    <nav class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="words">单词表</button>
+      <button class="tab-btn" data-tab="news">新闻</button>
+      <button class="tab-btn" data-tab="vocab">词汇段</button>
+      <button class="tab-btn" data-tab="quiz">检测</button>
+    </nav>
+
+    <!-- 区域 1：单词表（整页流式滚动，从上到下依次排列） -->
+    <section class="panel" id="tab-words">
+      <h2 class="sec-head">单词表</h2>
+      <div id="tabWordsBody"><p class="empty">加载中…</p></div>
+    </section>
+
+    <!-- 区域 2：新闻 -->
+    <section class="panel" id="tab-news">
+      <h2 class="sec-head">新闻</h2>
+      <div id="tabNewsBody"><p class="empty">加载中…</p></div>
+    </section>
+
+    <!-- 区域 3：词汇应用段 -->
+    <section class="panel" id="tab-vocab">
+      <h2 class="sec-head">词汇段</h2>
+      <div id="tabVocabBody"><p class="empty">加载中…</p></div>
+    </section>
+
+    <!-- 区域 4：检测 -->
+    <section class="panel" id="tab-quiz">
+      <h2 class="sec-head">检测</h2>
+      <div id="tabQuizBody"><p class="empty">加载中…</p></div>
+    </section>
+
+    <!-- 区域 5：单词本（入口在底部导航 📚，内容页下一步填） -->
+    <section class="panel" id="tab-book">
+      <h2 class="sec-head">单词本</h2>
+      <div id="vocabBookBody"><p class="empty">加载中…</p></div>
+    </section>
+  </div>
+
+  <!-- 底部操作栏（三个等宽按钮；单词本曾有 📚 图标和待复习红点，均已按产品决策移除） -->
+  <footer class="bottombar">
+    <button class="btn primary" id="btnAdd">加词</button>
+    <button class="btn" id="btnBook">单词本</button>
+    <button class="btn" id="flashcardBtn">刷词</button>
+  </footer>
+  <!-- 底部按钮下方小字：已测过则显示「上次：约 XXXX 词」 -->
+  <div class="vt-last-hint hidden" id="testLastHint"></div>
+
+  <!-- 单词量测试页：独立全屏 overlay，默认隐藏；打开时盖住首页与底部栏 -->
+  <div id="vocabTestPage" class="vt-page hidden">
+    <div class="vt-header">
+      <button class="vt-back" data-vt-back aria-label="返回">←</button>
+      <div class="vt-title">词汇量测试</div>
+      <div class="vt-progress" id="vtHeaderProgress">0/20</div>
+    </div>
+    <div class="vt-body" id="vtBody"></div>
+    <div class="vt-footer" id="vtFooter"></div>
+  </div>
+
+  <!-- 个人中心页面 -->
+  <div id="profilePage" class="vt-page hidden">
+    <div class="vt-header">
+      <button class="vt-back" id="profileBackBtn" aria-label="返回">←</button>
+      <div class="vt-title">我的</div>
+    </div>
+    <div class="vt-body" id="profileBody">
+      <div class="profile-content"></div>
+    </div>
+  </div>
+
+  <!-- 刷词页面 -->
+  <div id="flashcardPage" class="vt-page hidden">
+    <div class="vt-header">
+      <button class="vt-back" id="flashcardBackBtn" aria-label="返回">←</button>
+      <div class="vt-title" id="flashcardTitle">刷词</div>
+    </div>
+    <div class="fc-mode-tabs">
+      <button class="mode-tab active" data-mode="today-new">今日新词</button>
+      <button class="mode-tab" data-mode="today-review">今日复习</button>
+      <button class="mode-tab" data-mode="standby">候补复习</button>
+    </div>
+    <div class="fc-content">
+      <div class="fc-word" id="flashcardWord">—</div>
+      <div class="fc-options" id="flashcardOptions"></div>
+    </div>
+    <div class="fc-progress">
+      <span id="flashcardProgressText">第 0 题 / 共 0 题</span>
+      <div class="fc-progress-bar"><div class="fc-progress-fill" id="flashcardProgressBar"></div></div>
+    </div>
+    <div class="fc-result hidden" id="flashcardResult">
+      <div class="fc-result-text" id="flashcardResultText"></div>
+      <button class="btn primary" id="flashcardRetryBtn">再来一轮</button>
+    </div>
+  </div>
+
+  <!-- 弹窗（加词 / 单词本共用） -->
+  <div class="modal-mask hidden" id="modalMask">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">标题</h3>
+        <button class="modal-close" id="modalClose" aria-label="关闭">×</button>
+      </div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- 生成中 -->
+  <div class="loading-mask hidden" id="loadingMask">正在生成今日内容…</div>
+
+  <!-- 轻提示 -->
+  <div class="toast" id="toast"></div>
+
+  <!-- 注意加载顺序：数据 → 词库/状态机 → 已读记录 → 新闻匹配 → AI 调用 → 主逻辑 -->
+  <script src="js/data.js"></script>
+  <script src="js/wordpool.js"></script>
+  <script src="js/readHistory.js"></script>
+  <script src="js/news.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/dictionary.js"></script>
+  <script src="js/vocabBook.js"></script>
+  <script src="js/vocabBookUI.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/flashcard.js"></script>
+  <script src="js/app.js"></script>
+  <!-- 词库（词汇量测试用，app.js 之后、vocabTest.js 之前） -->
+  <script src="js/wordbank.js"></script>
+  <!-- 单词量测试 + 批量导入（依赖 WORD_BANK / VocabBook / app.js） -->
+  <script src="js/vocabTest.js"></script>
+</body>
+</html>

@@ -1,0 +1,8702 @@
+{
+ "version": "v1",
+ "meta": {
+  "generator": "build_testbank.py（一次性生成脚本，用完即删，不随项目保留）",
+  "howToRebuild": "本文件由一次性脚本生成，脚本不保留。要重建或扩充词表：\n① 下载词频表 first20hours/google-10000-english（10000 词，已按频次降序）；\n② 从【06】词汇汇编9400（默写版）.docx 提取「词汇 + 释义」两列（zipfile 直读 word/document.xml，取表格第 2、3 列；共 294 表 / 9683 行）；\n③ join data/tem4.json 的词表，保留 join 命中的词；\n④ 剔除功能词（the/of/and 这类：认识它们不代表词汇量，且释义是「…的」这种符号形态）、\n   释义残片（以 / 开头、含「词性.」、含 …、括号不平衡）与重复释义；\n⑤ 按 rank 每 1000 一层分 10 层，每层等距抽 PER_LAYER 个词并打乱；\n⑥ 必须重跑本 meta 里的全部自检项（层词数/升序/去重/纯字母/释义非空）。",
+  "algorithm": "adaptive-v1",
+  "layerCount": 10,
+  "perLayerTarget": 120,
+  "perLayerMin": 120,
+  "layerSummary": [
+   {
+    "layer": 1,
+    "rankFrom": 1,
+    "rankTo": 1000,
+    "count": 120,
+    "rankActualFrom": 27,
+    "rankActualTo": 1000,
+    "posCounts": {
+     "n": 74,
+     "a": 22,
+     "v": 12,
+     "vt": 7,
+     "ad": 3,
+     "adj": 2
+    },
+    "sampling": "均匀采样 120/545（覆盖 rank 27-1000）"
+   },
+   {
+    "layer": 2,
+    "rankFrom": 1001,
+    "rankTo": 2000,
+    "count": 120,
+    "rankActualFrom": 1001,
+    "rankActualTo": 1999,
+    "posCounts": {
+     "n": 74,
+     "a": 23,
+     "v": 7,
+     "adj": 5,
+     "vt": 4,
+     "vi": 3,
+     "ad": 3,
+     "?": 1
+    },
+    "sampling": "均匀采样 120/559（覆盖 rank 1001-1999）"
+   },
+   {
+    "layer": 3,
+    "rankFrom": 2001,
+    "rankTo": 3000,
+    "count": 120,
+    "rankActualFrom": 2001,
+    "rankActualTo": 2995,
+    "posCounts": {
+     "n": 74,
+     "a": 18,
+     "v": 15,
+     "ad": 6,
+     "vt": 3,
+     "?": 2,
+     "adj": 2
+    },
+    "sampling": "均匀采样 120/460（覆盖 rank 2001-2995）"
+   },
+   {
+    "layer": 4,
+    "rankFrom": 3001,
+    "rankTo": 4000,
+    "count": 120,
+    "rankActualFrom": 3007,
+    "rankActualTo": 3996,
+    "posCounts": {
+     "n": 81,
+     "a": 23,
+     "v": 7,
+     "adj": 3,
+     "ad": 3,
+     "vt": 2,
+     "vi": 1
+    },
+    "sampling": "均匀采样 120/432（覆盖 rank 3007-3996）"
+   },
+   {
+    "layer": 5,
+    "rankFrom": 4001,
+    "rankTo": 5000,
+    "count": 120,
+    "rankActualFrom": 4001,
+    "rankActualTo": 4997,
+    "posCounts": {
+     "n": 79,
+     "a": 21,
+     "v": 8,
+     "ad": 5,
+     "adj": 4,
+     "vt": 2,
+     "vi": 1
+    },
+    "sampling": "均匀采样 120/414（覆盖 rank 4001-4997）"
+   },
+   {
+    "layer": 6,
+    "rankFrom": 5001,
+    "rankTo": 6000,
+    "count": 120,
+    "rankActualFrom": 5002,
+    "rankActualTo": 6000,
+    "posCounts": {
+     "n": 87,
+     "a": 13,
+     "ad": 6,
+     "vt": 4,
+     "v": 4,
+     "adj": 4,
+     "adv": 1,
+     "?": 1
+    },
+    "sampling": "均匀采样 120/369（覆盖 rank 5002-6000）"
+   },
+   {
+    "layer": 7,
+    "rankFrom": 6001,
+    "rankTo": 7000,
+    "count": 120,
+    "rankActualFrom": 6007,
+    "rankActualTo": 6996,
+    "posCounts": {
+     "n": 71,
+     "a": 19,
+     "adj": 11,
+     "vt": 8,
+     "v": 7,
+     "ad": 3,
+     "?": 1
+    },
+    "sampling": "均匀采样 120/336（覆盖 rank 6007-6996）"
+   },
+   {
+    "layer": 8,
+    "rankFrom": 7001,
+    "rankTo": 8000,
+    "count": 120,
+    "rankActualFrom": 7001,
+    "rankActualTo": 7999,
+    "posCounts": {
+     "n": 76,
+     "a": 18,
+     "v": 12,
+     "vt": 6,
+     "adj": 5,
+     "adv": 1,
+     "ad": 1,
+     "vi": 1
+    },
+    "sampling": "均匀采样 120/298（覆盖 rank 7001-7999）"
+   },
+   {
+    "layer": 9,
+    "rankFrom": 8001,
+    "rankTo": 9000,
+    "count": 120,
+    "rankActualFrom": 8004,
+    "rankActualTo": 8997,
+    "posCounts": {
+     "n": 77,
+     "a": 17,
+     "adj": 7,
+     "v": 6,
+     "ad": 5,
+     "vt": 3,
+     "adv": 3,
+     "vi": 1,
+     "?": 1
+    },
+    "sampling": "均匀采样 120/299（覆盖 rank 8004-8997）"
+   },
+   {
+    "layer": 10,
+    "rankFrom": 9001,
+    "rankTo": 10000,
+    "count": 120,
+    "rankActualFrom": 9001,
+    "rankActualTo": 10000,
+    "posCounts": {
+     "n": 82,
+     "a": 20,
+     "v": 7,
+     "vt": 4,
+     "ad": 4,
+     "adj": 2,
+     "vi": 1
+    },
+    "sampling": "均匀采样 120/296（覆盖 rank 9001-10000）"
+   }
+  ],
+  "totalWords": 1200,
+  "meaningMaxLen": 14,
+  "sources": {
+   "frequency": {
+    "name": "first20hours/google-10000-english",
+    "via": "npm: most-common-words-by-language@latest /build/resources/english.txt (unpkg.com)",
+    "corpus": "OpenSubtitles",
+    "size": 10000,
+    "whyNotCoca": "需求首选 COCA / BNC / SUBTLEX。这几个与google-10000-english 一样只托管在 GitHub，而本机 github.com / raw.githubusercontent.com / api.github.com / cdn.jsdelivr.net 全部不可达（DNS 被网关劫持到搜索页）。unpkg.com（npm 官方 CDN）可通，该包内嵌的英语词频表即google-10000-english，属需求允许的「公认的通用词频排名」。"
+   },
+   "meanings": {
+    "name": "【06】词汇汇编9400（默写版）.docx",
+    "how": "zipfile 直读 word/document.xml，取表格第 2 列（词汇）与第 3 列（释义）",
+    "words": 9360
+   },
+   "wordlist": {
+    "name": "data/tem4.json（TEM-4 专四大纲词表）",
+    "size": 9909
+   }
+  },
+  "quality": {
+   "joinResult": {
+    "tem4InFreq": 4710,
+    "tem4WithMeaning": 9360,
+    "both": 4570,
+    "afterFunctionFilter": 4018
+   },
+   "droppedFunctionWords": {
+    "total": 131,
+    "byLayer": {
+     "1": 86,
+     "2": 18,
+     "3": 6,
+     "4": 5,
+     "5": 6,
+     "6": 4,
+     "7": 2,
+     "8": 3,
+     "9": 1
+    },
+    "why": "词频表按字幕语料统计，rank 1-144 全是 the/of/and/to/in/for 这类语法功能词。「认识 the」不代表有 1000 词量，用它们出题会让第 1 层变成送分区，估算直接虚高。判定 = 词性前缀 ∈ {pron,prep,conj,aux,art,num,modal} 或命中显式黑名单（词性前缀缺失/写成 ad 时兜底）。"
+   },
+   "droppedDuplicateMeaning": {
+    "total": 10,
+    "byLayer": {
+     "1": 1,
+     "2": 2,
+     "3": 3,
+     "4": 3,
+     "10": 1
+    },
+    "why": "同层内多个词共用同一中文释义（affect/concern/impact 都译「影响」），一道题会有多个正确答案。按层剔除。"
+   },
+   "uniformSampling": {
+    "why": "取「每层前 120 个」会让 L1 只覆盖 rank 1-144、L10 只到 9397，整层跨度浪费掉；而自适应算法依赖层内难度梯度做区分。改为在层内按 rank 均匀采样，覆盖首尾。",
+    "note": {
+     "L1": "均匀采样 120/545（覆盖 rank 27-1000）",
+     "L2": "均匀采样 120/559（覆盖 rank 1001-1999）",
+     "L3": "均匀采样 120/460（覆盖 rank 2001-2995）",
+     "L4": "均匀采样 120/432（覆盖 rank 3007-3996）",
+     "L5": "均匀采样 120/414（覆盖 rank 4001-4997）",
+     "L6": "均匀采样 120/369（覆盖 rank 5002-6000）",
+     "L7": "均匀采样 120/336（覆盖 rank 6007-6996）",
+     "L8": "均匀采样 120/298（覆盖 rank 7001-7999）",
+     "L9": "均匀采样 120/299（覆盖 rank 8004-8997）",
+     "L10": "均匀采样 120/296（覆盖 rank 9001-10000）"
+    }
+   },
+   "droppedFragmentMeanings": {
+    "why": "docx 里大量单元格的词性写在上一行被截断（`/n. (for)搜索`），或把多个词类的释义挤进一格（`相同的pron. 相同的人(...)`），或含`…` 表示多个分义黏连。这类释义当选项会暴露答案（用户看到 `pron.` 就知道这词有问题），整条丢弃。判据见 meaning_is_usable()：以 / 开头 / 含「词性.」/ 含 … / 无中文 / 括号不平衡。",
+    "count": 421
+   },
+   "meaningTruncated": 14,
+   "trimmingMethod": "按标点边界截断（先找 MAX_LEN 内最近的逗号/顿号），避免硬切产生 `选择(权)，[商` 这种半个词。",
+   "posNote": "pos 从释义的词性前缀解析，可能为空串。不做词性推断 —— 词性只用于「干扰项优先同词性」，推断错了顶多退回「同层任意词性」，不会产生错题。"
+  },
+  "fieldSpec": {
+   "word": "单词（小写，纯字母，可含连字符；已剔除功能词）",
+   "pos": "词性代码，取自释义的词性前缀，可能为空串",
+   "meaning": "中文释义（已剥离词性前缀、只取第一分义、截断到 14 字）",
+   "rank": "在频率表中的排名（1=最常用，10000=最生僻）",
+   "layer": "所属层 1-10，= min(10, floor((rank-1)/1000)+1)"
+  }
+ },
+ "layers": [
+  [
+   {
+    "word": "new",
+    "pos": "a",
+    "meaning": "新(近)的",
+    "rank": 27,
+    "layer": 1
+   },
+   {
+    "word": "information",
+    "pos": "n",
+    "meaning": "通知，报告",
+    "rank": 49,
+    "layer": 1
+   },
+   {
+    "word": "see",
+    "pos": "vt",
+    "meaning": "看见",
+    "rank": 64,
+    "layer": 1
+   },
+   {
+    "word": "get",
+    "pos": "v",
+    "meaning": "获得，得到",
+    "rank": 77,
+    "layer": 1
+   },
+   {
+    "word": "service",
+    "pos": "n",
+    "meaning": "服务",
+    "rank": 97,
+    "layer": 1
+   },
+   {
+    "word": "people",
+    "pos": "n",
+    "meaning": "人们，人",
+    "rank": 105,
+    "layer": 1
+   },
+   {
+    "word": "email",
+    "pos": "n",
+    "meaning": "电子邮件",
+    "rank": 115,
+    "layer": 1
+   },
+   {
+    "word": "work",
+    "pos": "n",
+    "meaning": "工作(量)",
+    "rank": 125,
+    "layer": 1
+   },
+   {
+    "word": "data",
+    "pos": "n",
+    "meaning": "资料，数据",
+    "rank": 131,
+    "layer": 1
+   },
+   {
+    "word": "post",
+    "pos": "v",
+    "meaning": "贴出",
+    "rank": 137,
+    "layer": 1
+   },
+   {
+    "word": "such",
+    "pos": "a",
+    "meaning": "这样的",
+    "rank": 144,
+    "layer": 1
+   },
+   {
+    "word": "message",
+    "pos": "n",
+    "meaning": "消息，信息，通讯，启示",
+    "rank": 149,
+    "layer": 1
+   },
+   {
+    "word": "well",
+    "pos": "ad",
+    "meaning": "好，令人满意地",
+    "rank": 157,
+    "layer": 1
+   },
+   {
+    "word": "order",
+    "pos": "n",
+    "meaning": "命令",
+    "rank": 173,
+    "layer": 1
+   },
+   {
+    "word": "sex",
+    "pos": "n",
+    "meaning": "性别，性",
+    "rank": 182,
+    "layer": 1
+   },
+   {
+    "word": "general",
+    "pos": "a",
+    "meaning": "一般的，普通的",
+    "rank": 191,
+    "layer": 1
+   },
+   {
+    "word": "mail",
+    "pos": "n",
+    "meaning": "邮件v. 邮寄",
+    "rank": 195,
+    "layer": 1
+   },
+   {
+    "word": "know",
+    "pos": "vt",
+    "meaning": "知道，了解",
+    "rank": 201,
+    "layer": 1
+   },
+   {
+    "word": "great",
+    "pos": "a",
+    "meaning": "伟大的",
+    "rank": 209,
+    "layer": 1
+   },
+   {
+    "word": "international",
+    "pos": "a",
+    "meaning": "国际的，世界(性)的，跨国的",
+    "rank": 215,
+    "layer": 1
+   },
+   {
+    "word": "line",
+    "pos": "n",
+    "meaning": "线",
+    "rank": 228,
+    "layer": 1
+   },
+   {
+    "word": "office",
+    "pos": "n",
+    "meaning": "办公室，办事处",
+    "rank": 241,
+    "layer": 1
+   },
+   {
+    "word": "take",
+    "pos": "v",
+    "meaning": "拿取",
+    "rank": 246,
+    "layer": 1
+   },
+   {
+    "word": "phone",
+    "pos": "n",
+    "meaning": "(telephone)电话",
+    "rank": 255,
+    "layer": 1
+   },
+   {
+    "word": "long",
+    "pos": "a",
+    "meaning": "长的，长时间",
+    "rank": 264,
+    "layer": 1
+   },
+   {
+    "word": "special",
+    "pos": "a",
+    "meaning": "特殊的，专门的",
+    "rank": 273,
+    "layer": 1
+   },
+   {
+    "word": "technology",
+    "pos": "n",
+    "meaning": "科学技术",
+    "rank": 285,
+    "layer": 1
+   },
+   {
+    "word": "same",
+    "pos": "a",
+    "meaning": "相同的pron.",
+    "rank": 289,
+    "layer": 1
+   },
+   {
+    "word": "house",
+    "pos": "n",
+    "meaning": "房屋",
+    "rank": 297,
+    "layer": 1
+   },
+   {
+    "word": "game",
+    "pos": "n",
+    "meaning": "游戏，娱乐",
+    "rank": 305,
+    "layer": 1
+   },
+   {
+    "word": "computer",
+    "pos": "n",
+    "meaning": "计算机，电脑",
+    "rank": 312,
+    "layer": 1
+   },
+   {
+    "word": "access",
+    "pos": "vt",
+    "meaning": "存取(计算机文件)",
+    "rank": 324,
+    "layer": 1
+   },
+   {
+    "word": "big",
+    "pos": "a",
+    "meaning": "大的",
+    "rank": 330,
+    "layer": 1
+   },
+   {
+    "word": "size",
+    "pos": "n",
+    "meaning": "大小，尺寸，规模",
+    "rank": 337,
+    "layer": 1
+   },
+   {
+    "word": "shop",
+    "pos": "n",
+    "meaning": "商店，店铺",
+    "rank": 343,
+    "layer": 1
+   },
+   {
+    "word": "text",
+    "pos": "n",
+    "meaning": "正文，文本",
+    "rank": 349,
+    "layer": 1
+   },
+   {
+    "word": "account",
+    "pos": "n",
+    "meaning": "账目",
+    "rank": 361,
+    "layer": 1
+   },
+   {
+    "word": "previous",
+    "pos": "a",
+    "meaning": "先前的",
+    "rank": 367,
+    "layer": 1
+   },
+   {
+    "word": "call",
+    "pos": "vt",
+    "meaning": "叫，喊",
+    "rank": 374,
+    "layer": 1
+   },
+   {
+    "word": "description",
+    "pos": "n",
+    "meaning": "描写,描绘,叙述",
+    "rank": 379,
+    "layer": 1
+   },
+   {
+    "word": "quality",
+    "pos": "n",
+    "meaning": "质量，品质，特性",
+    "rank": 392,
+    "layer": 1
+   },
+   {
+    "word": "visit",
+    "pos": "n",
+    "meaning": "访问，参观v. 访问，参观",
+    "rank": 399,
+    "layer": 1
+   },
+   {
+    "word": "compare",
+    "pos": "v",
+    "meaning": "比较,对照",
+    "rank": 406,
+    "layer": 1
+   },
+   {
+    "word": "man",
+    "pos": "n",
+    "meaning": "人",
+    "rank": 413,
+    "layer": 1
+   },
+   {
+    "word": "source",
+    "pos": "n",
+    "meaning": "源，源泉",
+    "rank": 419,
+    "layer": 1
+   },
+   {
+    "word": "sale",
+    "pos": "n",
+    "meaning": "出售，上市",
+    "rank": 425,
+    "layer": 1
+   },
+   {
+    "word": "canada",
+    "pos": "n",
+    "meaning": "加拿大",
+    "rank": 430,
+    "layer": 1
+   },
+   {
+    "word": "point",
+    "pos": "n",
+    "meaning": "尖",
+    "rank": 438,
+    "layer": 1
+   },
+   {
+    "word": "sales",
+    "pos": "n",
+    "meaning": "销售adj.出售的",
+    "rank": 445,
+    "layer": 1
+   },
+   {
+    "word": "select",
+    "pos": "v",
+    "meaning": "选择，挑选a. 精选",
+    "rank": 453,
+    "layer": 1
+   },
+   {
+    "word": "note",
+    "pos": "n",
+    "meaning": "笔记",
+    "rank": 460,
+    "layer": 1
+   },
+   {
+    "word": "however",
+    "pos": "ad",
+    "meaning": "然而，可是，不过",
+    "rank": 466,
+    "layer": 1
+   },
+   {
+    "word": "library",
+    "pos": "n",
+    "meaning": "图书馆",
+    "rank": 471,
+    "layer": 1
+   },
+   {
+    "word": "series",
+    "pos": "n",
+    "meaning": "连续,系列",
+    "rank": 475,
+    "layer": 1
+   },
+   {
+    "word": "human",
+    "pos": "a",
+    "meaning": "人的，人类的n. 人",
+    "rank": 481,
+    "layer": 1
+   },
+   {
+    "word": "cost",
+    "pos": "n",
+    "meaning": "成本，费用v.花费",
+    "rank": 489,
+    "layer": 1
+   },
+   {
+    "word": "say",
+    "pos": "vt",
+    "meaning": "说，讲",
+    "rank": 496,
+    "layer": 1
+   },
+   {
+    "word": "study",
+    "pos": "vt",
+    "meaning": "学习",
+    "rank": 508,
+    "layer": 1
+   },
+   {
+    "word": "play",
+    "pos": "v",
+    "meaning": "玩，做游戏",
+    "rank": 516,
+    "layer": 1
+   },
+   {
+    "word": "financial",
+    "pos": "a",
+    "meaning": "财政的，金融的",
+    "rank": 526,
+    "layer": 1
+   },
+   {
+    "word": "payment",
+    "pos": "n",
+    "meaning": "支付，付款额",
+    "rank": 539,
+    "layer": 1
+   },
+   {
+    "word": "recent",
+    "pos": "a",
+    "meaning": "新近的，近来的",
+    "rank": 548,
+    "layer": 1
+   },
+   {
+    "word": "problem",
+    "pos": "n",
+    "meaning": "问题，疑难问题",
+    "rank": 553,
+    "layer": 1
+   },
+   {
+    "word": "social",
+    "pos": "a",
+    "meaning": "社会的",
+    "rank": 558,
+    "layer": 1
+   },
+   {
+    "word": "sell",
+    "pos": "v",
+    "meaning": "卖，出售",
+    "rank": 564,
+    "layer": 1
+   },
+   {
+    "word": "young",
+    "pos": "a",
+    "meaning": "年轻的，幼小的",
+    "rank": 571,
+    "layer": 1
+   },
+   {
+    "word": "east",
+    "pos": "n",
+    "meaning": "东，东方，东部a. 东方",
+    "rank": 576,
+    "layer": 1
+   },
+   {
+    "word": "club",
+    "pos": "n",
+    "meaning": "俱乐部，夜总会",
+    "rank": 582,
+    "layer": 1
+   },
+   {
+    "word": "question",
+    "pos": "n",
+    "meaning": "问题",
+    "rank": 592,
+    "layer": 1
+   },
+   {
+    "word": "poker",
+    "pos": "n",
+    "meaning": "扑克,拨火铁棒,直挺挺",
+    "rank": 601,
+    "layer": 1
+   },
+   {
+    "word": "court",
+    "pos": "n",
+    "meaning": "法院，法庭",
+    "rank": 608,
+    "layer": 1
+   },
+   {
+    "word": "blue",
+    "pos": "a",
+    "meaning": "蓝色的",
+    "rank": 618,
+    "layer": 1
+   },
+   {
+    "word": "analysis",
+    "pos": "n",
+    "meaning": "分析",
+    "rank": 626,
+    "layer": 1
+   },
+   {
+    "word": "month",
+    "pos": "n",
+    "meaning": "月，月份",
+    "rank": 637,
+    "layer": 1
+   },
+   {
+    "word": "space",
+    "pos": "n",
+    "meaning": "间隔",
+    "rank": 642,
+    "layer": 1
+   },
+   {
+    "word": "interest",
+    "pos": "n",
+    "meaning": "(in)兴趣，重要性",
+    "rank": 653,
+    "layer": 1
+   },
+   {
+    "word": "share",
+    "pos": "v",
+    "meaning": "(with)分配，共用",
+    "rank": 660,
+    "layer": 1
+   },
+   {
+    "word": "learning",
+    "pos": "n",
+    "meaning": "知识，学问",
+    "rank": 670,
+    "layer": 1
+   },
+   {
+    "word": "popular",
+    "pos": "a",
+    "meaning": "流行的，通俗的，大众的",
+    "rank": 675,
+    "layer": 1
+   },
+   {
+    "word": "journal",
+    "pos": "n",
+    "meaning": "定期刊物，杂志，日报",
+    "rank": 681,
+    "layer": 1
+   },
+   {
+    "word": "notice",
+    "pos": "n",
+    "meaning": "通知，通告，布告",
+    "rank": 689,
+    "layer": 1
+   },
+   {
+    "word": "radio",
+    "pos": "n",
+    "meaning": "收音机",
+    "rank": 693,
+    "layer": 1
+   },
+   {
+    "word": "away",
+    "pos": "ad",
+    "meaning": "在远处",
+    "rank": 699,
+    "layer": 1
+   },
+   {
+    "word": "agreement",
+    "pos": "n",
+    "meaning": "同意",
+    "rank": 708,
+    "layer": 1
+   },
+   {
+    "word": "safety",
+    "pos": "n",
+    "meaning": "安全，保险",
+    "rank": 714,
+    "layer": 1
+   },
+   {
+    "word": "tell",
+    "pos": "vt",
+    "meaning": "告诉，讲述",
+    "rank": 723,
+    "layer": 1
+   },
+   {
+    "word": "green",
+    "pos": "a",
+    "meaning": "绿色的",
+    "rank": 733,
+    "layer": 1
+   },
+   {
+    "word": "gold",
+    "pos": "n",
+    "meaning": "金，黄金",
+    "rank": 740,
+    "layer": 1
+   },
+   {
+    "word": "lot",
+    "pos": "n",
+    "meaning": "许多，大量",
+    "rank": 748,
+    "layer": 1
+   },
+   {
+    "word": "daily",
+    "pos": "a",
+    "meaning": "每日的ad. 每日",
+    "rank": 756,
+    "layer": 1
+   },
+   {
+    "word": "electronics",
+    "pos": "n",
+    "meaning": "电子学",
+    "rank": 763,
+    "layer": 1
+   },
+   {
+    "word": "mar",
+    "pos": "v",
+    "meaning": "弄坏, 毁坏, 损害",
+    "rank": 772,
+    "layer": 1
+   },
+   {
+    "word": "france",
+    "pos": "n",
+    "meaning": "法国，法兰西",
+    "rank": 778,
+    "layer": 1
+   },
+   {
+    "word": "conference",
+    "pos": "n",
+    "meaning": "(正式)会议",
+    "rank": 785,
+    "layer": 1
+   },
+   {
+    "word": "front",
+    "pos": "a",
+    "meaning": "前面的，前部的n. 正面",
+    "rank": 794,
+    "layer": 1
+   },
+   {
+    "word": "sound",
+    "pos": "n",
+    "meaning": "声音v. 发声，响a.",
+    "rank": 803,
+    "layer": 1
+   },
+   {
+    "word": "word",
+    "pos": "n",
+    "meaning": "词，词语",
+    "rank": 810,
+    "layer": 1
+   },
+   {
+    "word": "talk",
+    "pos": "n",
+    "meaning": "谈话",
+    "rank": 816,
+    "layer": 1
+   },
+   {
+    "word": "cheap",
+    "pos": "a",
+    "meaning": "便宜的",
+    "rank": 827,
+    "layer": 1
+   },
+   {
+    "word": "europe",
+    "pos": "n",
+    "meaning": "欧洲",
+    "rank": 838,
+    "layer": 1
+   },
+   {
+    "word": "cover",
+    "pos": "v",
+    "meaning": "覆盖，包括，涉及n. 盖子",
+    "rank": 846,
+    "layer": 1
+   },
+   {
+    "word": "unit",
+    "pos": "n",
+    "meaning": "单位，单元",
+    "rank": 855,
+    "layer": 1
+   },
+   {
+    "word": "player",
+    "pos": "n",
+    "meaning": "游戏的人",
+    "rank": 863,
+    "layer": 1
+   },
+   {
+    "word": "bank",
+    "pos": "n",
+    "meaning": "银行",
+    "rank": 875,
+    "layer": 1
+   },
+   {
+    "word": "weight",
+    "pos": "n",
+    "meaning": "重量",
+    "rank": 887,
+    "layer": 1
+   },
+   {
+    "word": "treatment",
+    "pos": "n",
+    "meaning": "待遇",
+    "rank": 893,
+    "layer": 1
+   },
+   {
+    "word": "camera",
+    "pos": "n",
+    "meaning": "照相机，摄影机",
+    "rank": 900,
+    "layer": 1
+   },
+   {
+    "word": "registered",
+    "pos": "adj",
+    "meaning": "登记的，注册的",
+    "rank": 906,
+    "layer": 1
+   },
+   {
+    "word": "protection",
+    "pos": "n",
+    "meaning": "保护，警戒",
+    "rank": 914,
+    "layer": 1
+   },
+   {
+    "word": "manager",
+    "pos": "n",
+    "meaning": "经理，管理人",
+    "rank": 919,
+    "layer": 1
+   },
+   {
+    "word": "engineering",
+    "pos": "n",
+    "meaning": "工程学",
+    "rank": 931,
+    "layer": 1
+   },
+   {
+    "word": "license",
+    "pos": "n",
+    "meaning": "许可证，执照v. 准许，认可",
+    "rank": 937,
+    "layer": 1
+   },
+   {
+    "word": "basic",
+    "pos": "a",
+    "meaning": "基本的，基础的",
+    "rank": 945,
+    "layer": 1
+   },
+   {
+    "word": "active",
+    "pos": "adj",
+    "meaning": "活跃的，敏捷的，积极的",
+    "rank": 954,
+    "layer": 1
+   },
+   {
+    "word": "figure",
+    "pos": "n",
+    "meaning": "体形",
+    "rank": 958,
+    "layer": 1
+   },
+   {
+    "word": "writing",
+    "pos": "n",
+    "meaning": "写，写作",
+    "rank": 968,
+    "layer": 1
+   },
+   {
+    "word": "remember",
+    "pos": "v",
+    "meaning": "记住",
+    "rank": 979,
+    "layer": 1
+   },
+   {
+    "word": "advertise",
+    "pos": "v",
+    "meaning": "做广告",
+    "rank": 986,
+    "layer": 1
+   },
+   {
+    "word": "thought",
+    "pos": "n",
+    "meaning": "思想，思考，思维",
+    "rank": 991,
+    "layer": 1
+   },
+   {
+    "word": "entry",
+    "pos": "n",
+    "meaning": "进入,入口",
+    "rank": 1000,
+    "layer": 1
+   }
+  ],
+  [
+   {
+    "word": "stay",
+    "pos": "vi",
+    "meaning": "逗留",
+    "rank": 1001,
+    "layer": 2
+   },
+   {
+    "word": "mean",
+    "pos": "a",
+    "meaning": "吝啬的",
+    "rank": 1008,
+    "layer": 2
+   },
+   {
+    "word": "monday",
+    "pos": "n",
+    "meaning": "星期一",
+    "rank": 1013,
+    "layer": 2
+   },
+   {
+    "word": "income",
+    "pos": "n",
+    "meaning": "收入，收益，所得",
+    "rank": 1021,
+    "layer": 2
+   },
+   {
+    "word": "bay",
+    "pos": "n",
+    "meaning": "海湾",
+    "rank": 1026,
+    "layer": 2
+   },
+   {
+    "word": "package",
+    "pos": "n",
+    "meaning": "包装，包裹，箱，包装费",
+    "rank": 1030,
+    "layer": 2
+   },
+   {
+    "word": "stop",
+    "pos": "v",
+    "meaning": "停止",
+    "rank": 1038,
+    "layer": 2
+   },
+   {
+    "word": "build",
+    "pos": "vt",
+    "meaning": "建造，建筑",
+    "rank": 1048,
+    "layer": 2
+   },
+   {
+    "word": "apply",
+    "pos": "v",
+    "meaning": "要求,申请",
+    "rank": 1061,
+    "layer": 2
+   },
+   {
+    "word": "believe",
+    "pos": "vt",
+    "meaning": "相信，认为vi. 相信",
+    "rank": 1069,
+    "layer": 2
+   },
+   {
+    "word": "selection",
+    "pos": "n",
+    "meaning": "选择，挑选",
+    "rank": 1076,
+    "layer": 2
+   },
+   {
+    "word": "cross",
+    "pos": "n",
+    "meaning": "十字(架)",
+    "rank": 1083,
+    "layer": 2
+   },
+   {
+    "word": "corporation",
+    "pos": "n",
+    "meaning": "市镇自治机关",
+    "rank": 1088,
+    "layer": 2
+   },
+   {
+    "word": "addition",
+    "pos": "n",
+    "meaning": "加，加法",
+    "rank": 1096,
+    "layer": 2
+   },
+   {
+    "word": "lower",
+    "pos": "a",
+    "meaning": "较低的，下级的，下游的v.",
+    "rank": 1104,
+    "layer": 2
+   },
+   {
+    "word": "according",
+    "pos": "adj",
+    "meaning": "按照，据说",
+    "rank": 1108,
+    "layer": 2
+   },
+   {
+    "word": "gas",
+    "pos": "n",
+    "meaning": "气体",
+    "rank": 1119,
+    "layer": 2
+   },
+   {
+    "word": "rental",
+    "pos": "adj",
+    "meaning": "租借的，租金的",
+    "rank": 1127,
+    "layer": 2
+   },
+   {
+    "word": "teens",
+    "pos": "n",
+    "meaning": "十多岁,青少年们",
+    "rank": 1131,
+    "layer": 2
+   },
+   {
+    "word": "move",
+    "pos": "v",
+    "meaning": "移动，迁移",
+    "rank": 1142,
+    "layer": 2
+   },
+   {
+    "word": "machine",
+    "pos": "n",
+    "meaning": "机器，机械v. 用机器加工",
+    "rank": 1153,
+    "layer": 2
+   },
+   {
+    "word": "statistics",
+    "pos": "n",
+    "meaning": "统计,统计数字,统计学",
+    "rank": 1159,
+    "layer": 2
+   },
+   {
+    "word": "saturday",
+    "pos": "n",
+    "meaning": "星期六",
+    "rank": 1169,
+    "layer": 2
+   },
+   {
+    "word": "choice",
+    "pos": "n",
+    "meaning": "选择(机会)，抉择，选择项",
+    "rank": 1178,
+    "layer": 2
+   },
+   {
+    "word": "hi",
+    "pos": "",
+    "meaning": "int. 嗨！喂！",
+    "rank": 1186,
+    "layer": 2
+   },
+   {
+    "word": "furniture",
+    "pos": "n",
+    "meaning": "家具",
+    "rank": 1191,
+    "layer": 2
+   },
+   {
+    "word": "structure",
+    "pos": "n",
+    "meaning": "结构，构造",
+    "rank": 1199,
+    "layer": 2
+   },
+   {
+    "word": "contract",
+    "pos": "n",
+    "meaning": "合同,契约",
+    "rank": 1204,
+    "layer": 2
+   },
+   {
+    "word": "custom",
+    "pos": "n",
+    "meaning": "习俗,惯例",
+    "rank": 1212,
+    "layer": 2
+   },
+   {
+    "word": "inn",
+    "pos": "n",
+    "meaning": "小旅馆，客栈",
+    "rank": 1221,
+    "layer": 2
+   },
+   {
+    "word": "late",
+    "pos": "a",
+    "meaning": "迟的，晚的，晚期的",
+    "rank": 1231,
+    "layer": 2
+   },
+   {
+    "word": "win",
+    "pos": "vi",
+    "meaning": "获胜，赢vt. 赢得",
+    "rank": 1240,
+    "layer": 2
+   },
+   {
+    "word": "tool",
+    "pos": "n",
+    "meaning": "工具，用具",
+    "rank": 1247,
+    "layer": 2
+   },
+   {
+    "word": "communication",
+    "pos": "n",
+    "meaning": "通讯,交往,交流",
+    "rank": 1257,
+    "layer": 2
+   },
+   {
+    "word": "independent",
+    "pos": "a",
+    "meaning": "(of)独立的，自主的",
+    "rank": 1264,
+    "layer": 2
+   },
+   {
+    "word": "deal",
+    "pos": "v",
+    "meaning": "处理",
+    "rank": 1274,
+    "layer": 2
+   },
+   {
+    "word": "safe",
+    "pos": "a",
+    "meaning": "安全的，牢靠的",
+    "rank": 1286,
+    "layer": 2
+   },
+   {
+    "word": "sport",
+    "pos": "n",
+    "meaning": "(体育)运动(pl.)运动会",
+    "rank": 1291,
+    "layer": 2
+   },
+   {
+    "word": "population",
+    "pos": "n",
+    "meaning": "人口，(全体)居民",
+    "rank": 1297,
+    "layer": 2
+   },
+   {
+    "word": "ass",
+    "pos": "n",
+    "meaning": "驴",
+    "rank": 1304,
+    "layer": 2
+   },
+   {
+    "word": "favorite",
+    "pos": "n",
+    "meaning": "最喜欢的人或物a. 喜爱的",
+    "rank": 1311,
+    "layer": 2
+   },
+   {
+    "word": "valley",
+    "pos": "n",
+    "meaning": "(山)谷",
+    "rank": 1315,
+    "layer": 2
+   },
+   {
+    "word": "worldwide",
+    "pos": "a",
+    "meaning": "全世界的，世界范围的ad.",
+    "rank": 1325,
+    "layer": 2
+   },
+   {
+    "word": "earth",
+    "pos": "n",
+    "meaning": "地球",
+    "rank": 1333,
+    "layer": 2
+   },
+   {
+    "word": "kitchen",
+    "pos": "n",
+    "meaning": "厨房",
+    "rank": 1339,
+    "layer": 2
+   },
+   {
+    "word": "ship",
+    "pos": "n",
+    "meaning": "船舶，舰艇v. 装运，航运",
+    "rank": 1348,
+    "layer": 2
+   },
+   {
+    "word": "perfect",
+    "pos": "a",
+    "meaning": "完善的",
+    "rank": 1356,
+    "layer": 2
+   },
+   {
+    "word": "basis",
+    "pos": "n",
+    "meaning": "基础，根据",
+    "rank": 1361,
+    "layer": 2
+   },
+   {
+    "word": "assessment",
+    "pos": "n",
+    "meaning": "估定",
+    "rank": 1371,
+    "layer": 2
+   },
+   {
+    "word": "especially",
+    "pos": "ad",
+    "meaning": "特别，尤其，格外",
+    "rank": 1379,
+    "layer": 2
+   },
+   {
+    "word": "operation",
+    "pos": "n",
+    "meaning": "运转，开动，操作，手术",
+    "rank": 1389,
+    "layer": 2
+   },
+   {
+    "word": "wine",
+    "pos": "n",
+    "meaning": "葡萄酒，果酒",
+    "rank": 1399,
+    "layer": 2
+   },
+   {
+    "word": "owner",
+    "pos": "n",
+    "meaning": "物主，所有者",
+    "rank": 1409,
+    "layer": 2
+   },
+   {
+    "word": "rule",
+    "pos": "v",
+    "meaning": "统治",
+    "rank": 1419,
+    "layer": 2
+   },
+   {
+    "word": "authority",
+    "pos": "n",
+    "meaning": "权力",
+    "rank": 1431,
+    "layer": 2
+   },
+   {
+    "word": "modern",
+    "pos": "a",
+    "meaning": "现代的，近代的，新式的",
+    "rank": 1444,
+    "layer": 2
+   },
+   {
+    "word": "grand",
+    "pos": "a",
+    "meaning": "最重大的,豪华的",
+    "rank": 1450,
+    "layer": 2
+   },
+   {
+    "word": "canadian",
+    "pos": "a",
+    "meaning": "加拿大的",
+    "rank": 1456,
+    "layer": 2
+   },
+   {
+    "word": "educational",
+    "pos": "adj",
+    "meaning": "教育的",
+    "rank": 1463,
+    "layer": 2
+   },
+   {
+    "word": "opinion",
+    "pos": "n",
+    "meaning": "意见,鉴定",
+    "rank": 1471,
+    "layer": 2
+   },
+   {
+    "word": "output",
+    "pos": "n",
+    "meaning": "产量,产出",
+    "rank": 1477,
+    "layer": 2
+   },
+   {
+    "word": "responsibility",
+    "pos": "n",
+    "meaning": "责任，责任心",
+    "rank": 1487,
+    "layer": 2
+   },
+   {
+    "word": "trust",
+    "pos": "vt",
+    "meaning": "信任",
+    "rank": 1495,
+    "layer": 2
+   },
+   {
+    "word": "republic",
+    "pos": "n",
+    "meaning": "共和国，共和政体",
+    "rank": 1501,
+    "layer": 2
+   },
+   {
+    "word": "skin",
+    "pos": "n",
+    "meaning": "皮，皮肤",
+    "rank": 1509,
+    "layer": 2
+   },
+   {
+    "word": "pop",
+    "pos": "a",
+    "meaning": "流行的n.",
+    "rank": 1523,
+    "layer": 2
+   },
+   {
+    "word": "northern",
+    "pos": "a",
+    "meaning": "北方的，北部的",
+    "rank": 1530,
+    "layer": 2
+   },
+   {
+    "word": "deep",
+    "pos": "a",
+    "meaning": "深的，深长的",
+    "rank": 1543,
+    "layer": 2
+   },
+   {
+    "word": "plant",
+    "pos": "n",
+    "meaning": "植物，作物",
+    "rank": 1549,
+    "layer": 2
+   },
+   {
+    "word": "partner",
+    "pos": "n",
+    "meaning": "合作者，合伙人，合股人",
+    "rank": 1557,
+    "layer": 2
+   },
+   {
+    "word": "mission",
+    "pos": "n",
+    "meaning": "代表团",
+    "rank": 1565,
+    "layer": 2
+   },
+   {
+    "word": "pack",
+    "pos": "v",
+    "meaning": "捆扎，打包",
+    "rank": 1570,
+    "layer": 2
+   },
+   {
+    "word": "detailed",
+    "pos": "adj",
+    "meaning": "详细的，详尽的",
+    "rank": 1579,
+    "layer": 2
+   },
+   {
+    "word": "character",
+    "pos": "n",
+    "meaning": "性格，品质，特性",
+    "rank": 1586,
+    "layer": 2
+   },
+   {
+    "word": "spain",
+    "pos": "n",
+    "meaning": "西班牙",
+    "rank": 1600,
+    "layer": 2
+   },
+   {
+    "word": "pressure",
+    "pos": "n",
+    "meaning": "压，压力，压迫，强制，紧迫",
+    "rank": 1608,
+    "layer": 2
+   },
+   {
+    "word": "interested",
+    "pos": "adj",
+    "meaning": "感兴趣的",
+    "rank": 1616,
+    "layer": 2
+   },
+   {
+    "word": "papers",
+    "pos": "n",
+    "meaning": "文件，证书",
+    "rank": 1627,
+    "layer": 2
+   },
+   {
+    "word": "device",
+    "pos": "n",
+    "meaning": "装置，设备，仪表",
+    "rank": 1634,
+    "layer": 2
+   },
+   {
+    "word": "dark",
+    "pos": "a",
+    "meaning": "黑暗的，深(色)的",
+    "rank": 1640,
+    "layer": 2
+   },
+   {
+    "word": "remove",
+    "pos": "v",
+    "meaning": "移动，脱掉，调动，免职",
+    "rank": 1651,
+    "layer": 2
+   },
+   {
+    "word": "host",
+    "pos": "n",
+    "meaning": "许多,一大群",
+    "rank": 1656,
+    "layer": 2
+   },
+   {
+    "word": "civil",
+    "pos": "a",
+    "meaning": "公民的，市民的",
+    "rank": 1668,
+    "layer": 2
+   },
+   {
+    "word": "wrong",
+    "pos": "a",
+    "meaning": "错的ad. 错误地",
+    "rank": 1673,
+    "layer": 2
+   },
+   {
+    "word": "capacity",
+    "pos": "n",
+    "meaning": "容量,容积",
+    "rank": 1686,
+    "layer": 2
+   },
+   {
+    "word": "saw",
+    "pos": "n",
+    "meaning": "锯子，锯床v. 锯，锯开",
+    "rank": 1694,
+    "layer": 2
+   },
+   {
+    "word": "unknown",
+    "pos": "a",
+    "meaning": "不知道的",
+    "rank": 1702,
+    "layer": 2
+   },
+   {
+    "word": "relationship",
+    "pos": "n",
+    "meaning": "关系，联系",
+    "rank": 1715,
+    "layer": 2
+   },
+   {
+    "word": "creative",
+    "pos": "a",
+    "meaning": "有创造力的，创造性的",
+    "rank": 1725,
+    "layer": 2
+   },
+   {
+    "word": "lord",
+    "pos": "n",
+    "meaning": "(Lord)上帝，主",
+    "rank": 1731,
+    "layer": 2
+   },
+   {
+    "word": "museum",
+    "pos": "n",
+    "meaning": "博物馆，展览馆",
+    "rank": 1744,
+    "layer": 2
+   },
+   {
+    "word": "former",
+    "pos": "a",
+    "meaning": "以前的，在前的pron.",
+    "rank": 1753,
+    "layer": 2
+   },
+   {
+    "word": "cat",
+    "pos": "n",
+    "meaning": "猫",
+    "rank": 1760,
+    "layer": 2
+   },
+   {
+    "word": "literature",
+    "pos": "n",
+    "meaning": "文学,文学作品,文献,著作",
+    "rank": 1769,
+    "layer": 2
+   },
+   {
+    "word": "scale",
+    "pos": "n",
+    "meaning": "鳞,鳞状物",
+    "rank": 1777,
+    "layer": 2
+   },
+   {
+    "word": "monthly",
+    "pos": "a",
+    "meaning": "每月的ad. 每月一次",
+    "rank": 1782,
+    "layer": 2
+   },
+   {
+    "word": "secretary",
+    "pos": "n",
+    "meaning": "秘书，书记",
+    "rank": 1787,
+    "layer": 2
+   },
+   {
+    "word": "bottom",
+    "pos": "n",
+    "meaning": "底(部)",
+    "rank": 1796,
+    "layer": 2
+   },
+   {
+    "word": "switch",
+    "pos": "n",
+    "meaning": "开关",
+    "rank": 1810,
+    "layer": 2
+   },
+   {
+    "word": "connect",
+    "pos": "vt",
+    "meaning": "连接",
+    "rank": 1819,
+    "layer": 2
+   },
+   {
+    "word": "installation",
+    "pos": "n",
+    "meaning": "安装，设置",
+    "rank": 1827,
+    "layer": 2
+   },
+   {
+    "word": "gear",
+    "pos": "a",
+    "meaning": "齿轮的",
+    "rank": 1842,
+    "layer": 2
+   },
+   {
+    "word": "piece",
+    "pos": "n",
+    "meaning": "(一)件/片/篇",
+    "rank": 1852,
+    "layer": 2
+   },
+   {
+    "word": "facility",
+    "pos": "n",
+    "meaning": "(pl.)设备,设施",
+    "rank": 1865,
+    "layer": 2
+   },
+   {
+    "word": "fashion",
+    "pos": "n",
+    "meaning": "流行式样(或货品)，风尚",
+    "rank": 1873,
+    "layer": 2
+   },
+   {
+    "word": "couple",
+    "pos": "n",
+    "meaning": "(一)对，双",
+    "rank": 1883,
+    "layer": 2
+   },
+   {
+    "word": "listen",
+    "pos": "vi",
+    "meaning": "倾听(与介词to并用",
+    "rank": 1891,
+    "layer": 2
+   },
+   {
+    "word": "successful",
+    "pos": "a",
+    "meaning": "圆满的",
+    "rank": 1897,
+    "layer": 2
+   },
+   {
+    "word": "highly",
+    "pos": "ad",
+    "meaning": "高度地，很，非常",
+    "rank": 1906,
+    "layer": 2
+   },
+   {
+    "word": "leather",
+    "pos": "n",
+    "meaning": "皮革，皮革制品",
+    "rank": 1913,
+    "layer": 2
+   },
+   {
+    "word": "actual",
+    "pos": "a",
+    "meaning": "实际的",
+    "rank": 1920,
+    "layer": 2
+   },
+   {
+    "word": "commerce",
+    "pos": "n",
+    "meaning": "商业，贸易",
+    "rank": 1924,
+    "layer": 2
+   },
+   {
+    "word": "village",
+    "pos": "n",
+    "meaning": "村，村庄",
+    "rank": 1933,
+    "layer": 2
+   },
+   {
+    "word": "easily",
+    "pos": "ad",
+    "meaning": "容易地",
+    "rank": 1949,
+    "layer": 2
+   },
+   {
+    "word": "root",
+    "pos": "n",
+    "meaning": "根，根部",
+    "rank": 1955,
+    "layer": 2
+   },
+   {
+    "word": "balance",
+    "pos": "n",
+    "meaning": "平衡",
+    "rank": 1963,
+    "layer": 2
+   },
+   {
+    "word": "thinking",
+    "pos": "n",
+    "meaning": "思想",
+    "rank": 1972,
+    "layer": 2
+   },
+   {
+    "word": "minute",
+    "pos": "n",
+    "meaning": "分钟，片刻",
+    "rank": 1981,
+    "layer": 2
+   },
+   {
+    "word": "accounting",
+    "pos": "n",
+    "meaning": "会计学",
+    "rank": 1987,
+    "layer": 2
+   },
+   {
+    "word": "motor",
+    "pos": "n",
+    "meaning": "发动机，电动机",
+    "rank": 1999,
+    "layer": 2
+   }
+  ],
+  [
+   {
+    "word": "professor",
+    "pos": "n",
+    "meaning": "教授",
+    "rank": 2001,
+    "layer": 3
+   },
+   {
+    "word": "apparel",
+    "pos": "n",
+    "meaning": "衣服, 装饰",
+    "rank": 2005,
+    "layer": 3
+   },
+   {
+    "word": "crime",
+    "pos": "n",
+    "meaning": "罪行，犯罪",
+    "rank": 2010,
+    "layer": 3
+   },
+   {
+    "word": "religion",
+    "pos": "n",
+    "meaning": "宗教，信仰",
+    "rank": 2021,
+    "layer": 3
+   },
+   {
+    "word": "surgery",
+    "pos": "n",
+    "meaning": "外科,外科手术",
+    "rank": 2025,
+    "layer": 3
+   },
+   {
+    "word": "generation",
+    "pos": "n",
+    "meaning": "产生，发生",
+    "rank": 2030,
+    "layer": 3
+   },
+   {
+    "word": "task",
+    "pos": "n",
+    "meaning": "任务，作业，工作",
+    "rank": 2035,
+    "layer": 3
+   },
+   {
+    "word": "exercise",
+    "pos": "n",
+    "meaning": "练习，习题",
+    "rank": 2042,
+    "layer": 3
+   },
+   {
+    "word": "alone",
+    "pos": "a",
+    "meaning": "单独的，孤独的ad.",
+    "rank": 2054,
+    "layer": 3
+   },
+   {
+    "word": "fuck",
+    "pos": "",
+    "meaning": "浑蛋，辱?",
+    "rank": 2066,
+    "layer": 3
+   },
+   {
+    "word": "rose",
+    "pos": "n",
+    "meaning": "玫瑰，蔷薇",
+    "rank": 2075,
+    "layer": 3
+   },
+   {
+    "word": "competition",
+    "pos": "n",
+    "meaning": "比赛,比赛会",
+    "rank": 2078,
+    "layer": 3
+   },
+   {
+    "word": "attorney",
+    "pos": "n",
+    "meaning": "律师",
+    "rank": 2087,
+    "layer": 3
+   },
+   {
+    "word": "pick",
+    "pos": "v",
+    "meaning": "拾，采，摘",
+    "rank": 2096,
+    "layer": 3
+   },
+   {
+    "word": "upper",
+    "pos": "a",
+    "meaning": "上面的",
+    "rank": 2105,
+    "layer": 3
+   },
+   {
+    "word": "limit",
+    "pos": "n",
+    "meaning": "界限，限度，范围v.",
+    "rank": 2110,
+    "layer": 3
+   },
+   {
+    "word": "platform",
+    "pos": "n",
+    "meaning": "月台,站台,讲台",
+    "rank": 2134,
+    "layer": 3
+   },
+   {
+    "word": "immediately",
+    "pos": "ad",
+    "meaning": "立即",
+    "rank": 2138,
+    "layer": 3
+   },
+   {
+    "word": "configuration",
+    "pos": "n",
+    "meaning": "构造, 结构, 配置, 外形",
+    "rank": 2151,
+    "layer": 3
+   },
+   {
+    "word": "expert",
+    "pos": "n",
+    "meaning": "专家，能手a. 熟练",
+    "rank": 2155,
+    "layer": 3
+   },
+   {
+    "word": "solid",
+    "pos": "a",
+    "meaning": "固体的",
+    "rank": 2159,
+    "layer": 3
+   },
+   {
+    "word": "prevent",
+    "pos": "v",
+    "meaning": "(from)预防，防止",
+    "rank": 2167,
+    "layer": 3
+   },
+   {
+    "word": "improvement",
+    "pos": "n",
+    "meaning": "改进，进步，增进",
+    "rank": 2173,
+    "layer": 3
+   },
+   {
+    "word": "acceptance",
+    "pos": "n",
+    "meaning": "接受，接收，验收，接纳",
+    "rank": 2187,
+    "layer": 3
+   },
+   {
+    "word": "suggest",
+    "pos": "v",
+    "meaning": "建议，提出",
+    "rank": 2199,
+    "layer": 3
+   },
+   {
+    "word": "magic",
+    "pos": "n",
+    "meaning": "魔术，魔(魅)力，巫术a.",
+    "rank": 2205,
+    "layer": 3
+   },
+   {
+    "word": "avoid",
+    "pos": "vt",
+    "meaning": "避免,逃避",
+    "rank": 2215,
+    "layer": 3
+   },
+   {
+    "word": "element",
+    "pos": "n",
+    "meaning": "元素",
+    "rank": 2222,
+    "layer": 3
+   },
+   {
+    "word": "quarter",
+    "pos": "n",
+    "meaning": "四分之一",
+    "rank": 2229,
+    "layer": 3
+   },
+   {
+    "word": "breakfast",
+    "pos": "n",
+    "meaning": "早餐v. (给某人)吃早餐",
+    "rank": 2237,
+    "layer": 3
+   },
+   {
+    "word": "identify",
+    "pos": "vt",
+    "meaning": "认出",
+    "rank": 2244,
+    "layer": 3
+   },
+   {
+    "word": "domestic",
+    "pos": "a",
+    "meaning": "家的,家庭的",
+    "rank": 2249,
+    "layer": 3
+   },
+   {
+    "word": "mental",
+    "pos": "a",
+    "meaning": "精神的，思想的，心理",
+    "rank": 2256,
+    "layer": 3
+   },
+   {
+    "word": "sorry",
+    "pos": "a",
+    "meaning": "对不起，抱歉的",
+    "rank": 2263,
+    "layer": 3
+   },
+   {
+    "word": "produce",
+    "pos": "v",
+    "meaning": "生产，制造，显示，演出",
+    "rank": 2273,
+    "layer": 3
+   },
+   {
+    "word": "weekend",
+    "pos": "n",
+    "meaning": "周末",
+    "rank": 2281,
+    "layer": 3
+   },
+   {
+    "word": "native",
+    "pos": "a",
+    "meaning": "本地的，本国的",
+    "rank": 2290,
+    "layer": 3
+   },
+   {
+    "word": "approval",
+    "pos": "n",
+    "meaning": "批准",
+    "rank": 2297,
+    "layer": 3
+   },
+   {
+    "word": "adventure",
+    "pos": "n",
+    "meaning": "冒险，冒险活动，奇遇vt.",
+    "rank": 2310,
+    "layer": 3
+   },
+   {
+    "word": "assistant",
+    "pos": "a",
+    "meaning": "帮助的，辅助的n. 助手",
+    "rank": 2318,
+    "layer": 3
+   },
+   {
+    "word": "parking",
+    "pos": "n",
+    "meaning": "停放车辆",
+    "rank": 2324,
+    "layer": 3
+   },
+   {
+    "word": "extension",
+    "pos": "n",
+    "meaning": "延长",
+    "rank": 2335,
+    "layer": 3
+   },
+   {
+    "word": "senate",
+    "pos": "n",
+    "meaning": "参议院，上院",
+    "rank": 2345,
+    "layer": 3
+   },
+   {
+    "word": "portable",
+    "pos": "a",
+    "meaning": "轻便的，手提(式)",
+    "rank": 2351,
+    "layer": 3
+   },
+   {
+    "word": "pattern",
+    "pos": "n",
+    "meaning": "模式，式样",
+    "rank": 2357,
+    "layer": 3
+   },
+   {
+    "word": "classical",
+    "pos": "a",
+    "meaning": "经典的，古典(文学)的",
+    "rank": 2367,
+    "layer": 3
+   },
+   {
+    "word": "direction",
+    "pos": "n",
+    "meaning": "方向，方位",
+    "rank": 2372,
+    "layer": 3
+   },
+   {
+    "word": "assembly",
+    "pos": "n",
+    "meaning": "集合",
+    "rank": 2379,
+    "layer": 3
+   },
+   {
+    "word": "sexual",
+    "pos": "adj",
+    "meaning": "性的，性感的",
+    "rank": 2387,
+    "layer": 3
+   },
+   {
+    "word": "personnel",
+    "pos": "n",
+    "meaning": "职员,人员,人事",
+    "rank": 2397,
+    "layer": 3
+   },
+   {
+    "word": "carry",
+    "pos": "v",
+    "meaning": "运送，搬运",
+    "rank": 2412,
+    "layer": 3
+   },
+   {
+    "word": "hello",
+    "pos": "",
+    "meaning": "int. 英(美)喂",
+    "rank": 2420,
+    "layer": 3
+   },
+   {
+    "word": "savings",
+    "pos": "n",
+    "meaning": "存款，储蓄额",
+    "rank": 2428,
+    "layer": 3
+   },
+   {
+    "word": "binding",
+    "pos": "n",
+    "meaning": "装订",
+    "rank": 2435,
+    "layer": 3
+   },
+   {
+    "word": "straight",
+    "pos": "a",
+    "meaning": "直的",
+    "rank": 2442,
+    "layer": 3
+   },
+   {
+    "word": "void",
+    "pos": "n",
+    "meaning": "真空,空白",
+    "rank": 2448,
+    "layer": 3
+   },
+   {
+    "word": "mix",
+    "pos": "v",
+    "meaning": "使混合",
+    "rank": 2456,
+    "layer": 3
+   },
+   {
+    "word": "fix",
+    "pos": "v",
+    "meaning": "(使)固定",
+    "rank": 2464,
+    "layer": 3
+   },
+   {
+    "word": "vice",
+    "pos": "n",
+    "meaning": "罪恶",
+    "rank": 2474,
+    "layer": 3
+   },
+   {
+    "word": "ray",
+    "pos": "n",
+    "meaning": "光线，射线",
+    "rank": 2480,
+    "layer": 3
+   },
+   {
+    "word": "measure",
+    "pos": "n",
+    "meaning": "量度,分量,尺寸,量具",
+    "rank": 2483,
+    "layer": 3
+   },
+   {
+    "word": "laboratory",
+    "pos": "n",
+    "meaning": "实验室",
+    "rank": 2493,
+    "layer": 3
+   },
+   {
+    "word": "exactly",
+    "pos": "ad",
+    "meaning": "确切地",
+    "rank": 2506,
+    "layer": 3
+   },
+   {
+    "word": "nearly",
+    "pos": "ad",
+    "meaning": "差不多，几乎",
+    "rank": 2512,
+    "layer": 3
+   },
+   {
+    "word": "origin",
+    "pos": "n",
+    "meaning": "起源，由来",
+    "rank": 2518,
+    "layer": 3
+   },
+   {
+    "word": "route",
+    "pos": "n",
+    "meaning": "路线，路程",
+    "rank": 2532,
+    "layer": 3
+   },
+   {
+    "word": "battle",
+    "pos": "n",
+    "meaning": "战役，战斗",
+    "rank": 2541,
+    "layer": 3
+   },
+   {
+    "word": "query",
+    "pos": "v",
+    "meaning": "&n.询问",
+    "rank": 2548,
+    "layer": 3
+   },
+   {
+    "word": "expression",
+    "pos": "n",
+    "meaning": "表达",
+    "rank": 2553,
+    "layer": 3
+   },
+   {
+    "word": "rural",
+    "pos": "a",
+    "meaning": "农村的",
+    "rank": 2561,
+    "layer": 3
+   },
+   {
+    "word": "judge",
+    "pos": "n",
+    "meaning": "法官",
+    "rank": 2567,
+    "layer": 3
+   },
+   {
+    "word": "apartment",
+    "pos": "n",
+    "meaning": "房间，套间",
+    "rank": 2576,
+    "layer": 3
+   },
+   {
+    "word": "speaker",
+    "pos": "n",
+    "meaning": "说话者，发言者",
+    "rank": 2580,
+    "layer": 3
+   },
+   {
+    "word": "remain",
+    "pos": "v",
+    "meaning": "剩下，余留",
+    "rank": 2590,
+    "layer": 3
+   },
+   {
+    "word": "bath",
+    "pos": "n",
+    "meaning": "沐浴，洗澡",
+    "rank": 2601,
+    "layer": 3
+   },
+   {
+    "word": "translation",
+    "pos": "n",
+    "meaning": "翻译",
+    "rank": 2616,
+    "layer": 3
+   },
+   {
+    "word": "proposal",
+    "pos": "n",
+    "meaning": "提议，建议",
+    "rank": 2629,
+    "layer": 3
+   },
+   {
+    "word": "banking",
+    "pos": "n",
+    "meaning": "银行业务、金融业",
+    "rank": 2638,
+    "layer": 3
+   },
+   {
+    "word": "legislation",
+    "pos": "n",
+    "meaning": "法律(规)",
+    "rank": 2649,
+    "layer": 3
+   },
+   {
+    "word": "ultimate",
+    "pos": "a",
+    "meaning": "最后的，最终的",
+    "rank": 2668,
+    "layer": 3
+   },
+   {
+    "word": "finish",
+    "pos": "n",
+    "meaning": "完成",
+    "rank": 2674,
+    "layer": 3
+   },
+   {
+    "word": "rare",
+    "pos": "a",
+    "meaning": "稀有的，难得的，珍奇的",
+    "rank": 2682,
+    "layer": 3
+   },
+   {
+    "word": "contain",
+    "pos": "v",
+    "meaning": "包含，容纳",
+    "rank": 2700,
+    "layer": 3
+   },
+   {
+    "word": "sleep",
+    "pos": "v",
+    "meaning": "(slept",
+    "rank": 2705,
+    "layer": 3
+   },
+   {
+    "word": "creation",
+    "pos": "n",
+    "meaning": "创造,创作,创造物",
+    "rank": 2710,
+    "layer": 3
+   },
+   {
+    "word": "lady",
+    "pos": "n",
+    "meaning": "女士，夫人",
+    "rank": 2715,
+    "layer": 3
+   },
+   {
+    "word": "chairman",
+    "pos": "n",
+    "meaning": "主席，议长，会长，董事长",
+    "rank": 2719,
+    "layer": 3
+   },
+   {
+    "word": "dynamic",
+    "pos": "a",
+    "meaning": "动力的,精力充沛的",
+    "rank": 2726,
+    "layer": 3
+   },
+   {
+    "word": "permanent",
+    "pos": "a",
+    "meaning": "永久的,持久的",
+    "rank": 2729,
+    "layer": 3
+   },
+   {
+    "word": "exclusive",
+    "pos": "a",
+    "meaning": "独占的",
+    "rank": 2739,
+    "layer": 3
+   },
+   {
+    "word": "regulation",
+    "pos": "n",
+    "meaning": "规则，规章",
+    "rank": 2748,
+    "layer": 3
+   },
+   {
+    "word": "junior",
+    "pos": "n",
+    "meaning": "较年幼者",
+    "rank": 2758,
+    "layer": 3
+   },
+   {
+    "word": "tip",
+    "pos": "n",
+    "meaning": "尖端",
+    "rank": 2765,
+    "layer": 3
+   },
+   {
+    "word": "agreed",
+    "pos": "adj",
+    "meaning": "商定的",
+    "rank": 2774,
+    "layer": 3
+   },
+   {
+    "word": "import",
+    "pos": "v",
+    "meaning": "进口，输入n. 进口，输入",
+    "rank": 2780,
+    "layer": 3
+   },
+   {
+    "word": "automatic",
+    "pos": "a",
+    "meaning": "自动的,无意识的",
+    "rank": 2785,
+    "layer": 3
+   },
+   {
+    "word": "ahead",
+    "pos": "ad",
+    "meaning": "在前面(头)",
+    "rank": 2800,
+    "layer": 3
+   },
+   {
+    "word": "fly",
+    "pos": "n",
+    "meaning": "飞行",
+    "rank": 2806,
+    "layer": 3
+   },
+   {
+    "word": "strength",
+    "pos": "n",
+    "meaning": "力，力量",
+    "rank": 2814,
+    "layer": 3
+   },
+   {
+    "word": "fear",
+    "pos": "n",
+    "meaning": "害怕，恐惧",
+    "rank": 2824,
+    "layer": 3
+   },
+   {
+    "word": "standing",
+    "pos": "n",
+    "meaning": "持续,期间",
+    "rank": 2833,
+    "layer": 3
+   },
+   {
+    "word": "certification",
+    "pos": "n",
+    "meaning": "证明",
+    "rank": 2845,
+    "layer": 3
+   },
+   {
+    "word": "household",
+    "pos": "n",
+    "meaning": "家庭，家人a.",
+    "rank": 2853,
+    "layer": 3
+   },
+   {
+    "word": "achieve",
+    "pos": "vt",
+    "meaning": "完成,达到",
+    "rank": 2866,
+    "layer": 3
+   },
+   {
+    "word": "sky",
+    "pos": "n",
+    "meaning": "天空",
+    "rank": 2872,
+    "layer": 3
+   },
+   {
+    "word": "signature",
+    "pos": "n",
+    "meaning": "签名",
+    "rank": 2882,
+    "layer": 3
+   },
+   {
+    "word": "outdoors",
+    "pos": "ad",
+    "meaning": "在户外，在野外",
+    "rank": 2887,
+    "layer": 3
+   },
+   {
+    "word": "indeed",
+    "pos": "ad",
+    "meaning": "确实，实在",
+    "rank": 2895,
+    "layer": 3
+   },
+   {
+    "word": "layer",
+    "pos": "n",
+    "meaning": "层",
+    "rank": 2899,
+    "layer": 3
+   },
+   {
+    "word": "liability",
+    "pos": "n",
+    "meaning": "责任，义务",
+    "rank": 2905,
+    "layer": 3
+   },
+   {
+    "word": "spot",
+    "pos": "n",
+    "meaning": "斑点",
+    "rank": 2915,
+    "layer": 3
+   },
+   {
+    "word": "grow",
+    "pos": "v",
+    "meaning": "生长，成长",
+    "rank": 2923,
+    "layer": 3
+   },
+   {
+    "word": "identity",
+    "pos": "n",
+    "meaning": "身份",
+    "rank": 2932,
+    "layer": 3
+   },
+   {
+    "word": "relief",
+    "pos": "n",
+    "meaning": "减轻",
+    "rank": 2940,
+    "layer": 3
+   },
+   {
+    "word": "importance",
+    "pos": "n",
+    "meaning": "重要，重要性",
+    "rank": 2946,
+    "layer": 3
+   },
+   {
+    "word": "permit",
+    "pos": "v",
+    "meaning": "许可，允许n. 许可证，执照",
+    "rank": 2955,
+    "layer": 3
+   },
+   {
+    "word": "prescription",
+    "pos": "n",
+    "meaning": "药方，处方",
+    "rank": 2962,
+    "layer": 3
+   },
+   {
+    "word": "hole",
+    "pos": "n",
+    "meaning": "洞，孔",
+    "rank": 2966,
+    "layer": 3
+   },
+   {
+    "word": "pair",
+    "pos": "n",
+    "meaning": "一对，一双",
+    "rank": 2978,
+    "layer": 3
+   },
+   {
+    "word": "discover",
+    "pos": "v",
+    "meaning": "发现，显示",
+    "rank": 2995,
+    "layer": 3
+   }
+  ],
+  [
+   {
+    "word": "marketplace",
+    "pos": "n",
+    "meaning": "市场，集市",
+    "rank": 3007,
+    "layer": 4
+   },
+   {
+    "word": "evolution",
+    "pos": "n",
+    "meaning": "演变,进展,进化",
+    "rank": 3013,
+    "layer": 4
+   },
+   {
+    "word": "concerned",
+    "pos": "adj",
+    "meaning": "有关的",
+    "rank": 3025,
+    "layer": 4
+   },
+   {
+    "word": "usage",
+    "pos": "n",
+    "meaning": "使用，用法",
+    "rank": 3031,
+    "layer": 4
+   },
+   {
+    "word": "census",
+    "pos": "n",
+    "meaning": "人口普查",
+    "rank": 3037,
+    "layer": 4
+   },
+   {
+    "word": "wheel",
+    "pos": "n",
+    "meaning": "轮，车轮",
+    "rank": 3043,
+    "layer": 4
+   },
+   {
+    "word": "angel",
+    "pos": "n",
+    "meaning": "天使，安琪儿",
+    "rank": 3052,
+    "layer": 4
+   },
+   {
+    "word": "preparation",
+    "pos": "n",
+    "meaning": "准备，预备",
+    "rank": 3055,
+    "layer": 4
+   },
+   {
+    "word": "forget",
+    "pos": "v",
+    "meaning": "忘记，遗忘",
+    "rank": 3063,
+    "layer": 4
+   },
+   {
+    "word": "pin",
+    "pos": "n",
+    "meaning": "大头针",
+    "rank": 3071,
+    "layer": 4
+   },
+   {
+    "word": "sister",
+    "pos": "n",
+    "meaning": "姐，妹",
+    "rank": 3078,
+    "layer": 4
+   },
+   {
+    "word": "extent",
+    "pos": "n",
+    "meaning": "广度，宽度，长度",
+    "rank": 3090,
+    "layer": 4
+   },
+   {
+    "word": "paragraph",
+    "pos": "n",
+    "meaning": "段，节",
+    "rank": 3095,
+    "layer": 4
+   },
+   {
+    "word": "export",
+    "pos": "v",
+    "meaning": "出口,输出",
+    "rank": 3101,
+    "layer": 4
+   },
+   {
+    "word": "employer",
+    "pos": "n",
+    "meaning": "雇主",
+    "rank": 3109,
+    "layer": 4
+   },
+   {
+    "word": "describe",
+    "pos": "v",
+    "meaning": "描述，形容",
+    "rank": 3114,
+    "layer": 4
+   },
+   {
+    "word": "trouble",
+    "pos": "n",
+    "meaning": "烦恼",
+    "rank": 3124,
+    "layer": 4
+   },
+   {
+    "word": "participate",
+    "pos": "vi",
+    "meaning": "参与",
+    "rank": 3136,
+    "layer": 4
+   },
+   {
+    "word": "affect",
+    "pos": "vt",
+    "meaning": "影响",
+    "rank": 3140,
+    "layer": 4
+   },
+   {
+    "word": "hat",
+    "pos": "n",
+    "meaning": "帽子(一般指有边的帽子)",
+    "rank": 3145,
+    "layer": 4
+   },
+   {
+    "word": "plate",
+    "pos": "n",
+    "meaning": "金属板，片",
+    "rank": 3157,
+    "layer": 4
+   },
+   {
+    "word": "lose",
+    "pos": "v",
+    "meaning": "丢失，迷路，输掉，亏本",
+    "rank": 3169,
+    "layer": 4
+   },
+   {
+    "word": "chemistry",
+    "pos": "n",
+    "meaning": "化学",
+    "rank": 3184,
+    "layer": 4
+   },
+   {
+    "word": "anyway",
+    "pos": "ad",
+    "meaning": "不管怎么说，无论如何",
+    "rank": 3192,
+    "layer": 4
+   },
+   {
+    "word": "circle",
+    "pos": "n",
+    "meaning": "圆，圆周",
+    "rank": 3201,
+    "layer": 4
+   },
+   {
+    "word": "wet",
+    "pos": "a",
+    "meaning": "湿的，潮湿的",
+    "rank": 3208,
+    "layer": 4
+   },
+   {
+    "word": "fox",
+    "pos": "n",
+    "meaning": "狐狸",
+    "rank": 3222,
+    "layer": 4
+   },
+   {
+    "word": "exit",
+    "pos": "n",
+    "meaning": "出口，通道",
+    "rank": 3227,
+    "layer": 4
+   },
+   {
+    "word": "wave",
+    "pos": "n",
+    "meaning": "波浪",
+    "rank": 3233,
+    "layer": 4
+   },
+   {
+    "word": "trail",
+    "pos": "n",
+    "meaning": "痕迹,足迹,小径",
+    "rank": 3242,
+    "layer": 4
+   },
+   {
+    "word": "poll",
+    "pos": "n",
+    "meaning": "民意测验",
+    "rank": 3252,
+    "layer": 4
+   },
+   {
+    "word": "appendix",
+    "pos": "n",
+    "meaning": "附录,阑尾",
+    "rank": 3264,
+    "layer": 4
+   },
+   {
+    "word": "scope",
+    "pos": "n",
+    "meaning": "(活动)范围",
+    "rank": 3270,
+    "layer": 4
+   },
+   {
+    "word": "biology",
+    "pos": "n",
+    "meaning": "生物学",
+    "rank": 3279,
+    "layer": 4
+   },
+   {
+    "word": "ancient",
+    "pos": "a",
+    "meaning": "古代的，古老的，古式的",
+    "rank": 3283,
+    "layer": 4
+   },
+   {
+    "word": "learned",
+    "pos": "a",
+    "meaning": "博学的，有学问的",
+    "rank": 3293,
+    "layer": 4
+   },
+   {
+    "word": "historic",
+    "pos": "a",
+    "meaning": "有历史意义的",
+    "rank": 3297,
+    "layer": 4
+   },
+   {
+    "word": "britain",
+    "pos": "n",
+    "meaning": "不列颠，英国",
+    "rank": 3306,
+    "layer": 4
+   },
+   {
+    "word": "efficiency",
+    "pos": "n",
+    "meaning": "效率",
+    "rank": 3311,
+    "layer": 4
+   },
+   {
+    "word": "linear",
+    "pos": "a",
+    "meaning": "线的,直线的,长度的",
+    "rank": 3317,
+    "layer": 4
+   },
+   {
+    "word": "constant",
+    "pos": "a",
+    "meaning": "经常的",
+    "rank": 3325,
+    "layer": 4
+   },
+   {
+    "word": "jewish",
+    "pos": "a",
+    "meaning": "犹太人的",
+    "rank": 3328,
+    "layer": 4
+   },
+   {
+    "word": "pure",
+    "pos": "a",
+    "meaning": "纯的，纯洁的",
+    "rank": 3337,
+    "layer": 4
+   },
+   {
+    "word": "fruit",
+    "pos": "n",
+    "meaning": "水果，果实",
+    "rank": 3342,
+    "layer": 4
+   },
+   {
+    "word": "lens",
+    "pos": "n",
+    "meaning": "透镜,(眼睛)水晶体",
+    "rank": 3346,
+    "layer": 4
+   },
+   {
+    "word": "confidence",
+    "pos": "n",
+    "meaning": "(in)信任",
+    "rank": 3355,
+    "layer": 4
+   },
+   {
+    "word": "engineer",
+    "pos": "n",
+    "meaning": "工程师",
+    "rank": 3365,
+    "layer": 4
+   },
+   {
+    "word": "inventory",
+    "pos": "n",
+    "meaning": "详细目录, 存货",
+    "rank": 3371,
+    "layer": 4
+   },
+   {
+    "word": "stick",
+    "pos": "n",
+    "meaning": "棍，棒，手杖v. 刺，戳，扎",
+    "rank": 3387,
+    "layer": 4
+   },
+   {
+    "word": "rear",
+    "pos": "n",
+    "meaning": "后部,后面",
+    "rank": 3398,
+    "layer": 4
+   },
+   {
+    "word": "exact",
+    "pos": "a",
+    "meaning": "确切的，正确的，精确的",
+    "rank": 3402,
+    "layer": 4
+   },
+   {
+    "word": "lock",
+    "pos": "n",
+    "meaning": "锁v. 锁，锁上",
+    "rank": 3411,
+    "layer": 4
+   },
+   {
+    "word": "bowl",
+    "pos": "n",
+    "meaning": "碗(状物)，钵",
+    "rank": 3423,
+    "layer": 4
+   },
+   {
+    "word": "submission",
+    "pos": "n",
+    "meaning": "屈服, 降服, 服从",
+    "rank": 3430,
+    "layer": 4
+   },
+   {
+    "word": "inspection",
+    "pos": "n",
+    "meaning": "检查,审视,检阅",
+    "rank": 3437,
+    "layer": 4
+   },
+   {
+    "word": "transaction",
+    "pos": "n",
+    "meaning": "办理,处理,执行",
+    "rank": 3442,
+    "layer": 4
+   },
+   {
+    "word": "initiative",
+    "pos": "a",
+    "meaning": "创始的，起始的n. 第一步",
+    "rank": 3455,
+    "layer": 4
+   },
+   {
+    "word": "execution",
+    "pos": "n",
+    "meaning": "实行，执行",
+    "rank": 3458,
+    "layer": 4
+   },
+   {
+    "word": "potter",
+    "pos": "n",
+    "meaning": "陶工, 制陶工人",
+    "rank": 3468,
+    "layer": 4
+   },
+   {
+    "word": "truly",
+    "pos": "ad",
+    "meaning": "真正地",
+    "rank": 3478,
+    "layer": 4
+   },
+   {
+    "word": "affordable",
+    "pos": "adj",
+    "meaning": "买得起的",
+    "rank": 3483,
+    "layer": 4
+   },
+   {
+    "word": "slot",
+    "pos": "n",
+    "meaning": "缝, 狭槽, 位置, 水沟",
+    "rank": 3488,
+    "layer": 4
+   },
+   {
+    "word": "messenger",
+    "pos": "n",
+    "meaning": "送信者，使者，传令兵",
+    "rank": 3497,
+    "layer": 4
+   },
+   {
+    "word": "consideration",
+    "pos": "n",
+    "meaning": "需要考虑的事，理由",
+    "rank": 3500,
+    "layer": 4
+   },
+   {
+    "word": "broad",
+    "pos": "a",
+    "meaning": "宽的，广阔的",
+    "rank": 3516,
+    "layer": 4
+   },
+   {
+    "word": "terminal",
+    "pos": "a",
+    "meaning": "晚期的,末期的",
+    "rank": 3528,
+    "layer": 4
+   },
+   {
+    "word": "loop",
+    "pos": "n",
+    "meaning": "环状物,绳圈,环",
+    "rank": 3536,
+    "layer": 4
+   },
+   {
+    "word": "empire",
+    "pos": "n",
+    "meaning": "帝国",
+    "rank": 3547,
+    "layer": 4
+   },
+   {
+    "word": "illegal",
+    "pos": "a",
+    "meaning": "不合法的，非法的",
+    "rank": 3556,
+    "layer": 4
+   },
+   {
+    "word": "arab",
+    "pos": "n",
+    "meaning": "阿拉伯",
+    "rank": 3561,
+    "layer": 4
+   },
+   {
+    "word": "drama",
+    "pos": "n",
+    "meaning": "剧本，戏剧",
+    "rank": 3570,
+    "layer": 4
+   },
+   {
+    "word": "boot",
+    "pos": "n",
+    "meaning": "靴",
+    "rank": 3579,
+    "layer": 4
+   },
+   {
+    "word": "audit",
+    "pos": "n",
+    "meaning": "审计, 稽核, 查帐",
+    "rank": 3586,
+    "layer": 4
+   },
+   {
+    "word": "muscle",
+    "pos": "n",
+    "meaning": "肌肉，体力",
+    "rank": 3591,
+    "layer": 4
+   },
+   {
+    "word": "sum",
+    "pos": "n",
+    "meaning": "总数，和",
+    "rank": 3601,
+    "layer": 4
+   },
+   {
+    "word": "attend",
+    "pos": "vt",
+    "meaning": "出席，参加",
+    "rank": 3607,
+    "layer": 4
+   },
+   {
+    "word": "dear",
+    "pos": "a",
+    "meaning": "昂贵的",
+    "rank": 3613,
+    "layer": 4
+   },
+   {
+    "word": "oak",
+    "pos": "n",
+    "meaning": "橡树，橡木a. 橡木的",
+    "rank": 3619,
+    "layer": 4
+   },
+   {
+    "word": "contribution",
+    "pos": "n",
+    "meaning": "贡献",
+    "rank": 3626,
+    "layer": 4
+   },
+   {
+    "word": "constitution",
+    "pos": "n",
+    "meaning": "构成，构造，组成(方式)",
+    "rank": 3631,
+    "layer": 4
+   },
+   {
+    "word": "reliable",
+    "pos": "a",
+    "meaning": "可靠的,可信赖的",
+    "rank": 3639,
+    "layer": 4
+   },
+   {
+    "word": "sir",
+    "pos": "n",
+    "meaning": "先生，长官",
+    "rank": 3642,
+    "layer": 4
+   },
+   {
+    "word": "democracy",
+    "pos": "n",
+    "meaning": "民主政体,民主,民主社会",
+    "rank": 3650,
+    "layer": 4
+   },
+   {
+    "word": "visitor",
+    "pos": "n",
+    "meaning": "访问者，客人，来宾，参观者",
+    "rank": 3662,
+    "layer": 4
+   },
+   {
+    "word": "drawing",
+    "pos": "n",
+    "meaning": "绘图，图样",
+    "rank": 3671,
+    "layer": 4
+   },
+   {
+    "word": "instrument",
+    "pos": "n",
+    "meaning": "工具，仪器，器械",
+    "rank": 3682,
+    "layer": 4
+   },
+   {
+    "word": "twice",
+    "pos": "ad",
+    "meaning": "两次，两倍",
+    "rank": 3691,
+    "layer": 4
+   },
+   {
+    "word": "bargain",
+    "pos": "n",
+    "meaning": "契约",
+    "rank": 3697,
+    "layer": 4
+   },
+   {
+    "word": "suit",
+    "pos": "v",
+    "meaning": "合适，适合",
+    "rank": 3709,
+    "layer": 4
+   },
+   {
+    "word": "cutting",
+    "pos": "a",
+    "meaning": "锋利的,尖刻的n.",
+    "rank": 3717,
+    "layer": 4
+   },
+   {
+    "word": "satisfaction",
+    "pos": "n",
+    "meaning": "满足，满意",
+    "rank": 3729,
+    "layer": 4
+   },
+   {
+    "word": "carbon",
+    "pos": "n",
+    "meaning": "碳",
+    "rank": 3744,
+    "layer": 4
+   },
+   {
+    "word": "interaction",
+    "pos": "n",
+    "meaning": "相互作用",
+    "rank": 3748,
+    "layer": 4
+   },
+   {
+    "word": "massive",
+    "pos": "a",
+    "meaning": "大而重的",
+    "rank": 3754,
+    "layer": 4
+   },
+   {
+    "word": "treat",
+    "pos": "v",
+    "meaning": "对待",
+    "rank": 3758,
+    "layer": 4
+   },
+   {
+    "word": "experimental",
+    "pos": "a",
+    "meaning": "实验(性)的，试验(性)的",
+    "rank": 3769,
+    "layer": 4
+   },
+   {
+    "word": "earnings",
+    "pos": "n",
+    "meaning": "工资，收入",
+    "rank": 3776,
+    "layer": 4
+   },
+   {
+    "word": "dependent",
+    "pos": "a",
+    "meaning": "依靠的，依赖的，从属的",
+    "rank": 3780,
+    "layer": 4
+   },
+   {
+    "word": "banner",
+    "pos": "n",
+    "meaning": "旗",
+    "rank": 3787,
+    "layer": 4
+   },
+   {
+    "word": "acquisition",
+    "pos": "n",
+    "meaning": "取得，学到，养成(习惯)",
+    "rank": 3794,
+    "layer": 4
+   },
+   {
+    "word": "rapid",
+    "pos": "a",
+    "meaning": "快，急速的n.",
+    "rank": 3809,
+    "layer": 4
+   },
+   {
+    "word": "seminar",
+    "pos": "n",
+    "meaning": "(大学的)研究班，研讨会",
+    "rank": 3817,
+    "layer": 4
+   },
+   {
+    "word": "sensitive",
+    "pos": "a",
+    "meaning": "敏感的",
+    "rank": 3826,
+    "layer": 4
+   },
+   {
+    "word": "technique",
+    "pos": "n",
+    "meaning": "技术,技能,行家手法",
+    "rank": 3845,
+    "layer": 4
+   },
+   {
+    "word": "anniversary",
+    "pos": "n",
+    "meaning": "周年纪念",
+    "rank": 3860,
+    "layer": 4
+   },
+   {
+    "word": "accident",
+    "pos": "n",
+    "meaning": "意外遭遇，事故",
+    "rank": 3865,
+    "layer": 4
+   },
+   {
+    "word": "plot",
+    "pos": "n",
+    "meaning": "小块土地",
+    "rank": 3870,
+    "layer": 4
+   },
+   {
+    "word": "consumption",
+    "pos": "n",
+    "meaning": "消费(量)",
+    "rank": 3885,
+    "layer": 4
+   },
+   {
+    "word": "threat",
+    "pos": "n",
+    "meaning": "恐吓，威胁",
+    "rank": 3891,
+    "layer": 4
+   },
+   {
+    "word": "malaysia",
+    "pos": "n",
+    "meaning": "马来西亚",
+    "rank": 3908,
+    "layer": 4
+   },
+   {
+    "word": "exam",
+    "pos": "n",
+    "meaning": "考试",
+    "rank": 3919,
+    "layer": 4
+   },
+   {
+    "word": "statistical",
+    "pos": "a",
+    "meaning": "统计的，统计学的",
+    "rank": 3932,
+    "layer": 4
+   },
+   {
+    "word": "bathroom",
+    "pos": "n",
+    "meaning": "浴室",
+    "rank": 3946,
+    "layer": 4
+   },
+   {
+    "word": "lesson",
+    "pos": "n",
+    "meaning": "(功)课",
+    "rank": 3952,
+    "layer": 4
+   },
+   {
+    "word": "reaction",
+    "pos": "n",
+    "meaning": "反应",
+    "rank": 3960,
+    "layer": 4
+   },
+   {
+    "word": "stainless",
+    "pos": "a",
+    "meaning": "纯洁的",
+    "rank": 3966,
+    "layer": 4
+   },
+   {
+    "word": "duration",
+    "pos": "n",
+    "meaning": "持久",
+    "rank": 3976,
+    "layer": 4
+   },
+   {
+    "word": "fabric",
+    "pos": "n",
+    "meaning": "织物",
+    "rank": 3982,
+    "layer": 4
+   },
+   {
+    "word": "contrast",
+    "pos": "v",
+    "meaning": "使对比,形成对照",
+    "rank": 3990,
+    "layer": 4
+   },
+   {
+    "word": "cute",
+    "pos": "adj",
+    "meaning": "可爱的, 聪明的, 伶俐",
+    "rank": 3996,
+    "layer": 4
+   }
+  ],
+  [
+   {
+    "word": "adoption",
+    "pos": "n",
+    "meaning": "收养",
+    "rank": 4001,
+    "layer": 5
+   },
+   {
+    "word": "plane",
+    "pos": "n",
+    "meaning": "飞机",
+    "rank": 4010,
+    "layer": 5
+   },
+   {
+    "word": "camping",
+    "pos": "n",
+    "meaning": "野营",
+    "rank": 4018,
+    "layer": 5
+   },
+   {
+    "word": "eventually",
+    "pos": "ad",
+    "meaning": "终于，最后",
+    "rank": 4025,
+    "layer": 5
+   },
+   {
+    "word": "rubber",
+    "pos": "n",
+    "meaning": "橡皮，橡胶",
+    "rank": 4036,
+    "layer": 5
+   },
+   {
+    "word": "legend",
+    "pos": "n",
+    "meaning": "传说，传奇",
+    "rank": 4042,
+    "layer": 5
+   },
+   {
+    "word": "bone",
+    "pos": "n",
+    "meaning": "骨(骼)",
+    "rank": 4053,
+    "layer": 5
+   },
+   {
+    "word": "inner",
+    "pos": "a",
+    "meaning": "内部的，里面的",
+    "rank": 4062,
+    "layer": 5
+   },
+   {
+    "word": "gate",
+    "pos": "n",
+    "meaning": "大门",
+    "rank": 4069,
+    "layer": 5
+   },
+   {
+    "word": "portugal",
+    "pos": "n",
+    "meaning": "葡萄牙",
+    "rank": 4076,
+    "layer": 5
+   },
+   {
+    "word": "dragon",
+    "pos": "n",
+    "meaning": "龙",
+    "rank": 4086,
+    "layer": 5
+   },
+   {
+    "word": "fantastic",
+    "pos": "a",
+    "meaning": "极好的",
+    "rank": 4089,
+    "layer": 5
+   },
+   {
+    "word": "neck",
+    "pos": "n",
+    "meaning": "颈脖",
+    "rank": 4094,
+    "layer": 5
+   },
+   {
+    "word": "taste",
+    "pos": "v",
+    "meaning": "品尝",
+    "rank": 4103,
+    "layer": 5
+   },
+   {
+    "word": "operational",
+    "pos": "a",
+    "meaning": "操作的，运转的，起作用",
+    "rank": 4107,
+    "layer": 5
+   },
+   {
+    "word": "gap",
+    "pos": "n",
+    "meaning": "缺口",
+    "rank": 4114,
+    "layer": 5
+   },
+   {
+    "word": "jacket",
+    "pos": "n",
+    "meaning": "短上衣，茄克衫",
+    "rank": 4122,
+    "layer": 5
+   },
+   {
+    "word": "lease",
+    "pos": "n",
+    "meaning": "租约",
+    "rank": 4128,
+    "layer": 5
+   },
+   {
+    "word": "excess",
+    "pos": "n",
+    "meaning": "超越,超过",
+    "rank": 4133,
+    "layer": 5
+   },
+   {
+    "word": "giant",
+    "pos": "n",
+    "meaning": "巨人a. 巨大的",
+    "rank": 4140,
+    "layer": 5
+   },
+   {
+    "word": "usual",
+    "pos": "a",
+    "meaning": "通常的，平常的",
+    "rank": 4152,
+    "layer": 5
+   },
+   {
+    "word": "liberty",
+    "pos": "n",
+    "meaning": "自由，自由权",
+    "rank": 4169,
+    "layer": 5
+   },
+   {
+    "word": "possibility",
+    "pos": "n",
+    "meaning": "可能，可能性",
+    "rank": 4175,
+    "layer": 5
+   },
+   {
+    "word": "exciting",
+    "pos": "a",
+    "meaning": "令人兴奋的，使人激动的",
+    "rank": 4180,
+    "layer": 5
+   },
+   {
+    "word": "respectively",
+    "pos": "ad",
+    "meaning": "各自地，分别地",
+    "rank": 4185,
+    "layer": 5
+   },
+   {
+    "word": "eagle",
+    "pos": "n",
+    "meaning": "鹰",
+    "rank": 4196,
+    "layer": 5
+   },
+   {
+    "word": "prayer",
+    "pos": "n",
+    "meaning": "祈祷，祷告，祷文",
+    "rank": 4201,
+    "layer": 5
+   },
+   {
+    "word": "luck",
+    "pos": "n",
+    "meaning": "运气",
+    "rank": 4206,
+    "layer": 5
+   },
+   {
+    "word": "cheese",
+    "pos": "n",
+    "meaning": "干酪，乳酪",
+    "rank": 4213,
+    "layer": 5
+   },
+   {
+    "word": "underground",
+    "pos": "n",
+    "meaning": "地铁a. 地下的",
+    "rank": 4221,
+    "layer": 5
+   },
+   {
+    "word": "crack",
+    "pos": "n",
+    "meaning": "裂缝",
+    "rank": 4224,
+    "layer": 5
+   },
+   {
+    "word": "appearance",
+    "pos": "n",
+    "meaning": "出现，露面",
+    "rank": 4235,
+    "layer": 5
+   },
+   {
+    "word": "craft",
+    "pos": "n",
+    "meaning": "工艺,手工业",
+    "rank": 4241,
+    "layer": 5
+   },
+   {
+    "word": "blind",
+    "pos": "a",
+    "meaning": "盲的，瞎的",
+    "rank": 4246,
+    "layer": 5
+   },
+   {
+    "word": "gross",
+    "pos": "a",
+    "meaning": "粗俗的",
+    "rank": 4253,
+    "layer": 5
+   },
+   {
+    "word": "horror",
+    "pos": "n",
+    "meaning": "恐怖，战栗",
+    "rank": 4260,
+    "layer": 5
+   },
+   {
+    "word": "admission",
+    "pos": "n",
+    "meaning": "准许进(加)入",
+    "rank": 4272,
+    "layer": 5
+   },
+   {
+    "word": "sand",
+    "pos": "n",
+    "meaning": "沙",
+    "rank": 4278,
+    "layer": 5
+   },
+   {
+    "word": "ethnic",
+    "pos": "adj",
+    "meaning": "人种的, 种族的, 异教徒的",
+    "rank": 4285,
+    "layer": 5
+   },
+   {
+    "word": "citizen",
+    "pos": "n",
+    "meaning": "公民",
+    "rank": 4294,
+    "layer": 5
+   },
+   {
+    "word": "absolute",
+    "pos": "a",
+    "meaning": "绝对的，完全的",
+    "rank": 4304,
+    "layer": 5
+   },
+   {
+    "word": "guardian",
+    "pos": "n",
+    "meaning": "保护人,监护人",
+    "rank": 4315,
+    "layer": 5
+   },
+   {
+    "word": "lay",
+    "pos": "v",
+    "meaning": "放,放置,安置,下蛋",
+    "rank": 4324,
+    "layer": 5
+   },
+   {
+    "word": "donate",
+    "pos": "vt",
+    "meaning": "捐赠,捐献",
+    "rank": 4331,
+    "layer": 5
+   },
+   {
+    "word": "temple",
+    "pos": "n",
+    "meaning": "庙宇，神殿，寺",
+    "rank": 4338,
+    "layer": 5
+   },
+   {
+    "word": "thin",
+    "pos": "a",
+    "meaning": "薄的，细的",
+    "rank": 4349,
+    "layer": 5
+   },
+   {
+    "word": "cabinet",
+    "pos": "n",
+    "meaning": "柜橱,内阁",
+    "rank": 4353,
+    "layer": 5
+   },
+   {
+    "word": "tropical",
+    "pos": "a",
+    "meaning": "热带的",
+    "rank": 4362,
+    "layer": 5
+   },
+   {
+    "word": "turning",
+    "pos": "n",
+    "meaning": "旋转",
+    "rank": 4372,
+    "layer": 5
+   },
+   {
+    "word": "commentary",
+    "pos": "n",
+    "meaning": "注释, 解说词",
+    "rank": 4376,
+    "layer": 5
+   },
+   {
+    "word": "necessarily",
+    "pos": "ad",
+    "meaning": "必然，必定",
+    "rank": 4386,
+    "layer": 5
+   },
+   {
+    "word": "skill",
+    "pos": "n",
+    "meaning": "技能，技巧，手艺",
+    "rank": 4391,
+    "layer": 5
+   },
+   {
+    "word": "popularity",
+    "pos": "n",
+    "meaning": "通俗性",
+    "rank": 4399,
+    "layer": 5
+   },
+   {
+    "word": "trend",
+    "pos": "n",
+    "meaning": "倾向,趋势",
+    "rank": 4405,
+    "layer": 5
+   },
+   {
+    "word": "obviously",
+    "pos": "ad",
+    "meaning": "明显地，显然地",
+    "rank": 4417,
+    "layer": 5
+   },
+   {
+    "word": "fundamental",
+    "pos": "a",
+    "meaning": "基础的",
+    "rank": 4428,
+    "layer": 5
+   },
+   {
+    "word": "receiver",
+    "pos": "n",
+    "meaning": "收受者，收件人",
+    "rank": 4433,
+    "layer": 5
+   },
+   {
+    "word": "scottish",
+    "pos": "adj",
+    "meaning": "苏格兰的",
+    "rank": 4441,
+    "layer": 5
+   },
+   {
+    "word": "obvious",
+    "pos": "a",
+    "meaning": "明显的,清楚的",
+    "rank": 4450,
+    "layer": 5
+   },
+   {
+    "word": "covering",
+    "pos": "adj",
+    "meaning": "包括的",
+    "rank": 4454,
+    "layer": 5
+   },
+   {
+    "word": "foster",
+    "pos": "vt",
+    "meaning": "养育",
+    "rank": 4460,
+    "layer": 5
+   },
+   {
+    "word": "folk",
+    "pos": "n",
+    "meaning": "人们",
+    "rank": 4475,
+    "layer": 5
+   },
+   {
+    "word": "spectrum",
+    "pos": "n",
+    "meaning": "光谱,系列",
+    "rank": 4483,
+    "layer": 5
+   },
+   {
+    "word": "aspect",
+    "pos": "n",
+    "meaning": "样子，外表，面貌",
+    "rank": 4489,
+    "layer": 5
+   },
+   {
+    "word": "crash",
+    "pos": "n",
+    "meaning": "突然坠落",
+    "rank": 4498,
+    "layer": 5
+   },
+   {
+    "word": "expense",
+    "pos": "n",
+    "meaning": "花费，消费，消耗",
+    "rank": 4510,
+    "layer": 5
+   },
+   {
+    "word": "princess",
+    "pos": "n",
+    "meaning": "公主，王妃",
+    "rank": 4517,
+    "layer": 5
+   },
+   {
+    "word": "dad",
+    "pos": "n",
+    "meaning": "爸爸",
+    "rank": 4524,
+    "layer": 5
+   },
+   {
+    "word": "fell",
+    "pos": "v",
+    "meaning": "击倒",
+    "rank": 4538,
+    "layer": 5
+   },
+   {
+    "word": "establishment",
+    "pos": "n",
+    "meaning": "建立，设立",
+    "rank": 4542,
+    "layer": 5
+   },
+   {
+    "word": "senator",
+    "pos": "n",
+    "meaning": "参议员",
+    "rank": 4556,
+    "layer": 5
+   },
+   {
+    "word": "hence",
+    "pos": "ad",
+    "meaning": "从此地,从此时,因此",
+    "rank": 4567,
+    "layer": 5
+   },
+   {
+    "word": "occupation",
+    "pos": "n",
+    "meaning": "占领，占据",
+    "rank": 4578,
+    "layer": 5
+   },
+   {
+    "word": "radiation",
+    "pos": "n",
+    "meaning": "放射，发射",
+    "rank": 4585,
+    "layer": 5
+   },
+   {
+    "word": "baker",
+    "pos": "n",
+    "meaning": "面包师",
+    "rank": 4596,
+    "layer": 5
+   },
+   {
+    "word": "effectiveness",
+    "pos": "n",
+    "meaning": "有效",
+    "rank": 4603,
+    "layer": 5
+   },
+   {
+    "word": "roof",
+    "pos": "n",
+    "meaning": "屋顶，顶",
+    "rank": 4613,
+    "layer": 5
+   },
+   {
+    "word": "atmosphere",
+    "pos": "n",
+    "meaning": "大气(层)",
+    "rank": 4616,
+    "layer": 5
+   },
+   {
+    "word": "dodge",
+    "pos": "v",
+    "meaning": "躲闪,躲开",
+    "rank": 4626,
+    "layer": 5
+   },
+   {
+    "word": "assignment",
+    "pos": "n",
+    "meaning": "分配，指派",
+    "rank": 4632,
+    "layer": 5
+   },
+   {
+    "word": "woods",
+    "pos": "n",
+    "meaning": "树林",
+    "rank": 4650,
+    "layer": 5
+   },
+   {
+    "word": "partial",
+    "pos": "a",
+    "meaning": "不完全的",
+    "rank": 4654,
+    "layer": 5
+   },
+   {
+    "word": "glad",
+    "pos": "a",
+    "meaning": "高兴的，快活的",
+    "rank": 4672,
+    "layer": 5
+   },
+   {
+    "word": "copper",
+    "pos": "n",
+    "meaning": "铜",
+    "rank": 4678,
+    "layer": 5
+   },
+   {
+    "word": "receipt",
+    "pos": "n",
+    "meaning": "收到,收据",
+    "rank": 4688,
+    "layer": 5
+   },
+   {
+    "word": "violation",
+    "pos": "n",
+    "meaning": "违犯",
+    "rank": 4693,
+    "layer": 5
+   },
+   {
+    "word": "pride",
+    "pos": "n",
+    "meaning": "自豪",
+    "rank": 4700,
+    "layer": 5
+   },
+   {
+    "word": "champion",
+    "pos": "n",
+    "meaning": "冠军",
+    "rank": 4708,
+    "layer": 5
+   },
+   {
+    "word": "plenty",
+    "pos": "n",
+    "meaning": "丰富，大量",
+    "rank": 4715,
+    "layer": 5
+   },
+   {
+    "word": "ignore",
+    "pos": "v",
+    "meaning": "不理，不顾，忽视",
+    "rank": 4719,
+    "layer": 5
+   },
+   {
+    "word": "wealth",
+    "pos": "n",
+    "meaning": "财富，财产",
+    "rank": 4723,
+    "layer": 5
+   },
+   {
+    "word": "recognize",
+    "pos": "v",
+    "meaning": "认出，承认，公认，赏识，表扬",
+    "rank": 4730,
+    "layer": 5
+   },
+   {
+    "word": "publish",
+    "pos": "v",
+    "meaning": "出版，刊印",
+    "rank": 4738,
+    "layer": 5
+   },
+   {
+    "word": "acrobat",
+    "pos": "n",
+    "meaning": "特技演员，杂技演员",
+    "rank": 4752,
+    "layer": 5
+   },
+   {
+    "word": "vital",
+    "pos": "a",
+    "meaning": "生命的",
+    "rank": 4760,
+    "layer": 5
+   },
+   {
+    "word": "charity",
+    "pos": "n",
+    "meaning": "赈济款、物,慈善团体,博爱",
+    "rank": 4766,
+    "layer": 5
+   },
+   {
+    "word": "obligation",
+    "pos": "n",
+    "meaning": "义务，责任",
+    "rank": 4772,
+    "layer": 5
+   },
+   {
+    "word": "traveler",
+    "pos": "n",
+    "meaning": "旅行者",
+    "rank": 4778,
+    "layer": 5
+   },
+   {
+    "word": "regardless",
+    "pos": "a",
+    "meaning": "不注意的,不顾的",
+    "rank": 4782,
+    "layer": 5
+   },
+   {
+    "word": "insight",
+    "pos": "n",
+    "meaning": "洞悉,洞察,见识",
+    "rank": 4791,
+    "layer": 5
+   },
+   {
+    "word": "latter",
+    "pos": "a",
+    "meaning": "后者的",
+    "rank": 4798,
+    "layer": 5
+   },
+   {
+    "word": "attendance",
+    "pos": "n",
+    "meaning": "出席",
+    "rank": 4805,
+    "layer": 5
+   },
+   {
+    "word": "builder",
+    "pos": "n",
+    "meaning": "建筑工人，建设者",
+    "rank": 4812,
+    "layer": 5
+   },
+   {
+    "word": "announcement",
+    "pos": "n",
+    "meaning": "通知",
+    "rank": 4827,
+    "layer": 5
+   },
+   {
+    "word": "lovely",
+    "pos": "a",
+    "meaning": "可爱的，好看的",
+    "rank": 4836,
+    "layer": 5
+   },
+   {
+    "word": "indoor",
+    "pos": "a",
+    "meaning": "室内的，户内的",
+    "rank": 4846,
+    "layer": 5
+   },
+   {
+    "word": "tend",
+    "pos": "v",
+    "meaning": "趋向，往往是",
+    "rank": 4855,
+    "layer": 5
+   },
+   {
+    "word": "tradition",
+    "pos": "n",
+    "meaning": "传统，惯例，传说",
+    "rank": 4869,
+    "layer": 5
+   },
+   {
+    "word": "complaint",
+    "pos": "n",
+    "meaning": "抱怨，诉苦，怨言，控告",
+    "rank": 4888,
+    "layer": 5
+   },
+   {
+    "word": "chronic",
+    "pos": "adj",
+    "meaning": "慢性的, 延续很长的",
+    "rank": 4901,
+    "layer": 5
+   },
+   {
+    "word": "pound",
+    "pos": "n",
+    "meaning": "磅",
+    "rank": 4910,
+    "layer": 5
+   },
+   {
+    "word": "tobacco",
+    "pos": "n",
+    "meaning": "烟草，烟叶",
+    "rank": 4921,
+    "layer": 5
+   },
+   {
+    "word": "lie",
+    "pos": "vi",
+    "meaning": "躺，平放",
+    "rank": 4929,
+    "layer": 5
+   },
+   {
+    "word": "worship",
+    "pos": "n",
+    "meaning": "礼拜，礼拜仪式",
+    "rank": 4940,
+    "layer": 5
+   },
+   {
+    "word": "shorts",
+    "pos": "n",
+    "meaning": "短裤",
+    "rank": 4954,
+    "layer": 5
+   },
+   {
+    "word": "diverse",
+    "pos": "a",
+    "meaning": "多种多样的,各不相同的",
+    "rank": 4958,
+    "layer": 5
+   },
+   {
+    "word": "passion",
+    "pos": "n",
+    "meaning": "激情",
+    "rank": 4973,
+    "layer": 5
+   },
+   {
+    "word": "defence",
+    "pos": "n",
+    "meaning": "防卫,防护,防御物",
+    "rank": 4979,
+    "layer": 5
+   },
+   {
+    "word": "wise",
+    "pos": "a",
+    "meaning": "有智慧的，聪明的",
+    "rank": 4991,
+    "layer": 5
+   },
+   {
+    "word": "insider",
+    "pos": "n",
+    "meaning": "知情者",
+    "rank": 4997,
+    "layer": 5
+   }
+  ],
+  [
+   {
+    "word": "geography",
+    "pos": "n",
+    "meaning": "地理(学)",
+    "rank": 5002,
+    "layer": 6
+   },
+   {
+    "word": "discrimination",
+    "pos": "n",
+    "meaning": "辨别",
+    "rank": 5007,
+    "layer": 6
+   },
+   {
+    "word": "danger",
+    "pos": "n",
+    "meaning": "危险",
+    "rank": 5013,
+    "layer": 6
+   },
+   {
+    "word": "phrase",
+    "pos": "n",
+    "meaning": "短语，词语，习语",
+    "rank": 5017,
+    "layer": 6
+   },
+   {
+    "word": "emotional",
+    "pos": "a",
+    "meaning": "感情的，情绪的",
+    "rank": 5027,
+    "layer": 6
+   },
+   {
+    "word": "glory",
+    "pos": "n",
+    "meaning": "光荣，荣誉",
+    "rank": 5031,
+    "layer": 6
+   },
+   {
+    "word": "rod",
+    "pos": "n",
+    "meaning": "杆，棒",
+    "rank": 5043,
+    "layer": 6
+   },
+   {
+    "word": "introduce",
+    "pos": "vt",
+    "meaning": "介绍",
+    "rank": 5050,
+    "layer": 6
+   },
+   {
+    "word": "generator",
+    "pos": "n",
+    "meaning": "发电机，发生器",
+    "rank": 5062,
+    "layer": 6
+   },
+   {
+    "word": "sad",
+    "pos": "a",
+    "meaning": "悲哀的，忧愁的",
+    "rank": 5071,
+    "layer": 6
+   },
+   {
+    "word": "slowly",
+    "pos": "ad",
+    "meaning": "慢慢地",
+    "rank": 5074,
+    "layer": 6
+   },
+   {
+    "word": "infant",
+    "pos": "n",
+    "meaning": "婴儿",
+    "rank": 5082,
+    "layer": 6
+   },
+   {
+    "word": "machinery",
+    "pos": "n",
+    "meaning": "(总称)机器，机械",
+    "rank": 5094,
+    "layer": 6
+   },
+   {
+    "word": "pot",
+    "pos": "n",
+    "meaning": "罐，壶",
+    "rank": 5100,
+    "layer": 6
+   },
+   {
+    "word": "grass",
+    "pos": "n",
+    "meaning": "草，草地",
+    "rank": 5118,
+    "layer": 6
+   },
+   {
+    "word": "continental",
+    "pos": "a",
+    "meaning": "大陆的，大陆性的",
+    "rank": 5124,
+    "layer": 6
+   },
+   {
+    "word": "funeral",
+    "pos": "n",
+    "meaning": "丧葬,葬礼",
+    "rank": 5132,
+    "layer": 6
+   },
+   {
+    "word": "socket",
+    "pos": "n",
+    "meaning": "窝, 穴, 孔, 插座",
+    "rank": 5151,
+    "layer": 6
+   },
+   {
+    "word": "egg",
+    "pos": "n",
+    "meaning": "蛋，卵，卵形物",
+    "rank": 5154,
+    "layer": 6
+   },
+   {
+    "word": "theft",
+    "pos": "n",
+    "meaning": "偷盗",
+    "rank": 5160,
+    "layer": 6
+   },
+   {
+    "word": "flexibility",
+    "pos": "n",
+    "meaning": "柔韧，灵活性",
+    "rank": 5172,
+    "layer": 6
+   },
+   {
+    "word": "boundary",
+    "pos": "n",
+    "meaning": "边界,分界线",
+    "rank": 5176,
+    "layer": 6
+   },
+   {
+    "word": "elite",
+    "pos": "n",
+    "meaning": "<法>[集合名词]精华",
+    "rank": 5182,
+    "layer": 6
+   },
+   {
+    "word": "robot",
+    "pos": "n",
+    "meaning": "机器人，自动机械",
+    "rank": 5191,
+    "layer": 6
+   },
+   {
+    "word": "assess",
+    "pos": "vt",
+    "meaning": "评价",
+    "rank": 5203,
+    "layer": 6
+   },
+   {
+    "word": "declaration",
+    "pos": "n",
+    "meaning": "宣言，宣布，声明",
+    "rank": 5210,
+    "layer": 6
+   },
+   {
+    "word": "shore",
+    "pos": "n",
+    "meaning": "海滨，湖滨",
+    "rank": 5221,
+    "layer": 6
+   },
+   {
+    "word": "illness",
+    "pos": "n",
+    "meaning": "病，疾病",
+    "rank": 5235,
+    "layer": 6
+   },
+   {
+    "word": "jam",
+    "pos": "v",
+    "meaning": "压紧,夹住",
+    "rank": 5259,
+    "layer": 6
+   },
+   {
+    "word": "increasingly",
+    "pos": "ad",
+    "meaning": "不断增加地，日益",
+    "rank": 5266,
+    "layer": 6
+   },
+   {
+    "word": "basically",
+    "pos": "ad",
+    "meaning": "基本上",
+    "rank": 5271,
+    "layer": 6
+   },
+   {
+    "word": "herein",
+    "pos": "adv",
+    "meaning": "在此",
+    "rank": 5286,
+    "layer": 6
+   },
+   {
+    "word": "adjustment",
+    "pos": "n",
+    "meaning": "调整",
+    "rank": 5293,
+    "layer": 6
+   },
+   {
+    "word": "attitude",
+    "pos": "n",
+    "meaning": "态度，看法(to",
+    "rank": 5298,
+    "layer": 6
+   },
+   {
+    "word": "difficulty",
+    "pos": "n",
+    "meaning": "困难，困境，难题",
+    "rank": 5311,
+    "layer": 6
+   },
+   {
+    "word": "duke",
+    "pos": "n",
+    "meaning": "公爵，君主",
+    "rank": 5318,
+    "layer": 6
+   },
+   {
+    "word": "atlas",
+    "pos": "n",
+    "meaning": "地图册,图表集",
+    "rank": 5332,
+    "layer": 6
+   },
+   {
+    "word": "coat",
+    "pos": "n",
+    "meaning": "上衣，外套",
+    "rank": 5341,
+    "layer": 6
+   },
+   {
+    "word": "defendant",
+    "pos": "n",
+    "meaning": "被告。adj.辩护",
+    "rank": 5352,
+    "layer": 6
+   },
+   {
+    "word": "corps",
+    "pos": "n",
+    "meaning": "军团, 兵队, 团, 兵种",
+    "rank": 5360,
+    "layer": 6
+   },
+   {
+    "word": "petition",
+    "pos": "n",
+    "meaning": "祈求,请求",
+    "rank": 5368,
+    "layer": 6
+   },
+   {
+    "word": "belief",
+    "pos": "n",
+    "meaning": "信任，相信，信念",
+    "rank": 5376,
+    "layer": 6
+   },
+   {
+    "word": "doll",
+    "pos": "n",
+    "meaning": "玩偶，玩具娃娃",
+    "rank": 5390,
+    "layer": 6
+   },
+   {
+    "word": "herald",
+    "pos": "ad",
+    "meaning": "传令官",
+    "rank": 5401,
+    "layer": 6
+   },
+   {
+    "word": "invite",
+    "pos": "vt",
+    "meaning": "邀请，招待",
+    "rank": 5412,
+    "layer": 6
+   },
+   {
+    "word": "reed",
+    "pos": "n",
+    "meaning": "芦苇，苇丛",
+    "rank": 5418,
+    "layer": 6
+   },
+   {
+    "word": "terror",
+    "pos": "n",
+    "meaning": "恐怖",
+    "rank": 5421,
+    "layer": 6
+   },
+   {
+    "word": "assurance",
+    "pos": "n",
+    "meaning": "保证，担保",
+    "rank": 5434,
+    "layer": 6
+   },
+   {
+    "word": "vast",
+    "pos": "a",
+    "meaning": "巨大的，辽阔的，大量的",
+    "rank": 5438,
+    "layer": 6
+   },
+   {
+    "word": "verification",
+    "pos": "n",
+    "meaning": "检验",
+    "rank": 5448,
+    "layer": 6
+   },
+   {
+    "word": "favor",
+    "pos": "n",
+    "meaning": "好感",
+    "rank": 5455,
+    "layer": 6
+   },
+   {
+    "word": "occasion",
+    "pos": "n",
+    "meaning": "(发生特殊事件)的时刻",
+    "rank": 5463,
+    "layer": 6
+   },
+   {
+    "word": "beam",
+    "pos": "n",
+    "meaning": "梁",
+    "rank": 5471,
+    "layer": 6
+   },
+   {
+    "word": "orchestra",
+    "pos": "n",
+    "meaning": "管弦乐队",
+    "rank": 5475,
+    "layer": 6
+   },
+   {
+    "word": "minimal",
+    "pos": "adj",
+    "meaning": "最小的, 最小限度的",
+    "rank": 5479,
+    "layer": 6
+   },
+   {
+    "word": "licence",
+    "pos": "n",
+    "meaning": "执照, 许可证, 特许",
+    "rank": 5486,
+    "layer": 6
+   },
+   {
+    "word": "essay",
+    "pos": "n",
+    "meaning": "文章,小品文,随笔",
+    "rank": 5490,
+    "layer": 6
+   },
+   {
+    "word": "disposal",
+    "pos": "n",
+    "meaning": "处理，处置",
+    "rank": 5504,
+    "layer": 6
+   },
+   {
+    "word": "consult",
+    "pos": "v",
+    "meaning": "请教,咨询",
+    "rank": 5515,
+    "layer": 6
+   },
+   {
+    "word": "midnight",
+    "pos": "n",
+    "meaning": "午夜，子夜，夜半",
+    "rank": 5521,
+    "layer": 6
+   },
+   {
+    "word": "coal",
+    "pos": "n",
+    "meaning": "煤，煤块",
+    "rank": 5528,
+    "layer": 6
+   },
+   {
+    "word": "zoo",
+    "pos": "n",
+    "meaning": "动物园",
+    "rank": 5536,
+    "layer": 6
+   },
+   {
+    "word": "announce",
+    "pos": "v",
+    "meaning": "正式宣布",
+    "rank": 5539,
+    "layer": 6
+   },
+   {
+    "word": "sampling",
+    "pos": "n",
+    "meaning": "抽样",
+    "rank": 5547,
+    "layer": 6
+   },
+   {
+    "word": "lion",
+    "pos": "n",
+    "meaning": "狮子",
+    "rank": 5552,
+    "layer": 6
+   },
+   {
+    "word": "oxygen",
+    "pos": "n",
+    "meaning": "氧，氧气",
+    "rank": 5558,
+    "layer": 6
+   },
+   {
+    "word": "bibliography",
+    "pos": "n",
+    "meaning": "(有关一个题目或一个人的)书",
+    "rank": 5569,
+    "layer": 6
+   },
+   {
+    "word": "sleeve",
+    "pos": "n",
+    "meaning": "袖子",
+    "rank": 5580,
+    "layer": 6
+   },
+   {
+    "word": "stroke",
+    "pos": "n",
+    "meaning": "击",
+    "rank": 5586,
+    "layer": 6
+   },
+   {
+    "word": "crowd",
+    "pos": "n",
+    "meaning": "人群",
+    "rank": 5598,
+    "layer": 6
+   },
+   {
+    "word": "personality",
+    "pos": "n",
+    "meaning": "个性",
+    "rank": 5611,
+    "layer": 6
+   },
+   {
+    "word": "skiing",
+    "pos": "n",
+    "meaning": "滑雪",
+    "rank": 5620,
+    "layer": 6
+   },
+   {
+    "word": "valve",
+    "pos": "n",
+    "meaning": "阀,活门",
+    "rank": 5624,
+    "layer": 6
+   },
+   {
+    "word": "shelf",
+    "pos": "n",
+    "meaning": "架子，搁板",
+    "rank": 5634,
+    "layer": 6
+   },
+   {
+    "word": "incredible",
+    "pos": "a",
+    "meaning": "不可相信的，惊人",
+    "rank": 5642,
+    "layer": 6
+   },
+   {
+    "word": "crop",
+    "pos": "n",
+    "meaning": "作物，庄稼",
+    "rank": 5648,
+    "layer": 6
+   },
+   {
+    "word": "islam",
+    "pos": "n",
+    "meaning": "伊斯兰教，回教",
+    "rank": 5657,
+    "layer": 6
+   },
+   {
+    "word": "founder",
+    "pos": "n",
+    "meaning": "创办人，奠基人",
+    "rank": 5672,
+    "layer": 6
+   },
+   {
+    "word": "tired",
+    "pos": "a",
+    "meaning": "疲劳的",
+    "rank": 5678,
+    "layer": 6
+   },
+   {
+    "word": "steam",
+    "pos": "n",
+    "meaning": "水汽，蒸汽，水蒸气v. 蒸发",
+    "rank": 5684,
+    "layer": 6
+   },
+   {
+    "word": "perfume",
+    "pos": "n",
+    "meaning": "香水,香味",
+    "rank": 5696,
+    "layer": 6
+   },
+   {
+    "word": "hazardous",
+    "pos": "adj",
+    "meaning": "危险的, 冒险的, 碰运气的",
+    "rank": 5700,
+    "layer": 6
+   },
+   {
+    "word": "sue",
+    "pos": "vt",
+    "meaning": "控告, 向...请求",
+    "rank": 5705,
+    "layer": 6
+   },
+   {
+    "word": "hang",
+    "pos": "v",
+    "meaning": "悬挂，垂吊",
+    "rank": 5712,
+    "layer": 6
+   },
+   {
+    "word": "variation",
+    "pos": "n",
+    "meaning": "变化，变动",
+    "rank": 5722,
+    "layer": 6
+   },
+   {
+    "word": "damn",
+    "pos": "",
+    "meaning": "int. 该死vt. 遣责",
+    "rank": 5728,
+    "layer": 6
+   },
+   {
+    "word": "distributor",
+    "pos": "n",
+    "meaning": "分销商",
+    "rank": 5737,
+    "layer": 6
+   },
+   {
+    "word": "gathering",
+    "pos": "n",
+    "meaning": "集会，聚会，聚集",
+    "rank": 5749,
+    "layer": 6
+   },
+   {
+    "word": "mathematical",
+    "pos": "a",
+    "meaning": "数学的",
+    "rank": 5753,
+    "layer": 6
+   },
+   {
+    "word": "fame",
+    "pos": "n",
+    "meaning": "名声,名誉",
+    "rank": 5756,
+    "layer": 6
+   },
+   {
+    "word": "payable",
+    "pos": "adj",
+    "meaning": "支付给的",
+    "rank": 5763,
+    "layer": 6
+   },
+   {
+    "word": "automobile",
+    "pos": "n",
+    "meaning": "汽车",
+    "rank": 5767,
+    "layer": 6
+   },
+   {
+    "word": "protective",
+    "pos": "a",
+    "meaning": "保护的，防护的",
+    "rank": 5794,
+    "layer": 6
+   },
+   {
+    "word": "cassette",
+    "pos": "n",
+    "meaning": "磁带盒,照相软片盒",
+    "rank": 5798,
+    "layer": 6
+   },
+   {
+    "word": "pointed",
+    "pos": "a",
+    "meaning": "尖锐的",
+    "rank": 5801,
+    "layer": 6
+   },
+   {
+    "word": "fusion",
+    "pos": "n",
+    "meaning": "熔化, 熔解, 熔合, 熔接",
+    "rank": 5810,
+    "layer": 6
+   },
+   {
+    "word": "preference",
+    "pos": "n",
+    "meaning": "(for，to)偏爱，喜爱",
+    "rank": 5817,
+    "layer": 6
+   },
+   {
+    "word": "parish",
+    "pos": "n",
+    "meaning": "教区",
+    "rank": 5820,
+    "layer": 6
+   },
+   {
+    "word": "exploration",
+    "pos": "n",
+    "meaning": "考察",
+    "rank": 5829,
+    "layer": 6
+   },
+   {
+    "word": "proxy",
+    "pos": "n",
+    "meaning": "代理人",
+    "rank": 5837,
+    "layer": 6
+   },
+   {
+    "word": "flu",
+    "pos": "n",
+    "meaning": "流感",
+    "rank": 5845,
+    "layer": 6
+   },
+   {
+    "word": "killer",
+    "pos": "n",
+    "meaning": "杀人者，杀手",
+    "rank": 5853,
+    "layer": 6
+   },
+   {
+    "word": "corn",
+    "pos": "n",
+    "meaning": "谷物，庄稼，玉米",
+    "rank": 5861,
+    "layer": 6
+   },
+   {
+    "word": "perfectly",
+    "pos": "ad",
+    "meaning": "很，完全",
+    "rank": 5872,
+    "layer": 6
+   },
+   {
+    "word": "instantly",
+    "pos": "ad",
+    "meaning": "立即，即刻",
+    "rank": 5875,
+    "layer": 6
+   },
+   {
+    "word": "horizontal",
+    "pos": "a",
+    "meaning": "地平线的",
+    "rank": 5891,
+    "layer": 6
+   },
+   {
+    "word": "terrorist",
+    "pos": "n",
+    "meaning": "恐怖分子",
+    "rank": 5896,
+    "layer": 6
+   },
+   {
+    "word": "rat",
+    "pos": "n",
+    "meaning": "鼠",
+    "rank": 5910,
+    "layer": 6
+   },
+   {
+    "word": "heading",
+    "pos": "n",
+    "meaning": "标题",
+    "rank": 5917,
+    "layer": 6
+   },
+   {
+    "word": "bearing",
+    "pos": "n",
+    "meaning": "举止",
+    "rank": 5920,
+    "layer": 6
+   },
+   {
+    "word": "guilty",
+    "pos": "a",
+    "meaning": "(of)有罪的，内疚的",
+    "rank": 5928,
+    "layer": 6
+   },
+   {
+    "word": "tablet",
+    "pos": "n",
+    "meaning": "碑,书板",
+    "rank": 5933,
+    "layer": 6
+   },
+   {
+    "word": "lawn",
+    "pos": "n",
+    "meaning": "草地,草坪",
+    "rank": 5939,
+    "layer": 6
+   },
+   {
+    "word": "basin",
+    "pos": "n",
+    "meaning": "盆，脸盆",
+    "rank": 5943,
+    "layer": 6
+   },
+   {
+    "word": "inclusive",
+    "pos": "a",
+    "meaning": "包括的,包含的",
+    "rank": 5949,
+    "layer": 6
+   },
+   {
+    "word": "drunk",
+    "pos": "a",
+    "meaning": "醉酒的",
+    "rank": 5952,
+    "layer": 6
+   },
+   {
+    "word": "complexity",
+    "pos": "n",
+    "meaning": "复杂(性)",
+    "rank": 5977,
+    "layer": 6
+   },
+   {
+    "word": "presidential",
+    "pos": "adj",
+    "meaning": "总统的",
+    "rank": 5983,
+    "layer": 6
+   },
+   {
+    "word": "nylon",
+    "pos": "n",
+    "meaning": "尼龙,尼龙长袜",
+    "rank": 5992,
+    "layer": 6
+   },
+   {
+    "word": "ceiling",
+    "pos": "n",
+    "meaning": "天花板",
+    "rank": 6000,
+    "layer": 6
+   }
+  ],
+  [
+   {
+    "word": "hospitality",
+    "pos": "n",
+    "meaning": "好客,殷勤",
+    "rank": 6007,
+    "layer": 7
+   },
+   {
+    "word": "theoretical",
+    "pos": "a",
+    "meaning": "理论(上)的",
+    "rank": 6019,
+    "layer": 7
+   },
+   {
+    "word": "quit",
+    "pos": "vt",
+    "meaning": "离开",
+    "rank": 6027,
+    "layer": 7
+   },
+   {
+    "word": "lung",
+    "pos": "n",
+    "meaning": "肺",
+    "rank": 6030,
+    "layer": 7
+   },
+   {
+    "word": "inclusion",
+    "pos": "n",
+    "meaning": "包括在内",
+    "rank": 6033,
+    "layer": 7
+   },
+   {
+    "word": "civic",
+    "pos": "adj",
+    "meaning": "市的, 市民的, 公民的",
+    "rank": 6048,
+    "layer": 7
+   },
+   {
+    "word": "grill",
+    "pos": "n",
+    "meaning": "烤架, 铁格子, 烤肉",
+    "rank": 6058,
+    "layer": 7
+   },
+   {
+    "word": "authentic",
+    "pos": "adj",
+    "meaning": "可信的",
+    "rank": 6065,
+    "layer": 7
+   },
+   {
+    "word": "depend",
+    "pos": "v",
+    "meaning": "(on)取决于，依靠，信赖",
+    "rank": 6073,
+    "layer": 7
+   },
+   {
+    "word": "virtually",
+    "pos": "ad",
+    "meaning": "实际上,事实上",
+    "rank": 6082,
+    "layer": 7
+   },
+   {
+    "word": "tale",
+    "pos": "n",
+    "meaning": "故事，传说",
+    "rank": 6089,
+    "layer": 7
+   },
+   {
+    "word": "situated",
+    "pos": "adj",
+    "meaning": "位于,被置于境遇",
+    "rank": 6095,
+    "layer": 7
+   },
+   {
+    "word": "strictly",
+    "pos": "ad",
+    "meaning": "严格地，严谨地",
+    "rank": 6101,
+    "layer": 7
+   },
+   {
+    "word": "elegant",
+    "pos": "a",
+    "meaning": "雅致的,优美的",
+    "rank": 6109,
+    "layer": 7
+   },
+   {
+    "word": "expenditure",
+    "pos": "n",
+    "meaning": "花费",
+    "rank": 6117,
+    "layer": 7
+   },
+   {
+    "word": "fake",
+    "pos": "n",
+    "meaning": "假货,骗子",
+    "rank": 6134,
+    "layer": 7
+   },
+   {
+    "word": "suggestion",
+    "pos": "n",
+    "meaning": "建议，意见",
+    "rank": 6151,
+    "layer": 7
+   },
+   {
+    "word": "interval",
+    "pos": "n",
+    "meaning": "间隔的时间,间隔,间歇",
+    "rank": 6160,
+    "layer": 7
+   },
+   {
+    "word": "investigate",
+    "pos": "vt",
+    "meaning": "调查,调查研究",
+    "rank": 6166,
+    "layer": 7
+   },
+   {
+    "word": "logistics",
+    "pos": "n",
+    "meaning": "后勤学, 后勤",
+    "rank": 6174,
+    "layer": 7
+   },
+   {
+    "word": "bowling",
+    "pos": "n",
+    "meaning": "保龄球运动",
+    "rank": 6178,
+    "layer": 7
+   },
+   {
+    "word": "proportion",
+    "pos": "n",
+    "meaning": "比率,比例,大小,容积",
+    "rank": 6183,
+    "layer": 7
+   },
+   {
+    "word": "honey",
+    "pos": "n",
+    "meaning": "蜜，蜂蜜",
+    "rank": 6188,
+    "layer": 7
+   },
+   {
+    "word": "atomic",
+    "pos": "a",
+    "meaning": "原子的",
+    "rank": 6197,
+    "layer": 7
+   },
+   {
+    "word": "gauge",
+    "pos": "n",
+    "meaning": "标准尺寸,(铁道)轨矩",
+    "rank": 6201,
+    "layer": 7
+   },
+   {
+    "word": "mat",
+    "pos": "n",
+    "meaning": "席子，垫子",
+    "rank": 6207,
+    "layer": 7
+   },
+   {
+    "word": "engage",
+    "pos": "v",
+    "meaning": "雇用",
+    "rank": 6220,
+    "layer": 7
+   },
+   {
+    "word": "supervision",
+    "pos": "n",
+    "meaning": "监督",
+    "rank": 6229,
+    "layer": 7
+   },
+   {
+    "word": "separation",
+    "pos": "n",
+    "meaning": "分离，分开",
+    "rank": 6234,
+    "layer": 7
+   },
+   {
+    "word": "sender",
+    "pos": "n",
+    "meaning": "寄信人",
+    "rank": 6239,
+    "layer": 7
+   },
+   {
+    "word": "crucial",
+    "pos": "adj",
+    "meaning": "至关紧要的",
+    "rank": 6242,
+    "layer": 7
+   },
+   {
+    "word": "tuition",
+    "pos": "n",
+    "meaning": "教学,学费",
+    "rank": 6249,
+    "layer": 7
+   },
+   {
+    "word": "viewer",
+    "pos": "n",
+    "meaning": "观察者，电视观众",
+    "rank": 6252,
+    "layer": 7
+   },
+   {
+    "word": "pitch",
+    "pos": "n",
+    "meaning": "球场",
+    "rank": 6268,
+    "layer": 7
+   },
+   {
+    "word": "imperial",
+    "pos": "adj",
+    "meaning": "皇帝的",
+    "rank": 6275,
+    "layer": 7
+   },
+   {
+    "word": "stamp",
+    "pos": "n",
+    "meaning": "邮票",
+    "rank": 6283,
+    "layer": 7
+   },
+   {
+    "word": "salmon",
+    "pos": "n",
+    "meaning": "鲑，大马哈鱼",
+    "rank": 6285,
+    "layer": 7
+   },
+   {
+    "word": "mate",
+    "pos": "n",
+    "meaning": "伙伴，同事，同伴，配偶v.",
+    "rank": 6294,
+    "layer": 7
+   },
+   {
+    "word": "luggage",
+    "pos": "n",
+    "meaning": "行李，皮箱",
+    "rank": 6302,
+    "layer": 7
+   },
+   {
+    "word": "slim",
+    "pos": "a",
+    "meaning": "细长的",
+    "rank": 6310,
+    "layer": 7
+   },
+   {
+    "word": "offshore",
+    "pos": "adj",
+    "meaning": "向海面吹的, 离岸",
+    "rank": 6314,
+    "layer": 7
+   },
+   {
+    "word": "occasionally",
+    "pos": "ad",
+    "meaning": "偶然",
+    "rank": 6326,
+    "layer": 7
+   },
+   {
+    "word": "autumn",
+    "pos": "n",
+    "meaning": "秋，秋季",
+    "rank": 6341,
+    "layer": 7
+   },
+   {
+    "word": "recover",
+    "pos": "v",
+    "meaning": "重新找到,复原,痊愈",
+    "rank": 6356,
+    "layer": 7
+   },
+   {
+    "word": "explicit",
+    "pos": "a",
+    "meaning": "清楚的,明确的",
+    "rank": 6371,
+    "layer": 7
+   },
+   {
+    "word": "exceptional",
+    "pos": "a",
+    "meaning": "优越的,杰出的",
+    "rank": 6385,
+    "layer": 7
+   },
+   {
+    "word": "spatial",
+    "pos": "a",
+    "meaning": "空间的,关于空间的",
+    "rank": 6389,
+    "layer": 7
+   },
+   {
+    "word": "precious",
+    "pos": "a",
+    "meaning": "宝贵的,珍贵的",
+    "rank": 6395,
+    "layer": 7
+   },
+   {
+    "word": "necklace",
+    "pos": "n",
+    "meaning": "项链，项圈",
+    "rank": 6411,
+    "layer": 7
+   },
+   {
+    "word": "essentially",
+    "pos": "adj",
+    "meaning": "本质上，实质上",
+    "rank": 6424,
+    "layer": 7
+   },
+   {
+    "word": "attach",
+    "pos": "v",
+    "meaning": "系上,附上",
+    "rank": 6448,
+    "layer": 7
+   },
+   {
+    "word": "preservation",
+    "pos": "n",
+    "meaning": "保存，储藏",
+    "rank": 6460,
+    "layer": 7
+   },
+   {
+    "word": "divine",
+    "pos": "a",
+    "meaning": "神的",
+    "rank": 6466,
+    "layer": 7
+   },
+   {
+    "word": "technological",
+    "pos": "adj",
+    "meaning": "技术的，工艺的",
+    "rank": 6472,
+    "layer": 7
+   },
+   {
+    "word": "blast",
+    "pos": "n",
+    "meaning": "一阵",
+    "rank": 6477,
+    "layer": 7
+   },
+   {
+    "word": "shield",
+    "pos": "n",
+    "meaning": "盾,保护者,保护物",
+    "rank": 6486,
+    "layer": 7
+   },
+   {
+    "word": "constitute",
+    "pos": "vt",
+    "meaning": "组成，构成，形成",
+    "rank": 6492,
+    "layer": 7
+   },
+   {
+    "word": "iceland",
+    "pos": "n",
+    "meaning": "冰岛",
+    "rank": 6499,
+    "layer": 7
+   },
+   {
+    "word": "graduation",
+    "pos": "n",
+    "meaning": "毕业",
+    "rank": 6504,
+    "layer": 7
+   },
+   {
+    "word": "greeting",
+    "pos": "n",
+    "meaning": "问候，致敬",
+    "rank": 6519,
+    "layer": 7
+   },
+   {
+    "word": "olive",
+    "pos": "n",
+    "meaning": "橄榄，橄榄树",
+    "rank": 6528,
+    "layer": 7
+   },
+   {
+    "word": "velocity",
+    "pos": "n",
+    "meaning": "速度，速率",
+    "rank": 6538,
+    "layer": 7
+   },
+   {
+    "word": "oasis",
+    "pos": "n",
+    "meaning": "(沙漠中)绿洲,舒适的地方",
+    "rank": 6544,
+    "layer": 7
+   },
+   {
+    "word": "angry",
+    "pos": "a",
+    "meaning": "生气的，愤怒的",
+    "rank": 6547,
+    "layer": 7
+   },
+   {
+    "word": "identical",
+    "pos": "a",
+    "meaning": "(to. with)同一",
+    "rank": 6552,
+    "layer": 7
+   },
+   {
+    "word": "lover",
+    "pos": "n",
+    "meaning": "爱好者",
+    "rank": 6557,
+    "layer": 7
+   },
+   {
+    "word": "retention",
+    "pos": "",
+    "meaning": "保持力",
+    "rank": 6563,
+    "layer": 7
+   },
+   {
+    "word": "profession",
+    "pos": "n",
+    "meaning": "职业，专业，表白，宣布",
+    "rank": 6576,
+    "layer": 7
+   },
+   {
+    "word": "tire",
+    "pos": "v",
+    "meaning": "(使)疲倦，(使)厌倦n.",
+    "rank": 6587,
+    "layer": 7
+   },
+   {
+    "word": "friendship",
+    "pos": "n",
+    "meaning": "友谊，友好",
+    "rank": 6595,
+    "layer": 7
+   },
+   {
+    "word": "warrant",
+    "pos": "n",
+    "meaning": "正当理由",
+    "rank": 6601,
+    "layer": 7
+   },
+   {
+    "word": "sunshine",
+    "pos": "n",
+    "meaning": "日光，日照",
+    "rank": 6611,
+    "layer": 7
+   },
+   {
+    "word": "ceremony",
+    "pos": "n",
+    "meaning": "典礼,仪式,礼节",
+    "rank": 6614,
+    "layer": 7
+   },
+   {
+    "word": "ripe",
+    "pos": "a",
+    "meaning": "熟的，成熟的",
+    "rank": 6621,
+    "layer": 7
+   },
+   {
+    "word": "laundry",
+    "pos": "n",
+    "meaning": "洗衣店,要洗的衣物",
+    "rank": 6629,
+    "layer": 7
+   },
+   {
+    "word": "filling",
+    "pos": "n",
+    "meaning": "充填物，馅",
+    "rank": 6640,
+    "layer": 7
+   },
+   {
+    "word": "possession",
+    "pos": "n",
+    "meaning": "所有,拥有,财产",
+    "rank": 6648,
+    "layer": 7
+   },
+   {
+    "word": "organ",
+    "pos": "n",
+    "meaning": "器官,报刊,风琴",
+    "rank": 6654,
+    "layer": 7
+   },
+   {
+    "word": "darkness",
+    "pos": "n",
+    "meaning": "黑暗",
+    "rank": 6663,
+    "layer": 7
+   },
+   {
+    "word": "implied",
+    "pos": "adj",
+    "meaning": "暗含的，暗示的",
+    "rank": 6670,
+    "layer": 7
+   },
+   {
+    "word": "packing",
+    "pos": "n",
+    "meaning": "装箱，收拾行李",
+    "rank": 6677,
+    "layer": 7
+   },
+   {
+    "word": "shelter",
+    "pos": "n",
+    "meaning": "掩蔽,遮蔽",
+    "rank": 6682,
+    "layer": 7
+   },
+   {
+    "word": "vulnerability",
+    "pos": "n",
+    "meaning": "易损性",
+    "rank": 6689,
+    "layer": 7
+   },
+   {
+    "word": "mixture",
+    "pos": "n",
+    "meaning": "混合",
+    "rank": 6697,
+    "layer": 7
+   },
+   {
+    "word": "tub",
+    "pos": "n",
+    "meaning": "木盆，澡盆",
+    "rank": 6701,
+    "layer": 7
+   },
+   {
+    "word": "sheep",
+    "pos": "n",
+    "meaning": "(绵)羊",
+    "rank": 6717,
+    "layer": 7
+   },
+   {
+    "word": "railroad",
+    "pos": "n",
+    "meaning": "铁路v. 由铁道运输",
+    "rank": 6720,
+    "layer": 7
+   },
+   {
+    "word": "ash",
+    "pos": "n",
+    "meaning": "灰，灰末",
+    "rank": 6727,
+    "layer": 7
+   },
+   {
+    "word": "tender",
+    "pos": "a",
+    "meaning": "脆弱的,娇嫩的",
+    "rank": 6740,
+    "layer": 7
+   },
+   {
+    "word": "preserve",
+    "pos": "vt",
+    "meaning": "保护,保存",
+    "rank": 6750,
+    "layer": 7
+   },
+   {
+    "word": "cosmetics",
+    "pos": "n",
+    "meaning": "化妆品",
+    "rank": 6756,
+    "layer": 7
+   },
+   {
+    "word": "christianity",
+    "pos": "n",
+    "meaning": "基督教(精神)",
+    "rank": 6767,
+    "layer": 7
+   },
+   {
+    "word": "realistic",
+    "pos": "a",
+    "meaning": "现实(主义)的",
+    "rank": 6775,
+    "layer": 7
+   },
+   {
+    "word": "synopsis",
+    "pos": "n",
+    "meaning": "大纲",
+    "rank": 6786,
+    "layer": 7
+   },
+   {
+    "word": "composer",
+    "pos": "n",
+    "meaning": "作曲家",
+    "rank": 6790,
+    "layer": 7
+   },
+   {
+    "word": "sword",
+    "pos": "n",
+    "meaning": "剑，刀",
+    "rank": 6792,
+    "layer": 7
+   },
+   {
+    "word": "float",
+    "pos": "n",
+    "meaning": "浮子,浮标",
+    "rank": 6803,
+    "layer": 7
+   },
+   {
+    "word": "contrary",
+    "pos": "a",
+    "meaning": "相反的，矛盾的n. 反对",
+    "rank": 6811,
+    "layer": 7
+   },
+   {
+    "word": "dairy",
+    "pos": "n",
+    "meaning": "奶牛场，乳品商店",
+    "rank": 6820,
+    "layer": 7
+   },
+   {
+    "word": "equality",
+    "pos": "n",
+    "meaning": "同等",
+    "rank": 6824,
+    "layer": 7
+   },
+   {
+    "word": "analyze",
+    "pos": "vt",
+    "meaning": "分析，分解",
+    "rank": 6840,
+    "layer": 7
+   },
+   {
+    "word": "relate",
+    "pos": "v",
+    "meaning": "叙述，讲述",
+    "rank": 6843,
+    "layer": 7
+   },
+   {
+    "word": "fellowship",
+    "pos": "n",
+    "meaning": "交情,团体,奖学金",
+    "rank": 6850,
+    "layer": 7
+   },
+   {
+    "word": "retain",
+    "pos": "vt",
+    "meaning": "保持",
+    "rank": 6857,
+    "layer": 7
+   },
+   {
+    "word": "chaos",
+    "pos": "n",
+    "meaning": "混乱,纷乱",
+    "rank": 6866,
+    "layer": 7
+   },
+   {
+    "word": "decorative",
+    "pos": "adj",
+    "meaning": "装饰的，装璜的",
+    "rank": 6876,
+    "layer": 7
+   },
+   {
+    "word": "bee",
+    "pos": "n",
+    "meaning": "蜂，蜜蜂",
+    "rank": 6885,
+    "layer": 7
+   },
+   {
+    "word": "conjunction",
+    "pos": "n",
+    "meaning": "连词",
+    "rank": 6889,
+    "layer": 7
+   },
+   {
+    "word": "corruption",
+    "pos": "n",
+    "meaning": "腐败，腐化",
+    "rank": 6904,
+    "layer": 7
+   },
+   {
+    "word": "dramatic",
+    "pos": "a",
+    "meaning": "引人注目的,突然的",
+    "rank": 6916,
+    "layer": 7
+   },
+   {
+    "word": "arthritis",
+    "pos": "n",
+    "meaning": "关节炎",
+    "rank": 6928,
+    "layer": 7
+   },
+   {
+    "word": "taxation",
+    "pos": "n",
+    "meaning": "税制,税项",
+    "rank": 6934,
+    "layer": 7
+   },
+   {
+    "word": "surely",
+    "pos": "a",
+    "meaning": "确实",
+    "rank": 6938,
+    "layer": 7
+   },
+   {
+    "word": "pray",
+    "pos": "v",
+    "meaning": "请求，恳求",
+    "rank": 6947,
+    "layer": 7
+   },
+   {
+    "word": "jeep",
+    "pos": "n",
+    "meaning": "吉普车",
+    "rank": 6957,
+    "layer": 7
+   },
+   {
+    "word": "radical",
+    "pos": "a",
+    "meaning": "根本的,基本的",
+    "rank": 6963,
+    "layer": 7
+   },
+   {
+    "word": "elderly",
+    "pos": "adj",
+    "meaning": "过了中年的, 稍老的",
+    "rank": 6976,
+    "layer": 7
+   },
+   {
+    "word": "extraordinary",
+    "pos": "a",
+    "meaning": "非常的",
+    "rank": 6982,
+    "layer": 7
+   },
+   {
+    "word": "coordinate",
+    "pos": "vt",
+    "meaning": "使协调",
+    "rank": 6989,
+    "layer": 7
+   },
+   {
+    "word": "compile",
+    "pos": "vt",
+    "meaning": "编辑,编写",
+    "rank": 6996,
+    "layer": 7
+   }
+  ],
+  [
+   {
+    "word": "illustration",
+    "pos": "n",
+    "meaning": "说明",
+    "rank": 7001,
+    "layer": 8
+   },
+   {
+    "word": "annex",
+    "pos": "n",
+    "meaning": "附录，附件",
+    "rank": 7008,
+    "layer": 8
+   },
+   {
+    "word": "freight",
+    "pos": "n",
+    "meaning": "货运,货物",
+    "rank": 7015,
+    "layer": 8
+   },
+   {
+    "word": "shuttle",
+    "pos": "n",
+    "meaning": "梭,滑梭",
+    "rank": 7023,
+    "layer": 8
+   },
+   {
+    "word": "actively",
+    "pos": "adv",
+    "meaning": "积极地，活跃地",
+    "rank": 7031,
+    "layer": 8
+   },
+   {
+    "word": "complicated",
+    "pos": "a",
+    "meaning": "结构复杂的",
+    "rank": 7037,
+    "layer": 8
+   },
+   {
+    "word": "courier",
+    "pos": "n",
+    "meaning": "送快信的人, 旅行从仆",
+    "rank": 7048,
+    "layer": 8
+   },
+   {
+    "word": "beverage",
+    "pos": "n",
+    "meaning": "饮料(汽水、茶、酒等)",
+    "rank": 7062,
+    "layer": 8
+   },
+   {
+    "word": "forestry",
+    "pos": "n",
+    "meaning": "林业",
+    "rank": 7069,
+    "layer": 8
+   },
+   {
+    "word": "barrier",
+    "pos": "n",
+    "meaning": "栅栏，屏障",
+    "rank": 7079,
+    "layer": 8
+   },
+   {
+    "word": "bicycle",
+    "pos": "n",
+    "meaning": "自行车vi. 骑自行车",
+    "rank": 7084,
+    "layer": 8
+   },
+   {
+    "word": "thereby",
+    "pos": "ad",
+    "meaning": "借以,从而",
+    "rank": 7090,
+    "layer": 8
+   },
+   {
+    "word": "advise",
+    "pos": "vt",
+    "meaning": "忠告，劝告，建议",
+    "rank": 7096,
+    "layer": 8
+   },
+   {
+    "word": "boxing",
+    "pos": "n",
+    "meaning": "拳击",
+    "rank": 7099,
+    "layer": 8
+   },
+   {
+    "word": "survive",
+    "pos": "v",
+    "meaning": "幸免于，幸存",
+    "rank": 7117,
+    "layer": 8
+   },
+   {
+    "word": "reveal",
+    "pos": "v",
+    "meaning": "展现，显示，揭示，揭露",
+    "rank": 7124,
+    "layer": 8
+   },
+   {
+    "word": "analytical",
+    "pos": "adj",
+    "meaning": "分析的，解析的",
+    "rank": 7134,
+    "layer": 8
+   },
+   {
+    "word": "circulation",
+    "pos": "n",
+    "meaning": "循环",
+    "rank": 7142,
+    "layer": 8
+   },
+   {
+    "word": "hobby",
+    "pos": "n",
+    "meaning": "业余爱好",
+    "rank": 7152,
+    "layer": 8
+   },
+   {
+    "word": "technician",
+    "pos": "n",
+    "meaning": "技术人员",
+    "rank": 7158,
+    "layer": 8
+   },
+   {
+    "word": "enquiry",
+    "pos": "v",
+    "meaning": "询问",
+    "rank": 7168,
+    "layer": 8
+   },
+   {
+    "word": "volt",
+    "pos": "n",
+    "meaning": "伏特",
+    "rank": 7173,
+    "layer": 8
+   },
+   {
+    "word": "ruling",
+    "pos": "adj",
+    "meaning": "统治的",
+    "rank": 7180,
+    "layer": 8
+   },
+   {
+    "word": "dirt",
+    "pos": "n",
+    "meaning": "污物，污垢",
+    "rank": 7182,
+    "layer": 8
+   },
+   {
+    "word": "screw",
+    "pos": "n",
+    "meaning": "螺丝,螺旋",
+    "rank": 7195,
+    "layer": 8
+   },
+   {
+    "word": "veterinary",
+    "pos": "n",
+    "meaning": "兽医。adj.医牲畜",
+    "rank": 7202,
+    "layer": 8
+   },
+   {
+    "word": "incentive",
+    "pos": "n",
+    "meaning": "刺激",
+    "rank": 7212,
+    "layer": 8
+   },
+   {
+    "word": "mechanics",
+    "pos": "n",
+    "meaning": "力学",
+    "rank": 7215,
+    "layer": 8
+   },
+   {
+    "word": "uncle",
+    "pos": "n",
+    "meaning": "伯父，叔父，舅父，姑父，姨父",
+    "rank": 7224,
+    "layer": 8
+   },
+   {
+    "word": "sink",
+    "pos": "n",
+    "meaning": "洗涤槽",
+    "rank": 7229,
+    "layer": 8
+   },
+   {
+    "word": "devoted",
+    "pos": "adj",
+    "meaning": "献身于的",
+    "rank": 7233,
+    "layer": 8
+   },
+   {
+    "word": "hormone",
+    "pos": "n",
+    "meaning": "荷尔蒙, 激素",
+    "rank": 7239,
+    "layer": 8
+   },
+   {
+    "word": "naval",
+    "pos": "a",
+    "meaning": "海军的,军舰的",
+    "rank": 7246,
+    "layer": 8
+   },
+   {
+    "word": "porcelain",
+    "pos": "n",
+    "meaning": "瓷器",
+    "rank": 7249,
+    "layer": 8
+   },
+   {
+    "word": "casting",
+    "pos": "n",
+    "meaning": "铸件, 铸造",
+    "rank": 7257,
+    "layer": 8
+   },
+   {
+    "word": "warrior",
+    "pos": "n",
+    "meaning": "勇士，战士",
+    "rank": 7268,
+    "layer": 8
+   },
+   {
+    "word": "innocent",
+    "pos": "a",
+    "meaning": "无罪的",
+    "rank": 7271,
+    "layer": 8
+   },
+   {
+    "word": "horn",
+    "pos": "n",
+    "meaning": "(牛羊等的)角",
+    "rank": 7283,
+    "layer": 8
+   },
+   {
+    "word": "grammar",
+    "pos": "n",
+    "meaning": "语法，语法书",
+    "rank": 7294,
+    "layer": 8
+   },
+   {
+    "word": "disagree",
+    "pos": "vi",
+    "meaning": "有分歧",
+    "rank": 7297,
+    "layer": 8
+   },
+   {
+    "word": "circular",
+    "pos": "a",
+    "meaning": "圆(形)的，环形的",
+    "rank": 7313,
+    "layer": 8
+   },
+   {
+    "word": "mainland",
+    "pos": "n",
+    "meaning": "大陆，本土",
+    "rank": 7316,
+    "layer": 8
+   },
+   {
+    "word": "happiness",
+    "pos": "n",
+    "meaning": "幸福，幸运",
+    "rank": 7322,
+    "layer": 8
+   },
+   {
+    "word": "ribbon",
+    "pos": "n",
+    "meaning": "缎带,丝带,带状物",
+    "rank": 7334,
+    "layer": 8
+   },
+   {
+    "word": "impression",
+    "pos": "n",
+    "meaning": "印象，感想",
+    "rank": 7353,
+    "layer": 8
+   },
+   {
+    "word": "guild",
+    "pos": "n",
+    "meaning": "(中世纪的)行会",
+    "rank": 7357,
+    "layer": 8
+   },
+   {
+    "word": "nervous",
+    "pos": "a",
+    "meaning": "神经的",
+    "rank": 7366,
+    "layer": 8
+   },
+   {
+    "word": "fragrance",
+    "pos": "n",
+    "meaning": "香味,香气",
+    "rank": 7369,
+    "layer": 8
+   },
+   {
+    "word": "transparent",
+    "pos": "a",
+    "meaning": "透明的,明显的",
+    "rank": 7379,
+    "layer": 8
+   },
+   {
+    "word": "calm",
+    "pos": "a",
+    "meaning": "(天气，海洋等)静的n.",
+    "rank": 7387,
+    "layer": 8
+   },
+   {
+    "word": "farming",
+    "pos": "n",
+    "meaning": "农业，种植业",
+    "rank": 7402,
+    "layer": 8
+   },
+   {
+    "word": "roller",
+    "pos": "n",
+    "meaning": "滚柱，滚筒，滚轴",
+    "rank": 7408,
+    "layer": 8
+   },
+   {
+    "word": "alter",
+    "pos": "v",
+    "meaning": "改变,更改",
+    "rank": 7413,
+    "layer": 8
+   },
+   {
+    "word": "distinguished",
+    "pos": "adj",
+    "meaning": "尊贵的，尊敬的",
+    "rank": 7425,
+    "layer": 8
+   },
+   {
+    "word": "amend",
+    "pos": "v",
+    "meaning": "改进,修正",
+    "rank": 7436,
+    "layer": 8
+   },
+   {
+    "word": "sprint",
+    "pos": "v",
+    "meaning": "疾跑。美国著名的通讯公司",
+    "rank": 7448,
+    "layer": 8
+   },
+   {
+    "word": "advocate",
+    "pos": "n",
+    "meaning": "倡导者",
+    "rank": 7451,
+    "layer": 8
+   },
+   {
+    "word": "tray",
+    "pos": "n",
+    "meaning": "盘，碟，托盘",
+    "rank": 7455,
+    "layer": 8
+   },
+   {
+    "word": "vulnerable",
+    "pos": "a",
+    "meaning": "易受伤的,脆弱的",
+    "rank": 7474,
+    "layer": 8
+   },
+   {
+    "word": "artistic",
+    "pos": "a",
+    "meaning": "艺术(家)的，美术(家)的",
+    "rank": 7476,
+    "layer": 8
+   },
+   {
+    "word": "breed",
+    "pos": "v",
+    "meaning": "繁殖,生育",
+    "rank": 7484,
+    "layer": 8
+   },
+   {
+    "word": "precise",
+    "pos": "a",
+    "meaning": "精确的",
+    "rank": 7489,
+    "layer": 8
+   },
+   {
+    "word": "invoice",
+    "pos": "vt",
+    "meaning": "开发票",
+    "rank": 7496,
+    "layer": 8
+   },
+   {
+    "word": "gather",
+    "pos": "v",
+    "meaning": "聚集，聚拢",
+    "rank": 7501,
+    "layer": 8
+   },
+   {
+    "word": "cave",
+    "pos": "n",
+    "meaning": "洞，穴",
+    "rank": 7512,
+    "layer": 8
+   },
+   {
+    "word": "proceeds",
+    "pos": "n",
+    "meaning": "收益",
+    "rank": 7517,
+    "layer": 8
+   },
+   {
+    "word": "arrest",
+    "pos": "n",
+    "meaning": "逮捕，扣留vt. 逮捕，扣留",
+    "rank": 7523,
+    "layer": 8
+   },
+   {
+    "word": "horizon",
+    "pos": "n",
+    "meaning": "地平线",
+    "rank": 7527,
+    "layer": 8
+   },
+   {
+    "word": "tolerance",
+    "pos": "n",
+    "meaning": "容忍,宽恕",
+    "rank": 7540,
+    "layer": 8
+   },
+   {
+    "word": "pursue",
+    "pos": "v",
+    "meaning": "追赶，追踪",
+    "rank": 7546,
+    "layer": 8
+   },
+   {
+    "word": "inspector",
+    "pos": "n",
+    "meaning": "检查员",
+    "rank": 7553,
+    "layer": 8
+   },
+   {
+    "word": "disable",
+    "pos": "vt",
+    "meaning": "使无能力,使伤残",
+    "rank": 7559,
+    "layer": 8
+   },
+   {
+    "word": "lending",
+    "pos": "n",
+    "meaning": "贷款，借款",
+    "rank": 7563,
+    "layer": 8
+   },
+   {
+    "word": "lonely",
+    "pos": "a",
+    "meaning": "孤独的，寂寞的",
+    "rank": 7584,
+    "layer": 8
+   },
+   {
+    "word": "observe",
+    "pos": "v",
+    "meaning": "观察，观测，注意到，监视",
+    "rank": 7591,
+    "layer": 8
+   },
+   {
+    "word": "collar",
+    "pos": "n",
+    "meaning": "衣领",
+    "rank": 7597,
+    "layer": 8
+   },
+   {
+    "word": "integrate",
+    "pos": "vt",
+    "meaning": "使一体化,取消种族隔离",
+    "rank": 7600,
+    "layer": 8
+   },
+   {
+    "word": "confident",
+    "pos": "a",
+    "meaning": "确信的,有把握的",
+    "rank": 7608,
+    "layer": 8
+   },
+   {
+    "word": "jail",
+    "pos": "n",
+    "meaning": "监狱",
+    "rank": 7628,
+    "layer": 8
+   },
+   {
+    "word": "finite",
+    "pos": "a",
+    "meaning": "有限的,限定的",
+    "rank": 7630,
+    "layer": 8
+   },
+   {
+    "word": "allied",
+    "pos": "a",
+    "meaning": "联合的",
+    "rank": 7637,
+    "layer": 8
+   },
+   {
+    "word": "transform",
+    "pos": "vt",
+    "meaning": "改变(形状性质等)",
+    "rank": 7650,
+    "layer": 8
+   },
+   {
+    "word": "verse",
+    "pos": "n",
+    "meaning": "韵文，诗",
+    "rank": 7659,
+    "layer": 8
+   },
+   {
+    "word": "custody",
+    "pos": "n",
+    "meaning": "保管，监护",
+    "rank": 7664,
+    "layer": 8
+   },
+   {
+    "word": "rocket",
+    "pos": "n",
+    "meaning": "火箭",
+    "rank": 7677,
+    "layer": 8
+   },
+   {
+    "word": "lace",
+    "pos": "n",
+    "meaning": "鞋带,花边",
+    "rank": 7682,
+    "layer": 8
+   },
+   {
+    "word": "consciousness",
+    "pos": "n",
+    "meaning": "意识，觉悟",
+    "rank": 7686,
+    "layer": 8
+   },
+   {
+    "word": "mistress",
+    "pos": "n",
+    "meaning": "女主人",
+    "rank": 7692,
+    "layer": 8
+   },
+   {
+    "word": "hammer",
+    "pos": "n",
+    "meaning": "铁锤，槌，榔头v. 锤击",
+    "rank": 7721,
+    "layer": 8
+   },
+   {
+    "word": "runner",
+    "pos": "n",
+    "meaning": "赛跑的人",
+    "rank": 7724,
+    "layer": 8
+   },
+   {
+    "word": "strengthen",
+    "pos": "v",
+    "meaning": "加强,巩固",
+    "rank": 7738,
+    "layer": 8
+   },
+   {
+    "word": "belly",
+    "pos": "n",
+    "meaning": "腹部,腹腔",
+    "rank": 7749,
+    "layer": 8
+   },
+   {
+    "word": "motivation",
+    "pos": "n",
+    "meaning": "动机",
+    "rank": 7769,
+    "layer": 8
+   },
+   {
+    "word": "mere",
+    "pos": "a",
+    "meaning": "纯粹的",
+    "rank": 7775,
+    "layer": 8
+   },
+   {
+    "word": "dig",
+    "pos": "v",
+    "meaning": "挖，掘",
+    "rank": 7788,
+    "layer": 8
+   },
+   {
+    "word": "punishment",
+    "pos": "n",
+    "meaning": "罚，惩罚，处罚",
+    "rank": 7790,
+    "layer": 8
+   },
+   {
+    "word": "gravity",
+    "pos": "n",
+    "meaning": "重力，引力",
+    "rank": 7797,
+    "layer": 8
+   },
+   {
+    "word": "restriction",
+    "pos": "n",
+    "meaning": "限制，限定，约束",
+    "rank": 7800,
+    "layer": 8
+   },
+   {
+    "word": "essence",
+    "pos": "n",
+    "meaning": "本质，实质",
+    "rank": 7805,
+    "layer": 8
+   },
+   {
+    "word": "humanity",
+    "pos": "n",
+    "meaning": "人类,仁慈,仁爱",
+    "rank": 7812,
+    "layer": 8
+   },
+   {
+    "word": "dominant",
+    "pos": "a",
+    "meaning": "支配的，统治的，占优势的",
+    "rank": 7834,
+    "layer": 8
+   },
+   {
+    "word": "stomach",
+    "pos": "n",
+    "meaning": "胃，胃口",
+    "rank": 7838,
+    "layer": 8
+   },
+   {
+    "word": "wilderness",
+    "pos": "n",
+    "meaning": "荒地,废墟",
+    "rank": 7846,
+    "layer": 8
+   },
+   {
+    "word": "anatomy",
+    "pos": "n",
+    "meaning": "剖析, 解剖学",
+    "rank": 7852,
+    "layer": 8
+   },
+   {
+    "word": "proceeding",
+    "pos": "n",
+    "meaning": "行动，进行",
+    "rank": 7859,
+    "layer": 8
+   },
+   {
+    "word": "uncertainty",
+    "pos": "n",
+    "meaning": "不定，易变",
+    "rank": 7863,
+    "layer": 8
+   },
+   {
+    "word": "clarity",
+    "pos": "n",
+    "meaning": "清楚, 透明",
+    "rank": 7870,
+    "layer": 8
+   },
+   {
+    "word": "vaccine",
+    "pos": "adj",
+    "meaning": "疫苗的, 牛痘的。n.疫苗",
+    "rank": 7885,
+    "layer": 8
+   },
+   {
+    "word": "robust",
+    "pos": "a",
+    "meaning": "强健的",
+    "rank": 7893,
+    "layer": 8
+   },
+   {
+    "word": "jungle",
+    "pos": "n",
+    "meaning": "丛林,密林",
+    "rank": 7902,
+    "layer": 8
+   },
+   {
+    "word": "prediction",
+    "pos": "n",
+    "meaning": "预言，预告",
+    "rank": 7912,
+    "layer": 8
+   },
+   {
+    "word": "thesaurus",
+    "pos": "n",
+    "meaning": "辞典",
+    "rank": 7918,
+    "layer": 8
+   },
+   {
+    "word": "appraisal",
+    "pos": "n",
+    "meaning": "评价, 估价(尤指估价财产",
+    "rank": 7932,
+    "layer": 8
+   },
+   {
+    "word": "periodic",
+    "pos": "n",
+    "meaning": "周期的",
+    "rank": 7935,
+    "layer": 8
+   },
+   {
+    "word": "shipment",
+    "pos": "n",
+    "meaning": "装船，装运",
+    "rank": 7940,
+    "layer": 8
+   },
+   {
+    "word": "earl",
+    "pos": "n",
+    "meaning": "伯爵",
+    "rank": 7954,
+    "layer": 8
+   },
+   {
+    "word": "cite",
+    "pos": "vt",
+    "meaning": "引用,举例,传讯",
+    "rank": 7982,
+    "layer": 8
+   },
+   {
+    "word": "remarkable",
+    "pos": "a",
+    "meaning": "不平常的",
+    "rank": 7984,
+    "layer": 8
+   },
+   {
+    "word": "pig",
+    "pos": "n",
+    "meaning": "猪，猪肉",
+    "rank": 7993,
+    "layer": 8
+   },
+   {
+    "word": "imagination",
+    "pos": "n",
+    "meaning": "想象(力)",
+    "rank": 7999,
+    "layer": 8
+   }
+  ],
+  [
+   {
+    "word": "varied",
+    "pos": "adj",
+    "meaning": "不同的",
+    "rank": 8004,
+    "layer": 9
+   },
+   {
+    "word": "assign",
+    "pos": "vt",
+    "meaning": "分配",
+    "rank": 8011,
+    "layer": 9
+   },
+   {
+    "word": "shade",
+    "pos": "n",
+    "meaning": "荫，阴影",
+    "rank": 8025,
+    "layer": 9
+   },
+   {
+    "word": "symphony",
+    "pos": "n",
+    "meaning": "交响乐，交响曲",
+    "rank": 8032,
+    "layer": 9
+   },
+   {
+    "word": "isolation",
+    "pos": "n",
+    "meaning": "隔离，孤立状态",
+    "rank": 8045,
+    "layer": 9
+   },
+   {
+    "word": "incomplete",
+    "pos": "a",
+    "meaning": "不完全的，未完成的",
+    "rank": 8060,
+    "layer": 9
+   },
+   {
+    "word": "grave",
+    "pos": "a",
+    "meaning": "严重的",
+    "rank": 8065,
+    "layer": 9
+   },
+   {
+    "word": "gentle",
+    "pos": "a",
+    "meaning": "文雅的,有礼貌的",
+    "rank": 8075,
+    "layer": 9
+   },
+   {
+    "word": "entrepreneur",
+    "pos": "n",
+    "meaning": "<法>企业家, 主办人",
+    "rank": 8089,
+    "layer": 9
+   },
+   {
+    "word": "unexpected",
+    "pos": "a",
+    "meaning": "想不到的，意外的，未预料到",
+    "rank": 8101,
+    "layer": 9
+   },
+   {
+    "word": "fog",
+    "pos": "n",
+    "meaning": "雾气，雾v. 以雾笼罩",
+    "rank": 8103,
+    "layer": 9
+   },
+   {
+    "word": "consequently",
+    "pos": "ad",
+    "meaning": "结果，因此，所以",
+    "rank": 8111,
+    "layer": 9
+   },
+   {
+    "word": "punch",
+    "pos": "n",
+    "meaning": "冲压机，冲床",
+    "rank": 8114,
+    "layer": 9
+   },
+   {
+    "word": "consist",
+    "pos": "vi",
+    "meaning": "组成,存在",
+    "rank": 8123,
+    "layer": 9
+   },
+   {
+    "word": "defeat",
+    "pos": "v",
+    "meaning": "击败n.失败",
+    "rank": 8135,
+    "layer": 9
+   },
+   {
+    "word": "livestock",
+    "pos": "n",
+    "meaning": "家畜,牲畜",
+    "rank": 8143,
+    "layer": 9
+   },
+   {
+    "word": "algebra",
+    "pos": "n",
+    "meaning": "代数学",
+    "rank": 8151,
+    "layer": 9
+   },
+   {
+    "word": "freely",
+    "pos": "ad",
+    "meaning": "自由地",
+    "rank": 8160,
+    "layer": 9
+   },
+   {
+    "word": "mild",
+    "pos": "a",
+    "meaning": "温和的，轻微的，味淡",
+    "rank": 8164,
+    "layer": 9
+   },
+   {
+    "word": "readily",
+    "pos": "ad",
+    "meaning": "乐意地,欣然地",
+    "rank": 8172,
+    "layer": 9
+   },
+   {
+    "word": "infinite",
+    "pos": "a",
+    "meaning": "无限的，无穷的n. 无限",
+    "rank": 8177,
+    "layer": 9
+   },
+   {
+    "word": "satisfactory",
+    "pos": "a",
+    "meaning": "令人满意的，圆满的，良好",
+    "rank": 8185,
+    "layer": 9
+   },
+   {
+    "word": "civilian",
+    "pos": "n",
+    "meaning": "平民, 公务员, 文官",
+    "rank": 8189,
+    "layer": 9
+   },
+   {
+    "word": "briefly",
+    "pos": "adv",
+    "meaning": "简单地，简短地",
+    "rank": 8196,
+    "layer": 9
+   },
+   {
+    "word": "genius",
+    "pos": "n",
+    "meaning": "天才,天才人物",
+    "rank": 8200,
+    "layer": 9
+   },
+   {
+    "word": "barely",
+    "pos": "ad",
+    "meaning": "赤裸裸地，无遮蔽地",
+    "rank": 8208,
+    "layer": 9
+   },
+   {
+    "word": "democrat",
+    "pos": "n",
+    "meaning": "民主党人",
+    "rank": 8212,
+    "layer": 9
+   },
+   {
+    "word": "briefing",
+    "pos": "n",
+    "meaning": "简要情况",
+    "rank": 8229,
+    "layer": 9
+   },
+   {
+    "word": "meditation",
+    "pos": "n",
+    "meaning": "熟虑",
+    "rank": 8236,
+    "layer": 9
+   },
+   {
+    "word": "shed",
+    "pos": "n",
+    "meaning": "棚",
+    "rank": 8245,
+    "layer": 9
+   },
+   {
+    "word": "memo",
+    "pos": "n",
+    "meaning": "备忘录",
+    "rank": 8249,
+    "layer": 9
+   },
+   {
+    "word": "partition",
+    "pos": "n",
+    "meaning": "分开，分割",
+    "rank": 8256,
+    "layer": 9
+   },
+   {
+    "word": "fbi",
+    "pos": "",
+    "meaning": "国际刑警",
+    "rank": 8261,
+    "layer": 9
+   },
+   {
+    "word": "sheer",
+    "pos": "a",
+    "meaning": "完全的,十足的",
+    "rank": 8269,
+    "layer": 9
+   },
+   {
+    "word": "bind",
+    "pos": "v",
+    "meaning": "捆",
+    "rank": 8275,
+    "layer": 9
+   },
+   {
+    "word": "buck",
+    "pos": "n",
+    "meaning": "<美口> 元, 雄鹿",
+    "rank": 8285,
+    "layer": 9
+   },
+   {
+    "word": "puppy",
+    "pos": "n",
+    "meaning": "小狗",
+    "rank": 8293,
+    "layer": 9
+   },
+   {
+    "word": "revenge",
+    "pos": "vt",
+    "meaning": "报仇,报复",
+    "rank": 8299,
+    "layer": 9
+   },
+   {
+    "word": "pest",
+    "pos": "n",
+    "meaning": "害虫",
+    "rank": 8315,
+    "layer": 9
+   },
+   {
+    "word": "physically",
+    "pos": "ad",
+    "meaning": "物质上",
+    "rank": 8327,
+    "layer": 9
+   },
+   {
+    "word": "consecutive",
+    "pos": "a",
+    "meaning": "连续的,连贯的",
+    "rank": 8332,
+    "layer": 9
+   },
+   {
+    "word": "peninsula",
+    "pos": "n",
+    "meaning": "半岛",
+    "rank": 8354,
+    "layer": 9
+   },
+   {
+    "word": "accurately",
+    "pos": "adj",
+    "meaning": "准确地",
+    "rank": 8360,
+    "layer": 9
+   },
+   {
+    "word": "nerve",
+    "pos": "n",
+    "meaning": "神经",
+    "rank": 8377,
+    "layer": 9
+   },
+   {
+    "word": "renew",
+    "pos": "v",
+    "meaning": "(使)更新，恢复，重新开始",
+    "rank": 8383,
+    "layer": 9
+   },
+   {
+    "word": "acknowledge",
+    "pos": "vt",
+    "meaning": "承认",
+    "rank": 8397,
+    "layer": 9
+   },
+   {
+    "word": "thunder",
+    "pos": "n",
+    "meaning": "雷,雷声,轰隆声",
+    "rank": 8401,
+    "layer": 9
+   },
+   {
+    "word": "qualification",
+    "pos": "n",
+    "meaning": "资格",
+    "rank": 8406,
+    "layer": 9
+   },
+   {
+    "word": "miniature",
+    "pos": "n",
+    "meaning": "缩小的模型，缩图a.",
+    "rank": 8410,
+    "layer": 9
+   },
+   {
+    "word": "consequence",
+    "pos": "n",
+    "meaning": "结果，后果，影响",
+    "rank": 8419,
+    "layer": 9
+   },
+   {
+    "word": "systematic",
+    "pos": "a",
+    "meaning": "有系统的,系统的",
+    "rank": 8421,
+    "layer": 9
+   },
+   {
+    "word": "magnitude",
+    "pos": "n",
+    "meaning": "大小",
+    "rank": 8441,
+    "layer": 9
+   },
+   {
+    "word": "earthquake",
+    "pos": "n",
+    "meaning": "地震",
+    "rank": 8449,
+    "layer": 9
+   },
+   {
+    "word": "junk",
+    "pos": "n",
+    "meaning": "垃圾, 舢板",
+    "rank": 8472,
+    "layer": 9
+   },
+   {
+    "word": "slope",
+    "pos": "n",
+    "meaning": "斜线,斜度",
+    "rank": 8479,
+    "layer": 9
+   },
+   {
+    "word": "surname",
+    "pos": "n",
+    "meaning": "姓",
+    "rank": 8484,
+    "layer": 9
+   },
+   {
+    "word": "saturn",
+    "pos": "n",
+    "meaning": "农神",
+    "rank": 8492,
+    "layer": 9
+   },
+   {
+    "word": "sake",
+    "pos": "n",
+    "meaning": "缘故",
+    "rank": 8496,
+    "layer": 9
+   },
+   {
+    "word": "merit",
+    "pos": "n",
+    "meaning": "价值,优点,功绩",
+    "rank": 8500,
+    "layer": 9
+   },
+   {
+    "word": "amplifier",
+    "pos": "n",
+    "meaning": "放大器，扩大器",
+    "rank": 8510,
+    "layer": 9
+   },
+   {
+    "word": "prominent",
+    "pos": "a",
+    "meaning": "突起的，凸出的",
+    "rank": 8513,
+    "layer": 9
+   },
+   {
+    "word": "shaft",
+    "pos": "n",
+    "meaning": "矛",
+    "rank": 8524,
+    "layer": 9
+   },
+   {
+    "word": "occasional",
+    "pos": "a",
+    "meaning": "偶然的，非经常的，特殊场合的",
+    "rank": 8529,
+    "layer": 9
+   },
+   {
+    "word": "panic",
+    "pos": "n",
+    "meaning": "惊慌,恐慌",
+    "rank": 8550,
+    "layer": 9
+   },
+   {
+    "word": "citizenship",
+    "pos": "n",
+    "meaning": "公民权",
+    "rank": 8556,
+    "layer": 9
+   },
+   {
+    "word": "onion",
+    "pos": "n",
+    "meaning": "洋葱",
+    "rank": 8560,
+    "layer": 9
+   },
+   {
+    "word": "sandwich",
+    "pos": "n",
+    "meaning": "三明治，夹肉面包v. 夹入",
+    "rank": 8563,
+    "layer": 9
+   },
+   {
+    "word": "hierarchy",
+    "pos": "n",
+    "meaning": "层次。层级",
+    "rank": 8571,
+    "layer": 9
+   },
+   {
+    "word": "merry",
+    "pos": "a",
+    "meaning": "欢乐的，愉快的",
+    "rank": 8581,
+    "layer": 9
+   },
+   {
+    "word": "valued",
+    "pos": "adj",
+    "meaning": "宝贵的",
+    "rank": 8590,
+    "layer": 9
+   },
+   {
+    "word": "courage",
+    "pos": "n",
+    "meaning": "勇气，胆量",
+    "rank": 8595,
+    "layer": 9
+   },
+   {
+    "word": "lap",
+    "pos": "n",
+    "meaning": "(跑道的)一圈",
+    "rank": 8608,
+    "layer": 9
+   },
+   {
+    "word": "textbook",
+    "pos": "n",
+    "meaning": "课本，教科书",
+    "rank": 8617,
+    "layer": 9
+   },
+   {
+    "word": "settle",
+    "pos": "v",
+    "meaning": "安定，安顿",
+    "rank": 8623,
+    "layer": 9
+   },
+   {
+    "word": "flux",
+    "pos": "n",
+    "meaning": "流,流动",
+    "rank": 8630,
+    "layer": 9
+   },
+   {
+    "word": "scenic",
+    "pos": "adj",
+    "meaning": "风景如画的",
+    "rank": 8638,
+    "layer": 9
+   },
+   {
+    "word": "intersection",
+    "pos": "n",
+    "meaning": "[数]交集, 十字路口",
+    "rank": 8643,
+    "layer": 9
+   },
+   {
+    "word": "propose",
+    "pos": "v",
+    "meaning": "提议",
+    "rank": 8654,
+    "layer": 9
+   },
+   {
+    "word": "astrology",
+    "pos": "n",
+    "meaning": "占星术",
+    "rank": 8662,
+    "layer": 9
+   },
+   {
+    "word": "pillow",
+    "pos": "n",
+    "meaning": "枕头",
+    "rank": 8672,
+    "layer": 9
+   },
+   {
+    "word": "precisely",
+    "pos": "adv",
+    "meaning": "精确地,恰好,正是,确实",
+    "rank": 8675,
+    "layer": 9
+   },
+   {
+    "word": "refined",
+    "pos": "adj",
+    "meaning": "精炼的，精的,举止优雅的",
+    "rank": 8685,
+    "layer": 9
+   },
+   {
+    "word": "incidence",
+    "pos": "n",
+    "meaning": "落下的方式, 影响范围",
+    "rank": 8690,
+    "layer": 9
+   },
+   {
+    "word": "toddler",
+    "pos": "n",
+    "meaning": "初学走路的孩子",
+    "rank": 8703,
+    "layer": 9
+   },
+   {
+    "word": "alike",
+    "pos": "a",
+    "meaning": "同样的，相像ad. 一样地",
+    "rank": 8706,
+    "layer": 9
+   },
+   {
+    "word": "hungry",
+    "pos": "a",
+    "meaning": "饥饿的，渴望的",
+    "rank": 8710,
+    "layer": 9
+   },
+   {
+    "word": "interference",
+    "pos": "n",
+    "meaning": "(in)干涉，干预",
+    "rank": 8714,
+    "layer": 9
+   },
+   {
+    "word": "lesser",
+    "pos": "adj",
+    "meaning": "较小的, 更少的, 次要的",
+    "rank": 8734,
+    "layer": 9
+   },
+   {
+    "word": "ant",
+    "pos": "n",
+    "meaning": "蚁",
+    "rank": 8737,
+    "layer": 9
+   },
+   {
+    "word": "apt",
+    "pos": "a",
+    "meaning": "聪明的",
+    "rank": 8742,
+    "layer": 9
+   },
+   {
+    "word": "catalyst",
+    "pos": "n",
+    "meaning": "催化剂",
+    "rank": 8753,
+    "layer": 9
+   },
+   {
+    "word": "denial",
+    "pos": "n",
+    "meaning": "拒绝,否认",
+    "rank": 8758,
+    "layer": 9
+   },
+   {
+    "word": "gem",
+    "pos": "n",
+    "meaning": "宝石",
+    "rank": 8764,
+    "layer": 9
+   },
+   {
+    "word": "badge",
+    "pos": "n",
+    "meaning": "徽章,标记",
+    "rank": 8768,
+    "layer": 9
+   },
+   {
+    "word": "civilization",
+    "pos": "n",
+    "meaning": "文明，文化",
+    "rank": 8770,
+    "layer": 9
+   },
+   {
+    "word": "validity",
+    "pos": "n",
+    "meaning": "有效，效力",
+    "rank": 8779,
+    "layer": 9
+   },
+   {
+    "word": "plastics",
+    "pos": "n",
+    "meaning": "塑料(制品)",
+    "rank": 8787,
+    "layer": 9
+   },
+   {
+    "word": "postcard",
+    "pos": "n",
+    "meaning": "明信片",
+    "rank": 8793,
+    "layer": 9
+   },
+   {
+    "word": "scholar",
+    "pos": "n",
+    "meaning": "学者",
+    "rank": 8798,
+    "layer": 9
+   },
+   {
+    "word": "wallet",
+    "pos": "n",
+    "meaning": "皮夹，钱包",
+    "rank": 8811,
+    "layer": 9
+   },
+   {
+    "word": "drainage",
+    "pos": "n",
+    "meaning": "排水",
+    "rank": 8817,
+    "layer": 9
+   },
+   {
+    "word": "ambassador",
+    "pos": "n",
+    "meaning": "大使,授权代表",
+    "rank": 8832,
+    "layer": 9
+   },
+   {
+    "word": "vegetation",
+    "pos": "n",
+    "meaning": "[植]植被, (总称)植物",
+    "rank": 8837,
+    "layer": 9
+   },
+   {
+    "word": "aquatic",
+    "pos": "adj",
+    "meaning": "水的, 水上的, 水生",
+    "rank": 8850,
+    "layer": 9
+   },
+   {
+    "word": "striking",
+    "pos": "a",
+    "meaning": "引人注目的,显著的",
+    "rank": 8853,
+    "layer": 9
+   },
+   {
+    "word": "continuity",
+    "pos": "n",
+    "meaning": "连续性, 连贯性",
+    "rank": 8862,
+    "layer": 9
+   },
+   {
+    "word": "phenomenon",
+    "pos": "n",
+    "meaning": "现象，稀有现象，珍品，奇迹",
+    "rank": 8866,
+    "layer": 9
+   },
+   {
+    "word": "weed",
+    "pos": "n",
+    "meaning": "杂草，野草v. 除草，锄草",
+    "rank": 8871,
+    "layer": 9
+   },
+   {
+    "word": "accent",
+    "pos": "n",
+    "meaning": "口音，腔调",
+    "rank": 8873,
+    "layer": 9
+   },
+   {
+    "word": "mileage",
+    "pos": "n",
+    "meaning": "里程",
+    "rank": 8879,
+    "layer": 9
+   },
+   {
+    "word": "nitrogen",
+    "pos": "n",
+    "meaning": "氮",
+    "rank": 8890,
+    "layer": 9
+   },
+   {
+    "word": "differently",
+    "pos": "adv",
+    "meaning": "不同地",
+    "rank": 8898,
+    "layer": 9
+   },
+   {
+    "word": "remark",
+    "pos": "n",
+    "meaning": "(about，on)评语",
+    "rank": 8919,
+    "layer": 9
+   },
+   {
+    "word": "pork",
+    "pos": "n",
+    "meaning": "猪肉",
+    "rank": 8947,
+    "layer": 9
+   },
+   {
+    "word": "inquire",
+    "pos": "v",
+    "meaning": "询问，打听",
+    "rank": 8951,
+    "layer": 9
+   },
+   {
+    "word": "estimation",
+    "pos": "n",
+    "meaning": "估算，估计",
+    "rank": 8965,
+    "layer": 9
+   },
+   {
+    "word": "fleece",
+    "pos": "n",
+    "meaning": "羊毛",
+    "rank": 8969,
+    "layer": 9
+   },
+   {
+    "word": "dressing",
+    "pos": "n",
+    "meaning": "打扮，调味品",
+    "rank": 8977,
+    "layer": 9
+   },
+   {
+    "word": "frost",
+    "pos": "n",
+    "meaning": "严寒,霜",
+    "rank": 8985,
+    "layer": 9
+   },
+   {
+    "word": "herb",
+    "pos": "n",
+    "meaning": "草木植物,药草",
+    "rank": 8997,
+    "layer": 9
+   }
+  ],
+  [
+   {
+    "word": "breach",
+    "pos": "n",
+    "meaning": "缺口",
+    "rank": 9001,
+    "layer": 10
+   },
+   {
+    "word": "stationery",
+    "pos": "n",
+    "meaning": "文具",
+    "rank": 9012,
+    "layer": 10
+   },
+   {
+    "word": "momentum",
+    "pos": "n",
+    "meaning": "动力, 要素",
+    "rank": 9019,
+    "layer": 10
+   },
+   {
+    "word": "shark",
+    "pos": "n",
+    "meaning": "鲨鱼",
+    "rank": 9027,
+    "layer": 10
+   },
+   {
+    "word": "cliff",
+    "pos": "n",
+    "meaning": "悬崖",
+    "rank": 9036,
+    "layer": 10
+   },
+   {
+    "word": "tract",
+    "pos": "n",
+    "meaning": "广阔的地面, 土地, 地方",
+    "rank": 9038,
+    "layer": 10
+   },
+   {
+    "word": "bumper",
+    "pos": "n",
+    "meaning": "缓冲器",
+    "rank": 9045,
+    "layer": 10
+   },
+   {
+    "word": "shine",
+    "pos": "v",
+    "meaning": "照耀，发光",
+    "rank": 9051,
+    "layer": 10
+   },
+   {
+    "word": "tariff",
+    "pos": "n",
+    "meaning": "关税，税率",
+    "rank": 9069,
+    "layer": 10
+   },
+   {
+    "word": "swift",
+    "pos": "a",
+    "meaning": "快的,迅速的,敏捷的",
+    "rank": 9077,
+    "layer": 10
+   },
+   {
+    "word": "decimal",
+    "pos": "a",
+    "meaning": "十进法的,小数的",
+    "rank": 9089,
+    "layer": 10
+   },
+   {
+    "word": "superintendent",
+    "pos": "n",
+    "meaning": "管理人，负责人,警长",
+    "rank": 9092,
+    "layer": 10
+   },
+   {
+    "word": "hydraulic",
+    "pos": "a",
+    "meaning": "水力的",
+    "rank": 9111,
+    "layer": 10
+   },
+   {
+    "word": "penetration",
+    "pos": "n",
+    "meaning": "穿入",
+    "rank": 9116,
+    "layer": 10
+   },
+   {
+    "word": "lazy",
+    "pos": "a",
+    "meaning": "懒惰的，懒散的",
+    "rank": 9125,
+    "layer": 10
+   },
+   {
+    "word": "prototype",
+    "pos": "n",
+    "meaning": "原型",
+    "rank": 9140,
+    "layer": 10
+   },
+   {
+    "word": "gossip",
+    "pos": "n",
+    "meaning": "流言蜚语",
+    "rank": 9152,
+    "layer": 10
+   },
+   {
+    "word": "empirical",
+    "pos": "a",
+    "meaning": "经验主义的",
+    "rank": 9155,
+    "layer": 10
+   },
+   {
+    "word": "dependence",
+    "pos": "n",
+    "meaning": "依靠，依赖",
+    "rank": 9159,
+    "layer": 10
+   },
+   {
+    "word": "beginner",
+    "pos": "n",
+    "meaning": "初学者，生手",
+    "rank": 9161,
+    "layer": 10
+   },
+   {
+    "word": "cubic",
+    "pos": "a",
+    "meaning": "立方形的",
+    "rank": 9166,
+    "layer": 10
+   },
+   {
+    "word": "remainder",
+    "pos": "n",
+    "meaning": "剩余物，剩下的",
+    "rank": 9174,
+    "layer": 10
+   },
+   {
+    "word": "neighbor",
+    "pos": "n",
+    "meaning": "邻居",
+    "rank": 9191,
+    "layer": 10
+   },
+   {
+    "word": "intimate",
+    "pos": "a",
+    "meaning": "亲密的,密切的",
+    "rank": 9197,
+    "layer": 10
+   },
+   {
+    "word": "refrigerator",
+    "pos": "n",
+    "meaning": "冰箱",
+    "rank": 9208,
+    "layer": 10
+   },
+   {
+    "word": "keen",
+    "pos": "a",
+    "meaning": "锋利的,尖锐的,强烈的",
+    "rank": 9217,
+    "layer": 10
+   },
+   {
+    "word": "variance",
+    "pos": "n",
+    "meaning": "分歧，不一致",
+    "rank": 9225,
+    "layer": 10
+   },
+   {
+    "word": "sticky",
+    "pos": "a",
+    "meaning": "粘的，粘性的",
+    "rank": 9246,
+    "layer": 10
+   },
+   {
+    "word": "generous",
+    "pos": "a",
+    "meaning": "慷慨的",
+    "rank": 9248,
+    "layer": 10
+   },
+   {
+    "word": "heated",
+    "pos": "n",
+    "meaning": "激烈的，热烈的",
+    "rank": 9255,
+    "layer": 10
+   },
+   {
+    "word": "hay",
+    "pos": "n",
+    "meaning": "干草",
+    "rank": 9260,
+    "layer": 10
+   },
+   {
+    "word": "arbitration",
+    "pos": "n",
+    "meaning": "仲裁",
+    "rank": 9275,
+    "layer": 10
+   },
+   {
+    "word": "zinc",
+    "pos": "n",
+    "meaning": "锌",
+    "rank": 9279,
+    "layer": 10
+   },
+   {
+    "word": "emperor",
+    "pos": "n",
+    "meaning": "皇帝",
+    "rank": 9295,
+    "layer": 10
+   },
+   {
+    "word": "necessity",
+    "pos": "n",
+    "meaning": "必要性，需要",
+    "rank": 9308,
+    "layer": 10
+   },
+   {
+    "word": "tomato",
+    "pos": "n",
+    "meaning": "西红柿",
+    "rank": 9324,
+    "layer": 10
+   },
+   {
+    "word": "flush",
+    "pos": "n",
+    "meaning": "脸红v. 发红",
+    "rank": 9330,
+    "layer": 10
+   },
+   {
+    "word": "delight",
+    "pos": "n",
+    "meaning": "快乐，高兴v. (使)高兴",
+    "rank": 9338,
+    "layer": 10
+   },
+   {
+    "word": "undertake",
+    "pos": "vt",
+    "meaning": "承担",
+    "rank": 9347,
+    "layer": 10
+   },
+   {
+    "word": "jewel",
+    "pos": "n",
+    "meaning": "宝石，宝石饰物",
+    "rank": 9357,
+    "layer": 10
+   },
+   {
+    "word": "stranger",
+    "pos": "n",
+    "meaning": "陌生人，生客",
+    "rank": 9366,
+    "layer": 10
+   },
+   {
+    "word": "painful",
+    "pos": "a",
+    "meaning": "疼痛的，使痛苦的，费力[心",
+    "rank": 9372,
+    "layer": 10
+   },
+   {
+    "word": "secretariat",
+    "pos": "n",
+    "meaning": "秘书处",
+    "rank": 9380,
+    "layer": 10
+   },
+   {
+    "word": "adolescent",
+    "pos": "n",
+    "meaning": "青少年a. 青春期",
+    "rank": 9386,
+    "layer": 10
+   },
+   {
+    "word": "lately",
+    "pos": "ad",
+    "meaning": "最近，不久前",
+    "rank": 9390,
+    "layer": 10
+   },
+   {
+    "word": "banana",
+    "pos": "n",
+    "meaning": "香蕉",
+    "rank": 9397,
+    "layer": 10
+   },
+   {
+    "word": "reservoir",
+    "pos": "n",
+    "meaning": "水库，蓄水池",
+    "rank": 9402,
+    "layer": 10
+   },
+   {
+    "word": "bloody",
+    "pos": "a",
+    "meaning": "流血的，血腥的",
+    "rank": 9405,
+    "layer": 10
+   },
+   {
+    "word": "remind",
+    "pos": "vt",
+    "meaning": "提醒",
+    "rank": 9407,
+    "layer": 10
+   },
+   {
+    "word": "tooth",
+    "pos": "n",
+    "meaning": "牙齿",
+    "rank": 9414,
+    "layer": 10
+   },
+   {
+    "word": "affair",
+    "pos": "n",
+    "meaning": "事务",
+    "rank": 9420,
+    "layer": 10
+   },
+   {
+    "word": "elimination",
+    "pos": "n",
+    "meaning": "消灭，排除，消除",
+    "rank": 9436,
+    "layer": 10
+   },
+   {
+    "word": "helicopter",
+    "pos": "n",
+    "meaning": "直升机",
+    "rank": 9441,
+    "layer": 10
+   },
+   {
+    "word": "freeze",
+    "pos": "v",
+    "meaning": "使结冰，使凝固",
+    "rank": 9443,
+    "layer": 10
+   },
+   {
+    "word": "moss",
+    "pos": "n",
+    "meaning": "苔，藓，地衣",
+    "rank": 9451,
+    "layer": 10
+   },
+   {
+    "word": "walnut",
+    "pos": "n",
+    "meaning": "胡桃，核桃树",
+    "rank": 9458,
+    "layer": 10
+   },
+   {
+    "word": "maximize",
+    "pos": "v",
+    "meaning": "增加到最大程度",
+    "rank": 9467,
+    "layer": 10
+   },
+   {
+    "word": "purse",
+    "pos": "n",
+    "meaning": "钱包",
+    "rank": 9479,
+    "layer": 10
+   },
+   {
+    "word": "dome",
+    "pos": "n",
+    "meaning": "圆屋顶",
+    "rank": 9488,
+    "layer": 10
+   },
+   {
+    "word": "peripheral",
+    "pos": "a",
+    "meaning": "周界的",
+    "rank": 9494,
+    "layer": 10
+   },
+   {
+    "word": "triumph",
+    "pos": "n",
+    "meaning": "凯旋,成功",
+    "rank": 9500,
+    "layer": 10
+   },
+   {
+    "word": "alloy",
+    "pos": "n",
+    "meaning": "合金",
+    "rank": 9510,
+    "layer": 10
+   },
+   {
+    "word": "fridge",
+    "pos": "n",
+    "meaning": "电冰箱",
+    "rank": 9522,
+    "layer": 10
+   },
+   {
+    "word": "bloom",
+    "pos": "n",
+    "meaning": "花",
+    "rank": 9524,
+    "layer": 10
+   },
+   {
+    "word": "possess",
+    "pos": "v",
+    "meaning": "占有，拥有",
+    "rank": 9542,
+    "layer": 10
+   },
+   {
+    "word": "forbidden",
+    "pos": "adj",
+    "meaning": "禁止的",
+    "rank": 9548,
+    "layer": 10
+   },
+   {
+    "word": "hollow",
+    "pos": "a",
+    "meaning": "空的，中空的",
+    "rank": 9566,
+    "layer": 10
+   },
+   {
+    "word": "groove",
+    "pos": "n",
+    "meaning": "槽vt.开槽于",
+    "rank": 9571,
+    "layer": 10
+   },
+   {
+    "word": "delegation",
+    "pos": "n",
+    "meaning": "代表团",
+    "rank": 9575,
+    "layer": 10
+   },
+   {
+    "word": "greenhouse",
+    "pos": "n",
+    "meaning": "温室",
+    "rank": 9581,
+    "layer": 10
+   },
+   {
+    "word": "bacon",
+    "pos": "n",
+    "meaning": "咸肉",
+    "rank": 9594,
+    "layer": 10
+   },
+   {
+    "word": "circus",
+    "pos": "n",
+    "meaning": "马戏表演,广场",
+    "rank": 9600,
+    "layer": 10
+   },
+   {
+    "word": "thriller",
+    "pos": "n",
+    "meaning": "惊险小说，电影",
+    "rank": 9615,
+    "layer": 10
+   },
+   {
+    "word": "detective",
+    "pos": "n",
+    "meaning": "侦探",
+    "rank": 9630,
+    "layer": 10
+   },
+   {
+    "word": "fireplace",
+    "pos": "n",
+    "meaning": "壁炉",
+    "rank": 9634,
+    "layer": 10
+   },
+   {
+    "word": "psychiatry",
+    "pos": "n",
+    "meaning": "精神病学, 精神病治疗法",
+    "rank": 9644,
+    "layer": 10
+   },
+   {
+    "word": "glow",
+    "pos": "vi",
+    "meaning": "发出光和热",
+    "rank": 9651,
+    "layer": 10
+   },
+   {
+    "word": "prophet",
+    "pos": "n",
+    "meaning": "预言家",
+    "rank": 9657,
+    "layer": 10
+   },
+   {
+    "word": "oxide",
+    "pos": "n",
+    "meaning": "氧化物",
+    "rank": 9662,
+    "layer": 10
+   },
+   {
+    "word": "promptly",
+    "pos": "ad",
+    "meaning": "敏捷地，迅速地",
+    "rank": 9668,
+    "layer": 10
+   },
+   {
+    "word": "harmful",
+    "pos": "a",
+    "meaning": "有害的",
+    "rank": 9672,
+    "layer": 10
+   },
+   {
+    "word": "norm",
+    "pos": "n",
+    "meaning": "标准",
+    "rank": 9684,
+    "layer": 10
+   },
+   {
+    "word": "absorption",
+    "pos": "n",
+    "meaning": "吸收",
+    "rank": 9691,
+    "layer": 10
+   },
+   {
+    "word": "badly",
+    "pos": "ad",
+    "meaning": "非常，严重地",
+    "rank": 9700,
+    "layer": 10
+   },
+   {
+    "word": "communist",
+    "pos": "n",
+    "meaning": "共产党员",
+    "rank": 9707,
+    "layer": 10
+   },
+   {
+    "word": "excitement",
+    "pos": "n",
+    "meaning": "刺激，激动，兴奋",
+    "rank": 9726,
+    "layer": 10
+   },
+   {
+    "word": "presently",
+    "pos": "ad",
+    "meaning": "一会儿，不久",
+    "rank": 9731,
+    "layer": 10
+   },
+   {
+    "word": "librarian",
+    "pos": "n",
+    "meaning": "图书管理员",
+    "rank": 9740,
+    "layer": 10
+   },
+   {
+    "word": "promising",
+    "pos": "a",
+    "meaning": "有希望的，有前途的",
+    "rank": 9756,
+    "layer": 10
+   },
+   {
+    "word": "render",
+    "pos": "vt",
+    "meaning": "提供,报答",
+    "rank": 9759,
+    "layer": 10
+   },
+   {
+    "word": "temporal",
+    "pos": "adj",
+    "meaning": "时间的, 当时的, 暂时",
+    "rank": 9766,
+    "layer": 10
+   },
+   {
+    "word": "dense",
+    "pos": "a",
+    "meaning": "浓密的,密集的,愚笨的",
+    "rank": 9770,
+    "layer": 10
+   },
+   {
+    "word": "awful",
+    "pos": "a",
+    "meaning": "可怕的",
+    "rank": 9775,
+    "layer": 10
+   },
+   {
+    "word": "impose",
+    "pos": "v",
+    "meaning": "征(税)",
+    "rank": 9781,
+    "layer": 10
+   },
+   {
+    "word": "savage",
+    "pos": "a",
+    "meaning": "未开化的",
+    "rank": 9792,
+    "layer": 10
+   },
+   {
+    "word": "bolt",
+    "pos": "n",
+    "meaning": "插销",
+    "rank": 9798,
+    "layer": 10
+   },
+   {
+    "word": "favour",
+    "pos": "n",
+    "meaning": "亲切, 宠爱",
+    "rank": 9808,
+    "layer": 10
+   },
+   {
+    "word": "urge",
+    "pos": "vt",
+    "meaning": "催促",
+    "rank": 9811,
+    "layer": 10
+   },
+   {
+    "word": "optimum",
+    "pos": "a",
+    "meaning": "最适宜的",
+    "rank": 9822,
+    "layer": 10
+   },
+   {
+    "word": "creature",
+    "pos": "n",
+    "meaning": "人，动物",
+    "rank": 9827,
+    "layer": 10
+   },
+   {
+    "word": "cope",
+    "pos": "v",
+    "meaning": "(with)竞争，对抗",
+    "rank": 9848,
+    "layer": 10
+   },
+   {
+    "word": "cradle",
+    "pos": "n",
+    "meaning": "摇篮",
+    "rank": 9852,
+    "layer": 10
+   },
+   {
+    "word": "controversy",
+    "pos": "n",
+    "meaning": "争论，辩论，争吵",
+    "rank": 9858,
+    "layer": 10
+   },
+   {
+    "word": "sympathy",
+    "pos": "n",
+    "meaning": "同情，同情心",
+    "rank": 9861,
+    "layer": 10
+   },
+   {
+    "word": "polymer",
+    "pos": "n",
+    "meaning": "聚合物，多聚物",
+    "rank": 9871,
+    "layer": 10
+   },
+   {
+    "word": "wit",
+    "pos": "n",
+    "meaning": "智力,才智",
+    "rank": 9873,
+    "layer": 10
+   },
+   {
+    "word": "burst",
+    "pos": "v",
+    "meaning": "爆裂，炸破",
+    "rank": 9876,
+    "layer": 10
+   },
+   {
+    "word": "mandate",
+    "pos": "n",
+    "meaning": "(书面)命令, 训令",
+    "rank": 9882,
+    "layer": 10
+   },
+   {
+    "word": "fibre",
+    "pos": "n",
+    "meaning": "纤维, 构造, 纤维制品",
+    "rank": 9892,
+    "layer": 10
+   },
+   {
+    "word": "spokesman",
+    "pos": "n",
+    "meaning": "发言人",
+    "rank": 9903,
+    "layer": 10
+   },
+   {
+    "word": "maiden",
+    "pos": "n",
+    "meaning": "(文学)少女,未嫁女子",
+    "rank": 9922,
+    "layer": 10
+   },
+   {
+    "word": "yarn",
+    "pos": "n",
+    "meaning": "纱, 纱线, 故事, 奇谈",
+    "rank": 9931,
+    "layer": 10
+   },
+   {
+    "word": "mug",
+    "pos": "n",
+    "meaning": "(有柄的)大茶杯",
+    "rank": 9934,
+    "layer": 10
+   },
+   {
+    "word": "translator",
+    "pos": "n",
+    "meaning": "译音",
+    "rank": 9948,
+    "layer": 10
+   },
+   {
+    "word": "longitude",
+    "pos": "n",
+    "meaning": "经度",
+    "rank": 9956,
+    "layer": 10
+   },
+   {
+    "word": "insertion",
+    "pos": "n",
+    "meaning": "插入",
+    "rank": 9963,
+    "layer": 10
+   },
+   {
+    "word": "marsh",
+    "pos": "n",
+    "meaning": "沼泽地，湿地",
+    "rank": 9979,
+    "layer": 10
+   },
+   {
+    "word": "bent",
+    "pos": "n",
+    "meaning": "爱好,癖好",
+    "rank": 9985,
+    "layer": 10
+   },
+   {
+    "word": "stake",
+    "pos": "n",
+    "meaning": "木桩",
+    "rank": 9992,
+    "layer": 10
+   },
+   {
+    "word": "poison",
+    "pos": "n",
+    "meaning": "毒物，毒药v. 放毒，毒害",
+    "rank": 10000,
+    "layer": 10
+   }
+  ]
+ ]
+}

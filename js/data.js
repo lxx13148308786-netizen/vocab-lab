@@ -1,0 +1,189 @@
+/**
+ * data.js
+ * 英语专四（TEM-4）高频词测试数据
+ *
+ * 纯数据文件，不依赖任何库。
+ * 每个元素包含：word（单词）、pos（词性）、meaning（中文释义）、phonetic（音标）
+ * 供 WordPool.init(FREQUENCY_WORDS) 初始化词库使用。
+ */
+
+const FREQUENCY_WORDS = [
+  { word: "diligent",    pos: "adj.", meaning: "勤奋的，用功的",         phonetic: "/ˈdɪlɪdʒənt/" },
+  { word: "resilient",   pos: "adj.", meaning: "有韧性的，能恢复的",     phonetic: "/rɪˈzɪliənt/" },
+  { word: "ambiguous",   pos: "adj.", meaning: "模棱两可的，含糊的",     phonetic: "/æmˈbɪɡjuəs/" },
+  { word: "scrutiny",    pos: "n.",   meaning: "仔细审查，详细检查",     phonetic: "/ˈskruːtəni/" },
+  { word: "advocate",    pos: "v.",   meaning: "提倡，主张",             phonetic: "/ˈædvəkeɪt/" },
+  { word: "inevitable",  pos: "adj.", meaning: "不可避免的，必然的",     phonetic: "/ɪnˈevɪtəbl/" },
+  { word: "mitigate",    pos: "v.",   meaning: "减轻，缓和",             phonetic: "/ˈmɪtɪɡeɪt/" },
+  { word: "threshold",   pos: "n.",   meaning: "门槛；临界点",           phonetic: "/ˈθreʃhəʊld/" },
+  { word: "consensus",   pos: "n.",   meaning: "共识，一致意见",         phonetic: "/kənˈsensəs/" },
+  { word: "outweigh",    pos: "v.",   meaning: "比……更重要，超过",      phonetic: "/ˌaʊtˈweɪ/" },
+  { word: "pragmatic",   pos: "adj.", meaning: "务实的，实用主义的",     phonetic: "/præɡˈmætɪk/" },
+  { word: "undermine",   pos: "v.",   meaning: "逐渐削弱，损害",         phonetic: "/ˌʌndəˈmaɪn/" },
+  { word: "rigorous",    pos: "adj.", meaning: "严格的，严谨的",         phonetic: "/ˈrɪɡərəs/" },
+  { word: "alleviate",   pos: "v.",   meaning: "减轻，缓解（痛苦等）",   phonetic: "/əˈliːvieɪt/" },
+  { word: "compelling",  pos: "adj.", meaning: "引人入胜的；令人信服的", phonetic: "/kəmˈpelɪŋ/" },
+  { word: "deteriorate", pos: "v.",   meaning: "恶化，变坏",             phonetic: "/dɪˈtɪəriəreɪt/" },
+  { word: "profound",    pos: "adj.", meaning: "深刻的，深远的",         phonetic: "/prəˈfaʊnd/" },
+  { word: "incentive",   pos: "n.",   meaning: "激励，动机",             phonetic: "/ɪnˈsentɪv/" },
+  { word: "vulnerable",  pos: "adj.", meaning: "脆弱的，易受伤害的",     phonetic: "/ˈvʌlnərəbl/" },
+  { word: "adhere",      pos: "v.",   meaning: "遵守，坚持（adhere to）", phonetic: "/ədˈhɪə(r)/" }
+];
+
+/**
+ * NEWS_LIST —— 20 篇 Metro 风格的英文短新闻（测试数据）
+ * 字段：id / title / content / topic / difficulty
+ * topic 覆盖 8 个类别，difficulty 统一为 "intermediate"
+ * 内容与 data/news.json 完全一致（news.json 由本变量导出生成）
+ */
+const NEWS_LIST = [
+  {
+    id: "n001",
+    title: "Council unveils 15-minute neighbourhood plan for three outer districts",
+    topic: "城市规划与公共政策",
+    difficulty: "intermediate",
+    content: "City Hall has unveiled a plan to turn three outer districts into '15-minute neighbourhoods', where shops, clinics, schools and green space sit within a quarter of an hour's walk of every home.\n\nThe draft blueprint, published on Monday, covers about 180,000 residents in Northbrook, Ferry Lane and Old Mill. It proposes reallocating 22 kilometres of road space to buses, cyclists and pedestrians, and relaxing rules that have kept corner shops out of residential streets since the 1970s.\n\n'This is not about banning cars,' said deputy mayor Alice Nkemi at a briefing. 'It is about making sure you can reach the things you need without one.'\n\nThe blueprint has faced scrutiny from opposition councillors, who questioned the cost, while officials advocate a phased approach over five years.\n\nConsultation runs until November, with pilot works on Ferry Lane due to start in the spring. Business groups welcomed the investment but warned that loading bays must be protected.\n\nResidents interviewed by Metro were split. 'I would walk more if the pavements were not so narrow,' said retiree Gordon Blaise, 71. Delivery driver Priya Raman, 29, was less convinced: 'Fifteen minutes sounds lovely, but my job is thirty minutes away in every direction.'"
+  },
+  {
+    id: "n002",
+    title: "Pedestrian bridge over the ring road finally opens after two-year delay",
+    topic: "城市规划与公共政策",
+    difficulty: "intermediate",
+    content: "A footbridge linking the Vernon estate to the city's eastern retail park opened on Saturday, two years behind schedule and £4.3 million over budget.\n\nThe 90-metre span crosses six lanes of the ring road that have cut the estate off from shops and a GP surgery since the 1990s. Council figures suggest the walk between the two sides drops from 24 minutes to six.\n\nFunding came from a central government grant after the original contractor went into administration in 2024. 'Every month of delay had a cost for the people who live here,' said councillor Marcus Adeyemi.\n\nThe bridge includes lifts at both ends, lighting along its full length and a covered section for the city's wetter months. A formal opening ceremony was skipped at the request of residents, who held a street party on the estate side instead.\n\nThe council said a second crossing near Old Mill station is now at design stage, with a decision on funding expected next spring."
+  },
+  {
+    id: "n003",
+    title: "Empty office blocks to be converted into 900 homes under new rules",
+    topic: "城市规划与公共政策",
+    difficulty: "intermediate",
+    content: "Nearly 900 homes could be created from empty office blocks over the next three years after ministers confirmed that conversion projects will no longer need full planning permission.\n\nThe change applies to buildings vacant for at least twelve months and covers eleven commercial districts. Developers must still meet minimum space standards and set aside 20 per cent of units as affordable.\n\nProperty analysts said the move could revive high streets hollowed out by remote working. Office occupancy in the city has hovered around 62 per cent since 2023, leaving roughly 400,000 square metres idle.\n\n'Some decline in office demand now looks inevitable, analysts say, which makes conversion a response to reality rather than a gamble.\n\n'Bricks are already there,' said housing economist Lena Frayne. 'Demolishing and rebuilding would cost far more and produce far more carbon.'\n\nHeritage groups have asked for exemptions for listed facades, while some residents fear new flats without new services. The council said a £6 million fund will accompany the first wave of schemes to expand school places and clinic capacity."
+  },
+  {
+    id: "n004",
+    title: "City recycling rate hits record high after bin overhaul",
+    topic: "环保与气候变化",
+    difficulty: "intermediate",
+    content: "The city's household recycling rate has reached 54 per cent, the highest since records began, after a two-year overhaul of collection rounds and bin design.\n\nOfficials credit three changes: weekly food waste pickups, a single blue-lidded bin for all dry recyclables, and text reminders the night before collection. Contamination — the share of material too dirty to process — fell from 19 per cent to 7 per cent.\n\n'People were not confused about whether to recycle,' said waste services head Tom Ennis. 'They were confused about which bin.'\n\nOfficers must hit a 50 per cent threshold next year or repay part of their government grant.\n\nThe improvement saves an estimated £1.8 million a year in landfill tax. Campaigners, however, argued that the headline figure hides wide gaps between wards, with the lowest-performing district still at 31 per cent.\n\nA door-knocking programme in those wards starts next month, and the council will trial reusable sack collections for flats above shops, where bin storage has long been a problem."
+  },
+  {
+    id: "n005",
+    title: "Heatwave prompts councils to plant 10,000 street trees by 2029",
+    topic: "环保与气候变化",
+    difficulty: "intermediate",
+    content: "Councils across the region have committed to planting 10,000 street trees by 2029 after two successive summers of record-breaking heat.\n\nThe programme targets the hottest neighbourhoods first, identified using satellite surface-temperature data. Shaded streets in pilot areas measured up to 5C cooler than unshaded ones during last July's heatwave.\n\n'It is the cheapest air conditioning we will ever buy,' said climate lead Dr Hannah Ocaya.\n\nTrees mitigate the worst of the heat, and the most vulnerable residents — older people in top-floor flats — live in exactly the streets being planted first.\n\nSpecies have been chosen for drought tolerance, and each tree will be watered by volunteers for its first two summers. About 300 residents have signed up so far, with training sessions run by the city's arboretum.\n\nNot everyone is pleased. Some shop owners worry that mature canopies will hide signage, and two streets voted against planting after consultation. The council said those strips will be revisited with alternative designs, including green walls and shaded bus shelters.\n\nA monitoring report will be published each autumn, tracking how many saplings survive their third summer — the point at which officials say the programme can be judged honestly."
+  },
+  {
+    id: "n006",
+    title: "River clean-up sees fish return to canal for first time in decades",
+    topic: "环保与气候变化",
+    difficulty: "intermediate",
+    content: "Fish have returned to a stretch of the Old Canal that was effectively lifeless for forty years, according to surveyors working on a £12 million clean-up.\n\nEcologists recorded eleven species this month, including perch and roach, along a three-kilometre section that once carried untreated discharge from a former tannery. Oxygen levels have roughly doubled since 2021.\n\nFor decades the water quality continued to deteriorate, and residents simply stopped expecting anything to live in it.\n\nThe turnaround followed the installation of a storm-overflow screen, the removal of 4,000 tonnes of contaminated sediment and the regrading of banks to create shallow reed beds.\n\n'Nobody expects a canal in the middle of a city to be a wilderness,' said project ecologist Sam Hordern. 'But it should at least hold life.'\n\nVolunteers have logged 1,200 hours of litter picking on the towpath this year. A community group is now raising funds for floating reed islands, hoping to support the first kingfishers recorded in the area since the 1980s.\n\nThe environment agency said the section will be formally reassessed in two years, and warned that one heavy storm season could undo part of the recovery if the overflow screens are not maintained."
+  },
+  {
+    id: "n007",
+    title: "Hospital trials AI tool that spots strokes faster",
+    topic: "科技与人工智能",
+    difficulty: "intermediate",
+    content: "A teaching hospital has cut its average time to treat stroke patients by 19 minutes after introducing an AI tool that flags suspected blockages on brain scans.\n\nThe software reviews scans within seconds and sends an alert to the on-call neurologist's phone, alongside the images it flagged. Radiologists still make the final call.\n\nOver an eight-month pilot covering 1,400 scans, the system correctly highlighted 94 per cent of large-vessel blockages and produced 41 alerts that turned out to be false. Clinicians said the false alarms were acceptable given the stakes.\n\n'Every minute costs brain tissue,' said stroke consultant Dr Nadia Bello. 'This buys us minutes we did not have.'\n\nThe results are compelling, but the team cautions that one hospital is not proof.\n\nThe hospital stressed that no patient data leaves its servers and that the model was validated locally before use. Two neighbouring trusts have asked to join the next phase, which will test whether the tool works equally well overnight, when consultant cover is thinnest."
+  },
+  {
+    id: "n008",
+    title: "Schools pilot AI marking assistant — teachers remain cautious",
+    topic: "科技与人工智能",
+    difficulty: "intermediate",
+    content: "Twelve secondary schools will pilot an AI marking assistant this term, with teachers warned that the software's feedback must be checked before it reaches pupils.\n\nThe tool drafts comments on essays and suggests grades against the existing mark scheme. It does not write final grades, and schools can switch off any subject.\n\nUnion representatives called the trial 'cautiously interesting' but pressed for limits on how much of a teacher's judgement can be delegated. One participating head teacher said staff were marking roughly five hours less per week in a small internal test.\n\nEducation researchers were blunter. 'Automated feedback is fast and often bland,' said Dr Owen Slade. 'The risk is that it trains students to write for a machine.'\n\nThe tool still struggles with ambiguous or badly punctuated sentences, and researchers want more rigorous testing before any wider rollout.\n\nThe pilot runs until Easter. Its evaluation will look at whether marks drift between teachers and whether pupils act on the feedback at all — the point on which previous marking technology has quietly failed."
+  },
+  {
+    id: "n009",
+    title: "Startup's translation earbuds draw the longest queue at tech fair",
+    topic: "科技与人工智能",
+    difficulty: "intermediate",
+    content: "A two-person startup drew the longest queue at this year's technology fair with a pair of earbuds that translate speech in about a second.\n\nThe devices handle 31 languages and work offline for six of them, a feature aimed at clinics and border posts with patchy signal. Latency averages 0.9 seconds; accents prove harder than vocabulary, the founders admit.\n\n'We spent a year on regional accents and we are still not done,' said co-founder Ines Cardoso.\n\nMedics at a partner clinic tested the earbuds in 200 consultations and reported that basic history-taking worked well but that nuance — pain described as 'burning' rather than 'stabbing' — still needed a human interpreter.\n\nThe team plans to lease rather than sell, at roughly £14 a month per user, and has ruled out advertising. Privacy campaigners have asked for an independent audit of whether audio is retained; the company says recordings are deleted after processing."
+  },
+  {
+    id: "n010",
+    title: "University scraps entrance exam in favour of portfolio review",
+    topic: "教育与校园",
+    difficulty: "intermediate",
+    content: "A university will drop its written entrance exam for arts and humanities courses from next autumn, replacing it with portfolio review and a structured interview.\n\nApplicants will submit two pieces of work — an essay and a project of their choosing — along with a 500-word note explaining how they made them. Interviews will be scored against a fixed rubric.\n\nThe admissions director said the exam had become 'a test of coaching rather than curiosity', noting that applicants from fee-paying schools were three times more likely to attend private preparation.\n\nSupporters call it a profound shift that rewards diligent, sustained work rather than last-minute coaching.\n\nCritics argued interviews are easier to game than they look and reward confidence. 'A rubric helps,' said access researcher Dr Miriam Kotei, 'but only if interviewers are trained and their scoring is audited.'\n\nThe university has committed to publishing anonymised admission data by school type each year. Two other institutions confirmed they are watching the results before deciding whether to follow."
+  },
+  {
+    id: "n011",
+    title: "Free breakfast clubs cut persistent lateness by a third, study finds",
+    topic: "教育与校园",
+    difficulty: "intermediate",
+    content: "Free breakfast clubs in 40 primary schools have cut persistent lateness by roughly a third, according to an evaluation published this week.\n\nThe clubs open 45 minutes before lessons and serve toast, fruit and cereal at no cost. Attendance runs at about 70 per cent of pupils, with the highest take-up in the most deprived cohorts.\n\nTeachers reported a calmer first lesson and fewer mid-morning requests to see the school nurse. Head teachers said the change was noticeable within a term.\n\n'A hungry child is not a difficult child, they are a hungry child,' said head teacher Fiona Marsh. 'We were spending all morning catching up on what breakfast should have done.'\n\nThe programme costs about £38 per pupil per term. Councils funded the pilot, but its future depends on a decision due in the spring on whether to extend it to all 160 primary schools in the area. Campaigners say the maths is easy; officials say the budget is not."
+  },
+  {
+    id: "n012",
+    title: "Walk-in clinics cut emergency department waiting times by 21 minutes",
+    topic: "健康与医疗",
+    difficulty: "intermediate",
+    content: "Four walk-in clinics opened near the city's busiest hospitals in April, and average waiting times at the neighbouring emergency departments have fallen by 21 minutes.\n\nThe clinics treat sprains, minor fractures, infections and stitches — roughly a fifth of what previously arrived at A&E. They are staffed by nurse practitioners with a GP available by video.\n\n'About one in three people who walk through our doors would have gone to A&E because they had nowhere else,' said clinical lead Dr Ravi Anand.\n\nUrgent care doctors welcomed the drop but cautioned against reading too much into a single season. Winter remains the real test, when respiratory admissions rise and corridor capacity disappears.\n\nThe clinics were set up to alleviate pressure on emergency departments, which recorded their busiest winter on record.\n\nHealth bosses said the clinics cost £2.1 million a year to run against £6 million in avoided emergency activity. Two more sites are under review, though a shortage of nurse practitioners may slow expansion.\n\nPatient surveys put satisfaction with the clinics at 88 per cent, though several respondents said they only learned the clinics existed after arriving at the hospital entrance."
+  },
+  {
+    id: "n013",
+    title: "Sleep clinics see surge in under-25s seeking help",
+    topic: "健康与医疗",
+    difficulty: "intermediate",
+    content: "Sleep clinics have recorded a 46 per cent rise in referrals among people under 25 over three years, with clinicians pointing to late-night screen use and shift work.\n\nMost patients report difficulty falling asleep rather than staying asleep, and about a third describe a sleep schedule shifted by four hours or more. Clinicians say the pattern is consistent with delayed sleep phase, often compounded by anxiety about sleeping at all.\n\n'People lie in bed watching the clock and rehearsing tomorrow,' said sleep psychologist Dr Elena Vos. 'That rehearsal is the problem, not the tiredness.'\n\nTreatment is usually cognitive behavioural therapy for insomnia, delivered in six sessions, rather than medication. Waiting lists run at 14 weeks, and services have moved the first session online so advice can start sooner.\n\nPatients are asked to adhere to a fixed wake time for six weeks, which clinicians admit is the hardest part of the treatment.\n\nEmployers have begun asking for guidance on shift rotas. Clinicians advise rotating shifts forward — days to evenings to nights — and avoiding early starts within eleven hours of a late finish."
+  },
+  {
+    id: "n014",
+    title: "High street vacancy rate falls to lowest level since 2019",
+    topic: "商业与经济",
+    difficulty: "intermediate",
+    content: "High street vacancy rates have fallen to 11 per cent, the lowest since 2019, as independent operators take over units left empty by collapsed chains.\n\nBarbers, bakeries and repair shops account for most of the 340 new leases recorded this year. Retail analysts describe a shift away from comparison shopping — the kind you do on a phone — towards services that cannot be delivered digitally.\n\n'The high street is not dying, it is changing job,' said retail economist Priya Nandakumar. 'It is becoming a place you go to have something done to you or for you.'\n\nRents have softened, which helps. Average asking rents are 18 per cent below their 2018 peak, and landlords have become more willing to offer short leases and fit-out contributions.\n\nOnline shopping continues to undermine the old retail model, analysts say, but a more resilient mix of tenants is taking its place.\n\nThe picture is uneven. Suburban parades have recovered faster than town-centre malls, several of which remain half empty. Councils have earmarked £9 million to convert the worst-performing retail floors into workspace and clinics."
+  },
+  {
+    id: "n015",
+    title: "Coffee chain to pay staff for commuting time in new union deal",
+    topic: "商业与经济",
+    difficulty: "intermediate",
+    content: "A coffee chain with 60 branches will pay staff for up to 30 minutes of commuting time each shift, in a deal negotiated with a recognised union.\n\nThe company will also guarantee schedules three weeks in advance and pay a premium for shifts cancelled with less than 48 hours' notice. Hourly pay rises 6 per cent from next month.\n\n'Unpredictable hours are a bigger problem for our staff than pay,' said regional manager Colette Bayes. 'You cannot plan childcare on a rota you see on Sunday night.'\n\nUnion officials called the commuting element unusual but argued it recognises that many workers travel across the city for shifts too short to justify the fare.\n\nManagers had little incentive to change until turnover began to bite; consensus was then reached in six weeks.\n\nAnalysts estimate the package adds about 4 per cent to labour costs. The chain said it expects to recover part of that through lower turnover, which currently sits near 70 per cent a year — high even for the sector. Two rival operators said they are reviewing their own scheduling practices."
+  },
+  {
+    id: "n016",
+    title: "City gallery opens late-night slots for shift workers",
+    topic: "文化与艺术",
+    difficulty: "intermediate",
+    content: "The city art gallery will stay open until 10pm on Thursdays and Fridays from next month, aiming at shift workers who have never been able to visit during the day.\n\nEarly-evening tickets will cost £6, with free entry for care workers and health staff. The gallery will run 20-minute curator talks at 7pm and keep one cafe serving hot food until closing.\n\n'We did not need a survey to know that nurses and warehouse staff were not coming at two on a Tuesday afternoon,' said director Femi Adebayo. 'We needed to open when they are free.'\n\nThe scheme emerged from a year of consultation with a local union branch. Security and cleaning costs are the main addition to the budget, covered by a two-year grant.\n\nEarly numbers suggest the benefits outweigh the extra security cost, and trustees have voted to fund a second year.\n\nVisitor numbers at comparable late openings elsewhere rose by between 15 and 30 per cent. The gallery says it will judge the experiment on whether new visitors return, not on headline attendance."
+  },
+  {
+    id: "n017",
+    title: "Community choir's single climbs the charts after viral rehearsal clip",
+    topic: "文化与艺术",
+    difficulty: "intermediate",
+    content: "A community choir's recording has entered the singles chart at number 31 after a clip of its rehearsal was shared more than four million times in a week.\n\nThe 46-member group, which rehearses in a church hall on Tuesday nights, recorded the track for a local charity compilation. Members range in age from 19 to 84, and none of them are professional singers.\n\n'Someone filmed the second verse and suddenly we were on breakfast television,' said founder Mary Killick, 58. 'I have had to buy a phone charger for the hall.'\n\nStreaming royalties are being split equally, which amounts to a few hundred pounds each at current counts. The choir has agreed to donate its share to a warm-bank network that runs winter meals.\n\nTwo labels have approached the group. Members voted on Tuesday to finish the charity compilation first, and to take no deal that requires them to rehearse on a night that is not Tuesday."
+  },
+  {
+    id: "n018",
+    title: "Theatre launches £5 ticket scheme for under-30s",
+    topic: "文化与艺术",
+    difficulty: "intermediate",
+    content: "A 700-seat theatre has launched £5 tickets for anyone under 30, available from two hours before every performance.\n\nThe scheme covers all seats except premium rows, and is funded by a £240,000 grant plus a small levy on full-price tickets. Management expects to sell about 9,000 discounted seats in the first year.\n\n'Price is only one barrier, but it is the one we can remove this week,' said artistic director Lorna Pike. 'The other one is the belief that theatre is not for you, and that takes longer.'\n\nEarly figures suggest the discounted audience skews about fifteen years younger than the theatre's average, and that roughly a third are attending for the first time. Critics of subsidised ticketing argue it displaces full-price sales; the theatre says monitoring so far shows the cheap seats are filling otherwise empty rows.\n\nA companion scheme offers free tickets to schools within three miles, with transport paid by the local education trust."
+  },
+  {
+    id: "n019",
+    title: "Food bank network expands to every secondary school in the city",
+    topic: "社会与民生",
+    difficulty: "intermediate",
+    content: "Every secondary school in the city will have access to a food bank hub from September, extending a network that previously reached only a third of them.\n\nThe hubs stock pantry basics, toiletries and laundry products, and operate on a referral-free basis: staff can hand over a parcel the same day they notice a need. Forty schools already run one, and the expansion adds 62.\n\n'The point is that nobody has to say out loud that they are hungry in front of a classroom,' said programme coordinator Denise Ashby.\n\nDemand has risen steadily, with parcels up 38 per cent year on year. Coordinators attribute most of the increase to housing costs rather than unemployment; about two-thirds of households served include at least one working adult.\n\nFunding comes from a mix of council grants and donations, and is confirmed only for two years. Organisers have begun recruiting a second wave of volunteers, warning that the summer holidays are the hardest period to cover."
+  },
+  {
+    id: "n020",
+    title: "Neighbourhood repair cafes keep 12 tonnes of goods out of landfill",
+    topic: "社会与民生",
+    difficulty: "intermediate",
+    content: "Volunteer repair cafes across the city kept an estimated 12 tonnes of goods out of landfill last year, fixing 3,100 items that their owners had already written off.\n\nToasters, lamps, bikes and jeans dominate the queue. Roughly 60 per cent of items leave working; the rest are usually defeated by sealed battery packs or parts that are no longer made.\n\n'Most failures are embarrassingly simple,' said volunteer engineer Ivan Petrov, 66. 'A wire, a fuse, a screw that somebody could not reach.'\n\nThe cafes run monthly in libraries and community halls, and ask for a donation rather than a fee. Organisers say the social side matters as much as the repairs: about half of visitors stay for a cup of tea and a conversation.\n\nVolunteers describe repair as a pragmatic response to waste: fixing one machine costs far less than replacing it.\n\nCampaigners are using the figures to press for stronger right-to-repair rules, arguing that manufacturers should sell spare parts for at least ten years. A parliamentary petition on the issue passed 40,000 signatures this month."
+  }
+];
+
+// 浏览器环境下挂到 window，方便控制台直接查看；Node 环境下导出
+if (typeof window !== "undefined") {
+  window.FREQUENCY_WORDS = FREQUENCY_WORDS;
+  window.NEWS_LIST = NEWS_LIST;
+}
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { FREQUENCY_WORDS: FREQUENCY_WORDS, NEWS_LIST: NEWS_LIST };
+}

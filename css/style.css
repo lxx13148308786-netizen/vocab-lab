@@ -1,0 +1,1686 @@
+/**
+ * style.css
+ * AI 新闻背单词 H5 应用 —— 每日阅读页面样式（简洁清爽 / 手机优先）
+ */
+
+* { box-sizing: border-box; }
+
+/* 全局尺寸变量：底部操作栏高度。
+   页面内容、全屏页、浮层小字都要靠它避让底部栏，改一处即可。
+   注意：js/app.js 里查词气泡的 BAR_H 常量必须与这个值一致，两处要同步改。 */
+:root {
+  /* 按钮高度 = padding 11px*2 + 文字 15px*1.2 + border 1px*2 ≈ 42px
+     栏高     = 按钮 42 + 栏 padding 10px*2 + border-top 1px = 63px
+     （去掉「单词本」的 📚 图标后按钮变矮，这里跟着下调；
+       旧值 62px 是给"图标+文字"两行版准备的，虽然差 1px 但一并对齐更清晰） */
+  --bottombar-h: 63px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #f5f6f8;
+  color: #1f2329;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-text-size-adjust: 100%;
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  /* 给底部操作栏留位置。单词本等长列表滚到底时，最后一张卡片不会被按钮压住 */
+  padding-bottom: calc(var(--bottombar-h) + 26px);
+  min-height: 100vh;
+}
+
+/* ---------- 顶部状态栏 ----------
+   与 .tabs 共用 .nav-hidden 显隐 class：JS 一次性对两者同时 add/remove，
+   动画参数也必须一致（都是 .3s ease），否则两个区域动作会错位。 */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  border-bottom: 1px solid #e6e8eb;
+  padding: 12px 16px;
+  /* 与 .tabs 完全相同的过渡曲线，保证同步动画 */
+  transition: transform .3s ease, box-shadow .3s ease;
+  will-change: transform;
+}
+.topbar.nav-hidden {
+  /* 隐藏时整条往上推出视口。
+     位移量取 --nav-hide-shift（JS 写入的「顶栏 + Tab 栏」总高度像素值），
+     不用 -100% —— 顶栏和 Tab 栏高度不同，各用 -100% 的话位移量也不同，
+     虽然因为永远同显同隐、过渡曲线相同，视觉上看不出差别，
+     但「同一个偏移量」能保证两者严格同步（同一帧、同一像素、同一曲线）。
+     注意不用减去 --nav-top 让位：两者一起隐藏，Tab 栏也跟着走。 */
+  transform: translateY(calc(-1 * var(--nav-hide-shift, 120px)));
+}
+.topbar .date {
+  font-size: 18px;
+  font-weight: 600;
+}
+.topbar .meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #6b7280;
+}
+.topbar .meta span { margin-right: 14px; }
+.topbar .meta b { color: #2563eb; font-weight: 600; }
+
+/* ---------- Tab 导航（锚点跳转 + 滚动智能隐藏） ---------- */
+.tabs {
+  position: sticky;
+  top: var(--nav-top, 62px);   /* --nav-top 由 JS 按顶栏实际高度写入 */
+  z-index: 19;
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid #e6e8eb;
+  /* 0.3s ease 过渡：下滑隐藏 / 上滑显示都走这一条 */
+  transition: transform .3s ease, box-shadow .3s ease;
+  will-change: transform;
+}
+.tabs.nav-hidden {
+  /* 与顶栏用【同一个】--nav-hide-shift，保证两者严格同步：
+     同一像素位移、同一过渡曲线，不存在谁快谁慢导致的错位。 */
+  transform: translateY(calc(-1 * var(--nav-hide-shift, 120px)));
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .3s ease, border-bottom-color .3s ease;
+}
+.tab-btn.active {
+  color: #2563eb;
+  font-weight: 600;
+  border-bottom-color: #2563eb;
+}
+
+/* ---------- 内容分区（单页流式滚动，全部常显） ---------- */
+.panel {
+  display: block;
+  padding: 8px 16px 20px;
+  scroll-margin-top: calc(var(--nav-top, 62px) + 46px);
+}
+.sec-head {
+  margin: 16px 0 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  padding-left: 9px;
+  border-left: 3px solid #2563eb;
+  line-height: 1.3;
+}
+
+/* ---------- 今日单词卡片（紧凑布局） ----------
+   结构：.word-item > .word-main(词头) + .word-sub(词性/音标/释义同一行)
+   词头字号与行高保持不变，只压缩下方信息行。 */
+.word-item {
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 10px;
+  padding: 6px 12px;          /* 原 10px 14px，紧凑化 */
+  margin-bottom: 6px;         /* 原 8px */
+}
+.word-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.word-main .word {
+  font-size: 17px;            /* 词头字号：不变 */
+  font-weight: 600;
+  line-height: 1.3;           /* 词头行高：不变 */
+}
+
+/* 信息行：词性 + 音标 + 释义 横向排布，放不下时释义换行、词性音标留在首行 */
+.word-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 6px;                 /* 横向间距；换行后不影响行距 */
+  margin-top: 0;              /* 原 2px */
+  font-size: 12px;            /* 原 14px */
+  line-height: 1.45;          /* 原继承 body 的 1.7，收紧 */
+  color: #4b5563;
+}
+/* 词性：蓝色 #2563eb → 与正文一致的深灰，降低视觉噪音 */
+.word-sub .pos {
+  flex: 0 0 auto;
+  color: #4b5563;             /* 原 #2563eb */
+  font-size: 12px;
+  font-weight: 600;
+}
+/* 音标：与词性同处信息行，浅灰弱化 */
+.word-sub .phonetic {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: #9ca3af;
+}
+/* 释义：唯一允许换行的部分。min-width:0 是关键——
+   默认 flex item 的 min-width:auto 会拒绝收缩到内容宽度以下，
+   导致长释义把整行撑破而不是换行。 */
+.word-sub .meaning {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #4b5563;
+  word-break: break-word;     /* 超长无空格释义也能断行，不横向溢出 */
+}
+
+.news-title {
+  font-size: 19px;
+  line-height: 1.5;
+  margin: 4px 0 6px;
+}
+.news-meta {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #6b7280;
+}
+.tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #fff7e6;
+  color: #b45309;
+  font-size: 12px;
+}
+.article {
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 16.5px;
+}
+/* 目标词高亮：主题蓝 + 加粗（与按钮同一个蓝） */
+.article .hl {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+
+/* ---------- 检测题 ---------- */
+.score-card {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.sec-title {
+  font-size: 15px;
+  margin: 18px 0 8px;
+  color: #374151;
+}
+.question {
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.q-stem { margin-bottom: 8px; }
+/* 填空处的下划线（内容是 "____" 四个下划线字符，样式走 color）。
+   原本是红色 #dc2626，视觉上像「答错了」——但它只是待填的空，跟对错无关。
+   改成深灰 #374151，与检测段正文（.sec-title / .fc-options .option-btn）一致。
+   注意：作答反馈色在 .option.is-right / .is-wrong / .q-feedback.ok / .no，
+   那些是独立规则，不受这里影响。 */
+.q-stem .blank {
+  color: #374151;
+  font-weight: 600;
+}
+.options { display: flex; flex-direction: column; gap: 6px; }
+.option {
+  text-align: left;
+  padding: 9px 12px;
+  border: 1px solid #dcdfe5;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 15px;
+  color: #1f2329;
+  cursor: pointer;
+}
+.option.disabled { cursor: default; }
+.option.is-right {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+}
+.option.is-wrong {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.q-feedback { margin-top: 8px; font-size: 14px; }
+.q-feedback.ok { color: #15803d; }
+.q-feedback.no { color: #b91c1c; }
+
+.rec-item {
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+/* ---------- 底部操作栏 ---------- */
+/* ==========================================================================
+   底部操作栏
+   --------------------------------------------------------------------------
+   z-index 分层约定（全项目统一，改动时请同步这张表）：
+     95  .modal-mask       模态弹窗遮罩（含 .vt-modal-mask）
+     90  .vb-menu          单词本卡片长按菜单（唯一允许压住底部栏的层）
+     85  .bottombar        底部操作栏
+     84  .vt-last-hint     底部栏上方「上次」小字
+     80  .dict-bubble      查词气泡
+     70  .toast
+     60  .vt-page          词汇量测试页 / 个人中心 / 刷词页（共用 .vt-page）
+     60  .loading-mask
+     20  .topbar
+     19  .tabs
+   底部栏高度由 :root 的 --bottombar-h 统一给出，页面内容/全屏页/浮层都靠它避让。
+
+   关于「底部栏 vs 弹窗」：早期这里写的是 85「常驻最上层，任何 overlay 都盖不住它」，
+   结果 .modal-mask(50) 被底部栏压住 —— 弹窗是 align-items:flex-end 贴底的，
+   底部栏又是白色不透明的，弹窗底部的「确认/取消」正好落在它下面被切掉一截。
+   模态弹窗的语义本来就是"接管整个视口"，所以现在把 .modal-mask 提到 95，
+   让遮罩盖住底部栏，弹窗完整可见。底部栏仍高于 .vt-page(60) / .toast(70) /
+   .vb-menu 之外的普通内容层 —— 那些场景下它该浮在内容之上。
+   ========================================================================== */
+.bottombar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* z-index 必须写：同为 fixed 的 .vt-page(60) / .loading-mask(60) /
+     .toast(70) 都靠这个值压在它们之上（否则按 DOM 顺序被压过去，
+     进入个人中心等全屏页时底部栏会消失）。
+     注意它现在【低于】.modal-mask(95) —— 弹窗打开时底部栏被遮罩盖住，
+     这是模态的语义本意，见文件上方「底部操作栏」注释块里的说明。 */
+  z-index: 85;
+  display: flex;
+  gap: 8px;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 10px 12px;
+  /* 不透明底色：原来用 rgba(...,.96)，单词列表滚到底会透出来显得脏 */
+  background: #fff;
+  border-top: 1px solid #e6e8eb;
+  /* iPhone 底部安全区（刘海屏手势条），没有时按 0 处理 */
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -1px 12px rgba(17, 24, 39, .06);
+}
+/* 底部栏隐藏态：个人中心等「不是主界面四Tab」的页面用它让出空间。
+   用 class 不用 style.display（需求明确要求走CSS 类），
+   好处是 display/动画/padding 补偿都能放在 CSS 里，JS 只管加类。
+   display:none 而非 visibility/opacity —— 需求要的是「不显示」，
+   而且留着占位（visibility）会让固定定位的兄弟节点计算出错。 */
+.bottombar.bottombar-hidden {
+  display: none;
+}
+
+.bottombar .btn {
+  flex: 1;
+  padding: 11px 0;
+  border: 1px solid #dcdfe5;
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 15px;
+  color: #1f2329;
+  cursor: pointer;
+  /* 三个按钮都是纯文字单行，统一居中 + 等高。
+     「单词本」按钮原来走的是 .bottombar .btn.tab（图标在上、文字在下的两行布局，
+     padding 6px 0 5px + 17px 图标 + 12px 文字），比左右两个单行按钮高出一截。
+     去掉 📚 图标后不再需要那条特例规则，直接用回普通 .btn ——
+     这样"高度一致"是结构上保证的，不靠调 padding 补偿。 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+.bottombar .btn.primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+/* 底部栏曾有过一整套「单词本」专属样式，现已全部移除，无需恢复：
+   1) .btn.tab          图标在上、文字在下的两行布局 —— 去图标后不再需要
+   2) .btn.tab .ico     17px 的 📚 图标
+   3) .btn.tab .lbl     12px 的小字标签
+   4) .btn.tab .badge   今日待复习红色徽章（含 .hidden 变体）
+   现在 btnBook 直接用 class="btn"，与左右两个按钮共用 .bottombar .btn 规则，
+   高度/字号/居中全部一致。相应地 index.html 里也没有 .ico / .lbl 元素了。
+   注意别误删 .hidden（modal-mask / loading-mask / vt-page 等都在用它）。 */
+
+.btn.small {
+    float: right;
+    padding: 3px 10px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid #dcdfe5;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  /* 个人中心入口样式见文件末尾「顶部个人中心入口」一节 */
+
+  .switch-btn {
+    float: right;
+    padding: 0 8px;
+    font-size: 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #6b7280;
+  }
+
+  .switch-btn:hover {
+    color: #2563eb;
+  }
+
+  .flashcard-btn {
+    float: right;
+    padding: 0 12px;
+    font-size: 14px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #4b5563;
+  }
+
+  .flashcard-btn:hover {
+    color: #2563eb;
+  }
+
+/* ---------- 弹窗 / 提示 ---------- */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* 95 > .bottombar(85)：模态遮罩要盖住底部栏。
+     弹窗是 align-items:flex-end 贴底的，而底部栏白色不透明，
+     层级低于它时底部的「确认/取消」正好被切掉一截。
+     提层治本，padding-bottom 只是兜底（见 .modal）。 */
+  z-index: 95;
+}
+.modal-mask.hidden, .loading-mask.hidden { display: none; }
+.modal {
+  width: 100%;
+  max-width: 640px;
+  background: #fff;
+  border-radius: 14px 14px 0 0;
+  padding: 14px 16px 20px;
+  /* 兜底：即使 .modal-mask 的 z-index 被改回去，底部按钮也不会贴到视口底边。
+     需求给的两个方案里选了「加 padding」这一路，但真正解决遮挡的是上面的 z-index——
+     光加 padding 只会让按钮和被挡的白色底部栏之间多一条缝，视觉上照样是被压着的。 */
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.modal-head h3 { margin: 0; font-size: 16px; }
+.modal-close {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+}
+.modal-body { max-height: 60vh; overflow-y: auto; }
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 8px;
+  border: 1px solid #dcdfe5;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 16px;
+}
+.modal-actions { margin-top: 12px; }
+.hint { font-size: 13px; color: #6b7280; }
+code {
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.loading-mask {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+  color: #4b5563;
+  font-size: 15px;
+  z-index: 60;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  transform: translateX(-50%) translateY(8px);
+  max-width: 86%;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(31, 35, 41, 0.92);
+  color: #fff;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 70;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.empty {
+  padding: 24px 0;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* ---------- 点击查词 ---------- */
+/* 正文里可点的单词（仅新闻区与词汇段，单词表不受影响）
+   禁用长按选中/系统菜单，否则移动端长按会先弹文本选择，盖住收藏菜单 */
+.news-content .word,
+.vocab-paragraph .word {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: background-color .12s ease, transform .12s ease;
+}
+
+/* 已查过的词：淡蓝底色，跟主题色呼应 */
+.looked-up {
+  background-color: #f0f4ff;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* 已在单词本里的词。
+   早期版本在这里加过绿色下划线（text-decoration + #10b981），
+   与目标词的蓝色高亮叠在一起显得脏，已按需求移除。
+   class 本身仍由 markVocabElements 添加/移除（长按收藏、回灌单词本都依赖它），
+   所以选择器保留，只是不再有任何视觉表现。 */
+.in-vocab {
+  /* 视觉标记已移除：目标词的蓝色 .hl 是唯一高亮 */
+}
+
+/* 长按反馈：按住期间轻微放大 + 加深底色，让用户知道长按在生效 */
+.word.pressing {
+  background-color: #dbeafe;
+  border-radius: 3px;
+  transform: scale(1.08);
+  display: inline-block;
+}
+/* 长按已触发：保持高亮，直到菜单关闭 */
+.word.long-pressed {
+  background-color: #bfdbfe;
+  border-radius: 3px;
+}
+
+/* 查词气泡：absolute 定位（页面坐标），滚动时跟着正文走 */
+.dict-bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 80;
+  max-width: 200px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(17, 24, 39, 0.14);
+  font-size: 14px;
+  line-height: 1.45;
+  /* 淡入淡出：只做 opacity + 轻微位移，0.15s 不拖沓 */
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s ease, transform .15s ease;
+  pointer-events: none;
+}
+.dict-bubble.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* 小三角：两层伪元素叠出带边框的效果，--arrow-x 由 JS 对准单词中心 */
+.dict-bubble::before,
+.dict-bubble::after {
+  content: "";
+  position: absolute;
+  left: var(--arrow-x, 20px);
+  margin-left: -6px;
+  border: 6px solid transparent;
+}
+/* 默认（气泡在单词上方）：三角朝下，指向单词 */
+.dict-bubble::before { top: 100%; border-top-color: #e5e7eb; }
+.dict-bubble::after  { top: calc(100% - 1px); border-top-color: #fff; }
+/* 翻到单词下方（.below）：三角朝上 */
+.dict-bubble.below::before {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: #e5e7eb;
+}
+.dict-bubble.below::after {
+  top: auto;
+  bottom: calc(100% - 1px);
+  border-top-color: transparent;
+  border-bottom-color: #fff;
+}
+
+.dict-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.dict-head strong {
+  font-size: 15px;
+  color: #1f2329;
+}
+.dict-pos {
+  flex: none;
+  font-size: 12px;
+  color: #2563eb;
+}
+.dict-phonetic {
+  margin-top: 1px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+.dict-meaning {
+  margin-top: 3px;
+  color: #374151;
+}
+.dict-loading {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* V2 起今日单词卡片只保留「单词 / 音标 / 词性 / 释义」，
+   早期版本的 .src-book（📚 来源标记）和 .word-ops（加入单词本按钮）
+   已从 app.js 的 renderWordList 里移除，样式一并清掉，避免留死代码。
+   需要时看 git 历史。 */
+
+/* ---------- 单词本页面 ---------- */
+
+/* 统计栏：浅底，和内容区区分开 */
+.vb-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #4b5563;
+}
+.vb-stats b { color: #1d4ed8; font-weight: 600; }
+.vb-stats-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+/* 小日历图标 */
+.vb-cal {
+  width: 14px;
+  height: 14px;
+  color: #2563eb;
+}
+
+/* 筛选栏：标签横向滚动 + 右侧排序 */
+.vb-filterbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.vb-chips {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;                 /* 标签多时横向滚动 */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.vb-chips::-webkit-scrollbar { display: none; }
+.vb-chip {
+  flex: none;
+  padding: 5px 12px;
+  border: 1px solid #dcdfe5;
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  color: #4b5563;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+/* 选中：主题蓝底白字 */
+.vb-chip.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+.vb-sorts {
+  flex: none;
+  display: flex;
+  gap: 4px;
+}
+.vb-sort {
+  padding: 5px 8px;
+  border: 1px solid #dcdfe5;
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.vb-sort.active {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+.vb-sort .vb-arrow { font-weight: 700; }
+
+/* 卡片列表 */
+.vb-list { display: flex; flex-direction: column; gap: 8px; }
+.vb-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(17, 24, 39, .08);
+}
+.vb-card-inner {
+  position: relative;
+  z-index: 1;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+  transition: transform .22s ease;
+  touch-action: pan-y;              /* 纵向留给页面滚动，横向交给左滑 */
+  cursor: pointer;
+}
+.vb-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.vb-left { min-width: 0; flex: 1; }
+.vb-word-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.vb-word { font-size: 16px; font-weight: 700; }
+.vb-phonetic { font-size: 12px; color: #9ca3af; }
+.vb-pos { font-size: 12px; color: #2563eb; }
+.vb-meaning {
+  margin-top: 2px;
+  font-size: 14px;
+  color: #4b5563;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* 展开后释义允许换行，避免长释义被截掉 */
+.vb-card.expanded .vb-meaning {
+  white-space: normal;
+}
+.vb-right {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 状态标签：new 灰 / short 蓝 / mid 青 / long 紫 / mastered 绿 */
+.vb-status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.vb-status.st-new      { background: #f3f4f6; color: #6b7280; }
+.vb-status.st-familiar { background: #dbeafe; color: #1d4ed8; }
+.vb-status.st-known    { background: #cffafe; color: #0e7490; }
+.vb-status.st-mastered { background: #d1fae5; color: #047857; }
+/* 刚掌握：标签闪一下 */
+.vb-status.celebrate { animation: vb-flash .5s ease 2; }
+@keyframes vb-flash {
+  0%, 100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  50%      { transform: scale(1.12); box-shadow: 0 0 0 4px rgba(16, 185, 129, .25); }
+}
+
+/* ⋯ 更多按钮 */
+.vb-more {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.vb-more:active { background: #f3f4f6; }
+
+/* 展开详情 */
+.vb-detail {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #eef0f3;
+  animation: vb-fade .18s ease;
+}
+@keyframes vb-fade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.vb-detail-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #6b7280;
+  padding: 2px 0;
+}
+.vb-detail-row b { color: #374151; font-weight: 600; }
+
+/* 记忆进度：5 个圆点 */
+.vb-progress { margin-top: 10px; }
+.vb-dots {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* 圆点之间的连线 */
+.vb-dots::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  height: 2px;
+  background: #e9ebef;
+}
+.vb-dot {
+  position: relative;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e5e7eb;
+}
+.vb-dot.done { background: #93c5fd; }
+.vb-dot.cur  { box-shadow: 0 0 0 3px rgba(37, 99, 235, .15); }
+.vb-dot.st-new      { background: #9ca3af; }
+.vb-dot.st-familiar { background: #2563eb; }
+.vb-dot.st-known    { background: #0891b2; }
+.vb-dot.st-mastered { background: #10b981; }
+.vb-progress-tip {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* 认识 / 不认识 */
+.vb-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.vb-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #dcdfe5;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+.vb-btn.yes {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+}
+.vb-btn.no {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.vb-btn:active { transform: scale(.98); }
+
+/* 左滑露出的删除按钮（垫在卡片下层） */
+.vb-del {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 72px;
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 掌握撒花：临时节点，动画结束由 JS 清掉 */
+.vb-confetti {
+  position: absolute;
+  bottom: 6px;
+  font-size: 15px;
+  pointer-events: none;
+  animation: vb-pop .8s ease-out forwards;
+}
+@keyframes vb-pop {
+  0%   { opacity: 0; transform: translateY(6px) scale(.6); }
+  35%  { opacity: 1; transform: translateY(-10px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-38px) scale(1); }
+}
+
+/* 空状态 */
+.vb-empty {
+  padding: 28px 0 34px;
+  text-align: center;
+}
+.vb-empty-text {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* 卡片操作菜单（fixed 定位，跟着 ⋯ 按钮走） */
+.vb-menu {
+  position: fixed;
+  z-index: 90;
+  min-width: 148px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(17, 24, 39, .14);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s ease, transform .15s ease;
+  pointer-events: none;
+}
+.vb-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.vb-menu-item {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: #374151;
+  text-align: left;
+  cursor: pointer;
+}
+.vb-menu-item:hover { background: #f3f4f6; }
+.vb-menu-item:active { background: #e5e7eb; }
+.vb-menu-item.danger { color: #dc2626; }
+.vb-menu-item[disabled] { color: #9ca3af; cursor: default; }
+
+/* ---------- 长按收藏菜单 ---------- */
+/* 复用气泡的定位与外观，只把内边距去掉，换成竖排菜单项 */
+.word-menu {
+  padding: 4px;
+  min-width: 132px;
+}
+.menu-word {
+  padding: 4px 8px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2329;
+  border-bottom: 1px solid #f0f1f3;
+  margin-bottom: 4px;
+}
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 7px 8px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: #374151;
+  text-align: left;
+  cursor: pointer;
+}
+.menu-item:hover { background: #f3f4f6; }
+.menu-item:active { background: #e5e7eb; }
+
+/* ==========================================================================
+ * 词汇量测试页（独立全屏 overlay）
+ * ========================================================================== */
+/* 顶部状态栏里的词汇量行 */
+.vt-top-line {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #2563eb;
+}
+/* 底部按钮下方「上次」小字
+   bottom 必须 = 底部栏高度（含安全区），否则会压在按钮上。
+   --bottombar-h 定义在文件开头的 :root 里。 */
+.vt-last-hint {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: calc(var(--bottombar-h) + 6px);
+  text-align: center;
+  font-size: 12px;
+  color: #6b7280;
+  /* 略低于底部栏，避免和按钮视觉打架，但高于页面内容 */
+  z-index: 84;
+  pointer-events: none;
+}
+.vt-top-line.hidden,
+.vt-last-hint.hidden { display: none; }
+
+/* 测试页容器：固定全屏
+   注意：底部是 0，底部栏浮在它之上（z-index 85 > 60），
+   所以内容区必须自己留出底部栏的高度，否则最后一行词会被按钮压住。 */
+.vt-page {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.vt-page.hidden { display: none; }
+
+/* 头部 */
+.vt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e6e8eb;
+  background: #fff;
+}
+.vt-back {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  color: #374151;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+}
+.vt-title { font-size: 16px; font-weight: 600; }
+.vt-progress { font-size: 14px; color: #6b7280; }
+
+/* 题目区（可滚动）
+   padding-bottom 要给底部操作栏留出空间：.vt-page 是 inset:0 全屏，
+   底部栏浮在它上面（z-index 85 > 60），不垫高的话最后一行会被压住。 */
+.vt-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  padding-bottom: calc(16px + var(--bottombar-h) + 12px);
+}
+/* 底部栏隐藏时（个人中心）把上面预留的那块空间还回来，
+   否则页面底部会多出一段等高的空白，看起来像内容没加载完。
+   挂在 #profilePage 上而不是 .vt-body 上 —— 词汇量测试页 / 刷词页
+   共用同一个 .vt-body 类，不能一刀切。 */
+#profilePage .vt-body {
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.vt-question { text-align: center; margin-top: 22px; }
+.vt-word { font-size: 30px; font-weight: 700; color: #1f2329; margin: 16px 0 8px; word-break: break-word; }
+.vt-prompt { font-size: 14px; color: #6b7280; margin-bottom: 20px; }
+.vt-opts { display: flex; flex-direction: column; gap: 10px; }
+.vt-opt {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #dcdfe5;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 16px;
+  color: #1f2329;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+  box-sizing: border-box;
+}
+.vt-opt:active { background: #f3f4f6; }
+.vt-opt.correct { background: #d1fae5; border-color: #10b981; color: #047857; }
+.vt-opt.wrong   { background: #fee2e2; border-color: #ef4444; color: #b91c1c; }
+.vt-opt.disabled { pointer-events: none; }
+
+/* 「不认识」按钮：单独一行，弱样式（灰边灰字）。
+   尺寸刻意与 .vt-opt 完全一致（同 min-height / padding / font-size），
+   需求要求「高度与普通选项按钮相同」—— 如果只靠 padding 撑，两行文字的
+   实际高度会有 1~2px 差，肉眼能看出来按钮不齐。 */
+.vt-unknown-row { margin-top: 8px; }
+.vt-unknown {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;          /* 比选项的 #dcdfe5 略深一点，但仍是弱样式 */
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 16px;                     /* 与选项同字号 */
+  color: #6b7280;                      /* 灰字 */
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+  box-sizing: border-box;
+}
+.vt-unknown:active { background: #f3f4f6; }
+.vt-unknown.picked {
+  border-color: #9ca3af;
+  background: #f3f4f6;
+  color: #4b5563;
+}
+.vt-unknown.disabled { pointer-events: none; opacity: .7; }
+.vt-mark { font-weight: 700; margin-left: 4px; }
+.vt-mark.ok { color: #10b981; }
+.vt-mark.no { color: #ef4444; }
+
+/* 底部进度条 */
+/* 页脚操作条：同样要避开底部栏，否则按钮会被压住点不到 */
+.vt-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #e6e8eb;
+  background: #fff;
+  padding-bottom: calc(12px + var(--bottombar-h));
+}
+.vt-cells { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 6px; }
+.vt-cell { width: 12px; height: 12px; border-radius: 3px; background: #e5e7eb; }
+.vt-cell.done { background: #2563eb; }
+.vt-cell.current { box-shadow: 0 0 0 2px rgba(37, 99, 235, .35); }
+/* 「不认识」单独一种标记：斜纹填充而不是实心。
+   回看进度条时能一眼分清"我答错了"（实心）和"我跳过了"（斜纹）——
+   这两种情况对用户的意义完全不同，不该长成一个样。 */
+.vt-cell.done.unknown {
+  background: #e5e7eb;
+  background-image: repeating-linear-gradient(
+    45deg, #9ca3af, #9ca3af 2px, #e5e7eb 2px, #e5e7eb 4px
+  );
+  border: 1px solid #9ca3af;
+  box-sizing: border-box;
+}
+.vt-hint { text-align: center; font-size: 13px; color: #6b7280; }
+
+/* 结果页 */
+.vt-result { text-align: center; padding: 8px 0; }
+.vt-score-title { font-size: 14px; color: #6b7280; }
+.vt-score { font-size: 40px; font-weight: 800; color: #2563eb; line-height: 1.2; }
+.vt-score span { font-size: 18px; font-weight: 600; }
+.vt-encourage { font-size: 14px; color: #374151; margin: 8px 0 18px; }
+
+/* 结果页三项计数：答对 / 答错 / 不认识 */
+.vt-tally {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: #374151;
+}
+.vt-tally-item b { font-size: 17px; margin: 0 2px; }
+.vt-tally-item.ok b      { color: #047857; }
+.vt-tally-item.no b      { color: #b91c1c; }
+.vt-tally-item.unknown b { color: #6b7280; }
+
+/* ---- 词汇量位置条（adaptive-v1 新增）----
+   一条 0 - VOCAB_MAX 的横轨，浅色区间= 误差范围 ±500，深色竖线 = 估算落点。
+   目的：让用户看见「这是抽样估计」而不是「精确测量」。
+   20 道题的误差客观存在，明着标出来比让人以为测得很准更可信。 */
+.vt-gauge { margin: 0 0 16px; }
+.vt-gauge-track {
+  position: relative;
+  height: 10px;
+  border-radius: 5px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+.vt-gauge-range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* left / width 由 JS 按score 与 errorMargin 算好后内联写入 */
+  background: #bfdbfe;
+}
+.vt-gauge-mark {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 3px;
+  margin-left: -1.5px;         /* left 是百分比，居中要自己往回拉半个宽度 */
+  border-radius: 2px;
+  background: #2563eb;
+}
+.vt-gauge-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+.vt-gauge-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* 封顶 / 封底提示：只在测到边界时出现。
+   故意用琥珀色而不是红色 —— 这不是「错误」，只是「本次测试的量程不够宽」。 */
+.vt-cap-note {
+  margin: 0 0 16px;
+  padding: 9px 11px;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  background: #fffbeb;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #92400e;
+}
+.vt-cap-note b { color: #78350f; }
+
+/* ---- 题库加载态（open() 现在是异步的，先 fetch 再出题）----
+   高度刻意与题目视图接近，且底部进度条照常渲染，
+   这样「加载 → 出题」时页面不会整体上跳一屏。 */
+.vt-loading {
+  padding: 60px 20px;
+  text-align: center;
+}
+.vt-loading-text {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 14px;
+}
+.vt-loading-bar {
+  width: 160px;
+  height: 4px;
+  margin: 0 auto;
+  border-radius: 2px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+.vt-loading-bar span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: 2px;
+  background: #2563eb;
+  animation: vtLoadingSlide 1.1s ease-in-out infinite;
+}
+@keyframes vtLoadingSlide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vt-loading-bar span { animation: none; width: 100%; opacity: .5; }
+}
+
+/* 题库不可用（连降级词库都没有）—— 红色，但比 .vt-cap-note 的琥珀更重：
+   琥珀是「提示测不准」，红色是「根本测不了」，用户要做的也不同。 */
+.vt-error-text {
+  margin: 8px 0 22px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #991b1b;
+}
+
+/* 降级提示条：testBank.json 加载失败、正用 60 词小库出题。
+   放在题目上方，用户第一眼就能看到「这次结果会偏高」。 */
+.vt-bank-notice {
+  margin-bottom: 14px;
+  padding: 9px 11px;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  background: #fffbeb;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #92400e;
+}
+.vt-bank-notice b { color: #78350f; }
+.vt-chart { display: flex; align-items: flex-end; justify-content: space-around; gap: 8px; height: 170px; padding: 0 6px; }
+.vt-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; max-width: 64px; }
+.vt-bar { width: 100%; height: 124px; background: #f3f4f6; border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; }
+.vt-bar-fill { width: 100%; background: linear-gradient(180deg, #3b82f6, #2563eb); border-radius: 6px 6px 0 0; transition: height .4s ease; }
+.vt-bar-name { font-size: 12px; color: #6b7280; margin-top: 4px; }
+.vt-bar-pct { font-size: 12px; color: #2563eb; font-weight: 600; }
+.vt-imported { margin-top: 10px; font-size: 13px; color: #16a34a; }
+.vt-result-actions { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; padding: 0 4px; }
+
+/* 通用按钮（测试页 / 弹窗共用；顺手补齐之前缺失的 .btn 基础样式） */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  border: 1px solid #dcdfe5;
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 15px;
+  color: #1f2329;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+.btn.ghost { background: #fff; border-color: #dcdfe5; color: #374151; }
+.btn:active { transform: scale(.99); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.btn.small { width: auto; }   /* 已有的小号按钮不被全宽影响 */
+
+/* 批量导入弹窗内的文本框与预览 */
+.vt-textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 10px 12px;
+  border: 1px solid #dcdfe5;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.vt-preview { margin-top: 10px; font-size: 13px; color: #6b7280; line-height: 1.7; }
+.vt-preview b { color: #2563eb; }
+/* 测试页 / 导入弹窗用的弹窗遮罩。
+   openModal 造出来的 mask 同时带 .modal-mask 和 .vt-modal-mask 两个 class，
+   而这条规则在文件更靠后 —— 同特异性下后来者胜，
+   所以这里的值【必须】与 .modal-mask 保持一致（95），
+   不然会静默把刚提上去的层级又压回 70，底部按钮重新被底部栏挡住。 */
+.vt-modal-mask {
+  z-index: 95;
+}
+
+/* ---------- 内置词典一键导入 ---------- */
+/* 粘贴导入弹窗里的入口按钮：整行可点，和下面的 textarea 明显分开 */
+.vt-dict-entry {
+  display: block;
+  width: 100%;
+  margin: 10px 0 12px;
+  padding: 11px 12px;
+  border: 1px dashed #93c5fd;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.vt-dict-entry:active { background: #dbeafe; }
+
+/* 词典列表：三行可点，每行右侧显示词数 */
+.vt-dict-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 1px solid #e6e8eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.vt-dict-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #eef0f3;
+  cursor: pointer;
+}
+.vt-dict-item:last-child { border-bottom: none; }
+.vt-dict-item:active { background: #f3f4f6; }
+.vt-dict-name { font-size: 15px; color: #1f2329; }
+.vt-dict-desc { margin-top: 2px; font-size: 12px; color: #6b7280; }
+/* 词数右对齐：不加固定宽度的话「加载中…」和「100 词」会让整行宽度跳动 */
+.vt-dict-count {
+  flex: none;
+  min-width: 62px;
+  text-align: right;
+  font-size: 13px;
+  color: #2563eb;
+}
+
+/* ==========================================================================
+ * V2 新增样式：视图切换 / 今日单词区块 / 个人中心 / 刷词页
+ * ========================================================================== */
+
+/* ---------- 单词本：视图切换栏 ---------- */
+.vb-view-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 0;
+}
+.vb-view-tab {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7280;
+  cursor: pointer;
+}
+.vb-view-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---------- 单词本：今日单词三区块 ---------- */
+.vb-today { padding: 4px 0 12px; }
+.vb-section { margin-top: 12px; }
+.vb-section-title {
+  margin: 0 14px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+.vb-section-empty {
+  margin: 0 14px;
+  padding: 12px;
+  font-size: 13px;
+  color: #9ca3af;
+  background: #f9fafb;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  text-align: center;
+}
+/* 候补复习区卡片更紧凑 */
+.vb-card.compact { padding: 8px 12px; }
+.vb-card.compact .vb-meaning { font-size: 13px; }
+
+/* ---------- 个人中心 ---------- */
+.profile-content { padding: 12px 14px 24px; }
+.profile-content .card {
+  background: #fff;
+  border: 1px solid #e9ebef;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.profile-content .card h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #111827;
+}
+.profile-vocab-score {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+.profile-stat-row {
+  font-size: 13px;
+  color: #4b5563;
+  padding: 4px 0;
+}
+.profile-stat-row b { color: #111827; }
+.btn.danger {
+  color: #dc2626;
+  border-color: #fecaca;
+  background: #fff;
+}
+.btn.danger:hover { background: #fef2f2; }
+
+/* ---------- 刷词页 ---------- */
+.fc-mode-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px 0;
+}
+.fc-mode-tabs .mode-tab {
+  flex: 1;
+  padding: 7px 0;
+  font-size: 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b7280;
+  cursor: pointer;
+}
+.fc-mode-tabs .mode-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+.fc-content { padding: 18px 14px 8px; }
+.fc-word {
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+  margin-bottom: 18px;
+  word-break: break-word;
+}
+.fc-options { display: flex; flex-direction: column; gap: 8px; }
+.fc-options .option-btn {
+  padding: 12px 14px;
+  font-size: 15px;
+  text-align: left;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+}
+.fc-options .option-btn:disabled { cursor: default; }
+.fc-options .option-btn.correct {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #047857;
+  font-weight: 600;
+}
+.fc-options .option-btn.wrong {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #b91c1c;
+  font-weight: 600;
+}
+.fc-progress {
+  padding: 12px 14px 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+.fc-progress-bar {
+  margin-top: 5px;
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+.fc-progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: #2563eb;
+  transition: width .25s ease;
+}
+.fc-result {
+  padding: 20px 14px;
+  text-align: center;
+}
+.fc-result-text {
+  font-size: 15px;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+/* ---------- 新闻标题旁的换一篇按钮 ---------- */
+.news-title { display: flex; align-items: center; gap: 8px; }
+.switch-btn {
+  flex: none;
+  padding: 0 6px;
+  font-size: 17px;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+}
+.switch-btn:hover { color: #2563eb; }
+
+/* ---------- 顶部个人中心入口 ----------
+   按钮浮在顶栏右上角，所以 .date / .meta 必须留出右侧空间，
+   否则文字会跟按钮重叠（改成「图标 + 文字」后按钮宽约 87px）。
+   注意：这里【不要】再写 .topbar { position: relative } ——
+   顶栏在文件头是 position: sticky，同优先级下后写的会把它覆盖成 relative，
+   滚动时顶栏就不吸顶了（第四项的滚动同步会失效）。
+   sticky 本身就是 positioned 元素，足以作为 .profile-btn 的 absolute 锚点。 */
+.topbar .date,
+.topbar .meta,
+.topbar .vt-top-line {
+  /* 右侧留出「个人中心」按钮的宽度（文字 4×13 + 图标 15 + 间距 4 + 内边距 16 ≈ 87）
+     再加 6px 余量。按钮是 absolute 定位，不占文档流，所以必须靠这个避让。 */
+  padding-right: 94px;
+}
+.profile-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 13px;            /* 与 .meta 的 13px 齐平，视觉协调 */
+  line-height: 1;
+  white-space: nowrap;         /* 小屏不换行 */
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+}
+/* 图标用 currentColor，跟文字一起随 hover 变色，也跟主题蓝灰协调 */
+.profile-btn-icon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.profile-btn:hover { color: #2563eb; }
+.profile-btn:active { background: #f3f4f6; }
+
+
+/* ==========================================================================
+   Bug 修复补充：AI 服务不可用时的降级提示条
+   ========================================================================== */
+.ai-down-hint {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #92400e;
+}
+
+.ai-down-hint code {
+  background: #fef3c7;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+  color: #92400e;
+}
+/* 离线变体：灰蓝色调，与「服务没起」的琥珀色区分开。
+   用灰蓝而不是同一个黄色 —— 两者都是「降级」，但原因不同，
+   颜色一致会让用户以为是同一个问题、重复给建议（重启代理是没用的）。 */
+.ai-down-hint.is-offline {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+.ai-down-hint.is-offline b { color: #1e293b; }
+
+/* ---- 离线状态横幅（全局，掉线时立刻出现）----
+   放在 topbar 之后、tabs 之前。位置选这里是因为：
+   - topbar 里的日期/累计天数在离线时仍然正确，不该被横幅替换掉
+   - tabs 必须在横幅下面（否则点了「换一篇」横幅还在，用户以为没生效）
+   .net-offline-bar 用 hidden 类控制显隐（与项目里其它 .hidden 一致）。 */
+.net-offline-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: #334155;
+  color: #e2e8f0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: center;
+  justify-content: center;
+}
+.net-offline-bar.hidden { display: none; }
+.net-offline-bar b { color: #fff; }

@@ -1,0 +1,14 @@
+# 临时文件
+_tmp_*
+*.tmp
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+
+# 环境变量（如果以后有的话）
+.env
+.env.local

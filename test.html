@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 新闻背单词 · 词库模块测试页</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f6f7f9;
+      color: #1f2329;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 880px; margin: 0 auto; }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    .sub { color: #6b7280; font-size: 13px; margin-bottom: 20px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+    .card h2 { font-size: 15px; margin: 0 0 12px; }
+    button {
+      font: inherit;
+      padding: 7px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #fff;
+      color: #1f2329;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+    button:hover { background: #f3f4f6; }
+    button.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+    button.primary:hover { background: #1d4ed8; }
+    #result { margin-top: 14px; font-size: 13px; }
+    .row { padding: 5px 0; border-bottom: 1px dashed #eef0f3; }
+    .row:last-child { border-bottom: none; }
+    .pass { color: #15803d; font-weight: 600; }
+    .fail { color: #dc2626; font-weight: 600; }
+    .desc { color: #4b5563; }
+    .val { color: #6b7280; font-family: Consolas, Menlo, monospace; }
+    .summary { margin-top: 12px; font-size: 14px; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eef0f3; }
+    th { color: #6b7280; font-weight: 600; background: #fafbfc; }
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 12px;
+    }
+    .hint { font-size: 12px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>词库与状态机模块 · 测试页</h1>
+    <p class="sub">按顺序加载 js/data.js → js/wordpool.js，页面上点按钮跑自测，也可以直接在控制台调用 WordPool。</p>
+
+    <div class="card">
+      <h2>自测</h2>
+      <button class="primary" onclick="runTests()">运行自测</button>
+      <button onclick="resetPool()">重新初始化词库</button>
+      <div id="result"></div>
+    </div>
+
+    <div class="card">
+      <h2>每日单词池生成（generateDailyPool）</h2>
+      <button class="primary" onclick="runPoolTests()">测试单词池生成</button>
+      <button onclick="renderNewsList()">刷新新闻库</button>
+      <div id="poolResult"></div>
+    </div>
+
+    <div class="card">
+      <h2>新闻匹配（NewsMatcher · 词袋交集）</h2>
+      <button class="primary" onclick="runMatchTests()">测试新闻匹配</button>
+      <div id="matchResult"></div>
+    </div>
+
+    <div class="card">
+      <h2>最佳匹配结果</h2>
+      <div id="matchDisplay"><span class="hint">点上面的「测试新闻匹配」按钮，这里会显示最佳匹配新闻与命中词。</span></div>
+    </div>
+
+    <div class="card">
+      <h2>新闻库（NEWS_LIST / data/news.json）</h2>
+      <div id="newsTable"></div>
+    </div>
+
+    <div class="card">
+      <h2>当前词库（FREQUENCY_WORDS · 20 个专四高频词）</h2>
+      <div id="wordTable"></div>
+    </div>
+
+    <div class="card">
+      <h2>控制台手动测试</h2>
+      <p class="hint">
+        按 F12 打开控制台，可以直接调用（<code>WordPool</code> 已挂在 window 上）：<br>
+        <code>WordPool.getAllWords()</code> ·
+        <code>WordPool.getWord("diligent")</code> ·
+        <code>WordPool.addWord("lucid", "adj.", "清晰的", "manual")</code> ·
+        <code>WordPool.getReviewWords("2026-10-02", 5)</code> ·
+        <code>WordPool.updateWordStatus("diligent", true, "2026-10-02")</code> ·
+        <code>WordPool.calcNextReviewDate("long", "2026-10-02")</code>
+      </p>
+    </div>
+  </div>
+
+  <!-- 注意加载顺序：先数据，后逻辑模块 -->
+  <script src="js/data.js"></script>
+  <script src="js/wordpool.js"></script>
+  <script src="js/news.js"></script>
+
+  <script>
+    /* 测试用的固定日期，方便复现结果 */
+    const TODAY = "2026-10-02";
+
+    /* 重新初始化词库：用 data.js 里的 20 个高频词灌进去 */
+    function resetPool() {
+      WordPool.init(FREQUENCY_WORDS);
+      renderWordTable();
+      document.getElementById("result").innerHTML =
+        '<div class="row desc">词库已重新初始化，共 ' + WordPool.getAllWords().length + ' 个词。</div>';
+    }
+
+    /* 断言工具：比对实际值与期望值 */
+    function check(name, actual, expected) {
+      const ok = JSON.stringify(actual) === JSON.stringify(expected);
+      return {
+        ok: ok,
+        html: '<div class="row">' +
+          '<span class="' + (ok ? "pass" : "fail") + '">' + (ok ? "PASS" : "FAIL") + "</span> " +
+          '<span class="desc">' + name + "</span>" +
+          '<span class="val"> → ' + JSON.stringify(actual) +
+          (ok ? "" : " ，期望 " + JSON.stringify(expected)) + "</span></div>"
+      };
+    }
+
+    /* 主测试流程 */
+    function runTests() {
+      WordPool.init(FREQUENCY_WORDS);          // 1. 初始化
+      const out = [];
+      let passCount = 0;
+
+      out.push(check("init 后词库数量 = 20", WordPool.getAllWords().length, 20));
+      out.push(check(
+        "init 默认字段（status/source/nextReview/reviewCount）",
+        [WordPool.getWord("diligent").status, WordPool.getWord("diligent").source,
+         WordPool.getWord("diligent").nextReview, WordPool.getWord("diligent").reviewCount],
+        ["new", "frequency", TODAY, 0]
+      ));
+
+      // 2. 手动添加单词
+      WordPool.addWord("lucid", "adj.", "清晰易懂的", "manual");
+      out.push(check("addWord 后 source", WordPool.getWord("lucid").source, "manual"));
+      WordPool.addWord("lucid", "adj.", "清晰易懂的", "manual");   // 重复添加
+      out.push(check("重复添加不增加数量", WordPool.getAllWords().length, 21));
+
+      // 3. 造几个过期词，取复习列表
+      WordPool.setStatus("scrutiny", "short", "2026-09-28");
+      WordPool.setStatus("advocate", "mid", "2026-09-30");
+      WordPool.setStatus("consensus", "long", "2026-10-01");
+      const reviewList = WordPool.getReviewWords(TODAY, 5);
+      out.push(check("复习列表数量 <= 5", reviewList.length <= 5, true));
+      out.push(check(
+        "复习列表按 nextReview 升序",
+        reviewList.slice(0, 3).map(function (w) { return w.word; }),
+        ["scrutiny", "advocate", "consensus"]
+      ));
+
+      // 4. 答对升级：new → short，nextReview = 今天 + 1 天
+      WordPool.updateWordStatus("diligent", true, TODAY);
+      out.push(check(
+        "答对：new → short，nextReview +1 天",
+        [WordPool.getWord("diligent").status, WordPool.getWord("diligent").nextReview],
+        ["short", "2026-10-03"]
+      ));
+
+      // 5. 答错降级：mid → short
+      WordPool.setStatus("resilient", "mid");
+      WordPool.updateWordStatus("resilient", false, TODAY);
+      out.push(check(
+        "答错：mid → short",
+        [WordPool.getWord("resilient").status, WordPool.getWord("resilient").nextReview],
+        ["short", "2026-10-03"]
+      ));
+
+      // 6. 边界：new 答错不变、mastered 答对不变、mastered 答错降 long
+      WordPool.updateWordStatus("inevitable", false, TODAY);
+      out.push(check("new 答错仍为 new", WordPool.getWord("inevitable").status, "new"));
+      WordPool.setStatus("mitigate", "mastered");
+      WordPool.updateWordStatus("mitigate", true, TODAY);
+      out.push(check("mastered 答对仍为 mastered", WordPool.getWord("mitigate").status, "mastered"));
+      WordPool.updateWordStatus("mitigate", false, TODAY);
+      out.push(check("mastered 答错降为 long", WordPool.getWord("mitigate").status, "long"));
+
+      // 7. 间隔天数计算
+      out.push(check("calcNextReviewDate(new)", WordPool.calcNextReviewDate("new", TODAY), "2026-10-02"));
+      out.push(check("calcNextReviewDate(short)", WordPool.calcNextReviewDate("short", TODAY), "2026-10-03"));
+      out.push(check("calcNextReviewDate(mid)", WordPool.calcNextReviewDate("mid", TODAY), "2026-10-05"));
+      out.push(check("calcNextReviewDate(long)", WordPool.calcNextReviewDate("long", TODAY), "2026-10-09"));
+      out.push(check("calcNextReviewDate(mastered)", WordPool.calcNextReviewDate("mastered", TODAY), "2026-11-01"));
+      out.push(check("跨月计算 2026-02-20 +30 天", WordPool.calcNextReviewDate("mastered", "2026-02-20"), "2026-03-22"));
+
+      // 8. 已掌握单词超过 30 天 → 抽查
+      // 注意：抽查词排在到期词后面，这里把 limit 放大，否则会被前面 10 个到期词挤掉
+      const amb = WordPool.getWord("ambiguous");
+      amb.status = "mastered";
+      amb.lastReview = "2026-08-01";
+      out.push(check(
+        "mastered 超 30 天进入抽查（spotCheck）",
+        WordPool.getReviewWords(TODAY, 50).filter(function (w) { return w.spotCheck; })
+          .map(function (w) { return w.word; }).indexOf("ambiguous") >= 0,
+        true
+      ));
+
+      // 9. 查不到的词返回 null
+      out.push(check("getWord 找不到返回 null", WordPool.getWord("not-exist"), null));
+
+      // 汇总输出
+      passCount = out.filter(function (r) { return r.ok; }).length;
+      document.getElementById("result").innerHTML =
+        out.map(function (r) { return r.html; }).join("") +
+        '<div class="summary">结果：' + passCount + " / " + out.length + " 通过</div>";
+
+      renderWordTable();
+      console.log("[测试完成] " + passCount + "/" + out.length + " 通过");
+    }
+
+    /* 造测试数据用的 15 个新词（模拟“昨天添加的词”） */
+    const NEW_WORD_BATCH = [
+      { w: "lucid",    p: "adj.", m: "清晰易懂的" },
+      { w: "augment",  p: "v.",   m: "增加，增强" },
+      { w: "coherent", p: "adj.", m: "连贯的" },
+      { w: "dispel",   p: "v.",   m: "消除，驱散" },
+      { w: "emulate",  p: "v.",   m: "模仿，赶上" },
+      { w: "facet",    p: "n.",   m: "方面" },
+      { w: "garner",   p: "v.",   m: "获得，收集" },
+      { w: "hinder",   p: "v.",   m: "阻碍" },
+      { w: "impart",   p: "v.",   m: "传授，告知" },
+      { w: "jolt",     p: "v.",   m: "震动，使震惊" },
+      { w: "kindle",   p: "v.",   m: "点燃，激起" },
+      { w: "loom",     p: "v.",   m: "逼近，隐现" },
+      { w: "muster",   p: "v.",   m: "召集，鼓起" },
+      { w: "nurture",  p: "v.",   m: "培养，养育" },
+      { w: "omit",     p: "v.",   m: "省略，遗漏" }
+    ];
+
+    /* 往词库里塞 n 个“昨天添加”的新词 */
+    function seedYesterdayWords(n) {
+      WordPool.init(FREQUENCY_WORDS);
+      const YESTERDAY = "2026-10-01";   // TODAY(2026-10-02) 的前一天
+      NEW_WORD_BATCH.slice(0, n).forEach(function (item) {
+        const word = WordPool.addWord(item.w, item.p, item.m, "manual");
+        word.addDate = YESTERDAY;
+      });
+    }
+
+    /* 单词池生成测试 */
+    function runPoolTests() {
+      const out = [];
+
+      // 1. 初始化后生成 20 个词
+      WordPool.init(FREQUENCY_WORDS);
+      const pool = WordPool.generateDailyPool(TODAY, 20);
+      out.push(check("1. generateDailyPool 返回 20 个词", pool.words.length, 20));
+      out.push(check("1b. 不足目标时不超发（总数 <= target）", pool.words.length <= pool.target, true));
+
+      // 2. breakdown 四类之和 = words 数量
+      const b = pool.breakdown;
+      const sum = b.newWords + b.wordbookWords + b.reviewWords + b.frequencyWords;
+      out.push(check("2. breakdown 四类之和 = words 数量", sum, pool.words.length));
+      out.push(check("2b. 复习词不超过默认上限 10", b.reviewWords <= 10, true));
+
+      // 3. 昨天添加 5 个新词 → newWords = 5（未达上限）
+      seedYesterdayWords(5);
+      const pool5 = WordPool.generateDailyPool(TODAY, 20);
+      out.push(check("3. 昨天新增 5 个 → breakdown.newWords = 5", pool5.breakdown.newWords, 5));
+      out.push(check("3b. 仍凑够 20 个", pool5.words.length, 20));
+
+      // 4. 昨天添加 15 个新词 → newWords = 10（达到上限，其余顺延）
+      seedYesterdayWords(15);
+      const pool15 = WordPool.generateDailyPool(TODAY, 20);
+      out.push(check("4. 昨天新增 15 个 → 上限截断为 10", pool15.breakdown.newWords, 10));
+      out.push(check("4b. breakdown 之和 = words 数量",
+        pool15.breakdown.newWords + pool15.breakdown.wordbookWords +
+        pool15.breakdown.reviewWords + pool15.breakdown.frequencyWords,
+        pool15.words.length));
+
+      // 5. 单词 id 不重复
+      const ids = pool15.words.map(function (w) { return w.id; });
+      out.push(check("5. 今日单词 id 不重复", new Set(ids).size, ids.length));
+
+      // 补充：单词本收藏词的优先级
+      WordPool.init(FREQUENCY_WORDS);
+      ["sturdy", "notion"].forEach(function (w) {
+        WordPool.addWord(w, "adj.", "测试释义", "wordbook");
+      });
+      const poolBook = WordPool.generateDailyPool(TODAY, 20);
+      out.push(check("补充. 单词本收藏词（source=wordbook）计入", poolBook.breakdown.wordbookWords, 2));
+
+      // 补充：新闻库加载情况
+      out.push(check("补充. 新闻库篇数 = 20", NEWS_LIST.length, 20));
+      out.push(check("补充. 新闻 topic 类别数 = 8",
+        new Set(NEWS_LIST.map(function (n) { return n.topic; })).size, 8));
+
+      const passCount = out.filter(function (r) { return r.ok; }).length;
+      document.getElementById("poolResult").innerHTML =
+        out.map(function (r) { return r.html; }).join("") +
+        '<div class="summary">结果：' + passCount + " / " + out.length + " 通过</div>";
+
+      renderWordTable();
+      console.log("[单词池测试完成] " + passCount + "/" + out.length + " 通过", pool15.breakdown);
+    }
+
+    /* 展示最佳匹配结果：标题 / 主题 / 得分 / 命中词 / 未命中词 */
+    function renderMatchDisplay(result) {
+      if (!result) return;
+      const n = result.news;
+      let html = "";
+      html += '<div><strong>' + n.title + "</strong></div>";
+      html += '<div class="sub">主题：' + n.topic + " · 难度：" + n.difficulty +
+        " · 词数：" + n.content.split(/\s+/).length + " · 匹配得分：<b>" + result.score + "</b></div>";
+      html += '<div class="sub">命中词（' + result.matchedWords.length + "）：" +
+        (result.matchedWords.length
+          ? result.matchedWords.map(function (w) { return "<code>" + w + "</code>"; }).join(" ")
+          : "无") + "</div>";
+      html += '<div class="sub">未命中词（' + result.unmatchedWords.length + "）：" +
+        (result.unmatchedWords.length
+          ? result.unmatchedWords.map(function (w) { return "<code>" + w + "</code>"; }).join(" ")
+          : "无") + "</div>";
+      html += '<div class="sub" style="margin-top:8px">' + n.content.replace(/\n\n/g, "<br><br>") + "</div>";
+      document.getElementById("matchDisplay").innerHTML = html;
+    }
+
+    /* 新闻匹配测试 */
+    function runMatchTests() {
+      const out = [];
+
+      // 先造出今日单词池
+      WordPool.init(FREQUENCY_WORDS);
+      const words = WordPool.generateDailyPool(TODAY, 20).words;
+
+      // 1. 新闻库数量
+      NewsMatcher.init(NEWS_LIST);
+      out.push(check("1. 新闻库数量 = 20", NewsMatcher.getAllNews().length, 20));
+
+      // 2. match 返回 score 与 matchedWords
+      const best = NewsMatcher.match(words);
+      out.push(check("2. match 返回 score 与 matchedWords",
+        [typeof best.score === "number", Array.isArray(best.matchedWords)], [true, true]));
+
+      // 3. matched + unmatched = 输入词数
+      out.push(check("3. matchedWords + unmatchedWords = 输入词数",
+        best.matchedWords.length + best.unmatchedWords.length, words.length));
+
+      // 4. matchTopN 返回 3 篇，按得分从高到低
+      const top3 = NewsMatcher.matchTopN(words, 3);
+      out.push(check("4. matchTopN 返回 3 篇", top3.length, 3));
+      out.push(check("4b. 得分从高到低排列",
+        top3.map(function (x) { return x.score; }),
+        top3.map(function (x) { return x.score; }).slice().sort(function (a, b) { return b - a; })));
+
+      // 5. 极端情况：临时加一篇包含全部 20 个词的新闻，应排第一
+      const allInOne = {
+        id: "n999",
+        title: "TEST: a story containing every target word",
+        topic: "测试",
+        difficulty: "intermediate",
+        content: FREQUENCY_WORDS.map(function (w) { return w.word; }).join(", ") + "."
+      };
+      NewsMatcher.init(NEWS_LIST.concat([allInOne]));
+      const extreme = NewsMatcher.match(words);
+      out.push(check("5. 包含全部单词的新闻排第一", extreme.news.id, "n999"));
+      out.push(check("5b. 该篇得分 = 输入词数", extreme.score, words.length));
+
+      // 6. 同分时选字数少的一篇
+      const longFiller = "The local news desk reported the story on a quiet Tuesday afternoon and "
+        .repeat(8);
+      NewsMatcher.init([
+        { id: "s-long", title: "long", topic: "测试", difficulty: "intermediate",
+          content: "Diligent reporters work here. " + longFiller },
+        { id: "s-short", title: "short", topic: "测试", difficulty: "intermediate",
+          content: "Diligent reporters work here." }
+      ]);
+      out.push(check("6. 得分相同时选字数少的一篇",
+        NewsMatcher.match(["diligent"]).news.id, "s-short"));
+
+      // 恢复真实新闻库，并把真实匹配结果渲染出来
+      NewsMatcher.init(NEWS_LIST);
+
+      const passCount = out.filter(function (r) { return r.ok; }).length;
+      document.getElementById("matchResult").innerHTML =
+        out.map(function (r) { return r.html; }).join("") +
+        '<div class="summary">结果：' + passCount + " / " + out.length + " 通过</div>";
+
+      renderMatchDisplay(best);
+      console.log("[新闻匹配测试完成] " + passCount + "/" + out.length + " 通过",
+        best.news.id, best.score, best.matchedWords);
+    }
+
+    /* 渲染新闻库表格 */
+    function renderNewsList() {
+      let html = "<table><tr><th>ID</th><th>标题</th><th>类别</th><th>难度</th><th>词数</th></tr>";
+      NEWS_LIST.forEach(function (n) {
+        html += "<tr><td>" + n.id + "</td><td>" + n.title + "</td><td>" + n.topic +
+          "</td><td>" + n.difficulty + "</td><td>" + n.content.split(/\s+/).length + "</td></tr>";
+      });
+      html += "</table>";
+      document.getElementById("newsTable").innerHTML = html;
+    }
+
+    /* 渲染词库表格 */
+    function renderWordTable() {
+      const words = WordPool.getAllWords();
+      let html = "<table><tr><th>单词</th><th>词性</th><th>释义</th><th>音标</th><th>状态</th><th>下次复习</th></tr>";
+      words.forEach(function (w) {
+        html += "<tr><td>" + w.word + "</td><td>" + w.pos + "</td><td>" + w.meaning +
+          "</td><td>" + w.phonetic + "</td><td>" + w.status + "</td><td>" + w.nextReview + "</td></tr>";
+      });
+      html += "</table>";
+      document.getElementById("wordTable").innerHTML = html;
+    }
+
+    /* 页面打开就先渲染一次词库和新闻库（不跑测试，等你点按钮） */
+    WordPool.init(FREQUENCY_WORDS);
+    NewsMatcher.init(NEWS_LIST);
+    renderWordTable();
+    renderNewsList();
+  </script>
+</body>
+</html>

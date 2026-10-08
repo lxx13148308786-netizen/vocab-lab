@@ -1,0 +1,40 @@
+{
+  "name": "AI 新闻背单词",
+  "short_name": "背单词",
+  "description": "每天读一篇 AI 新闻，不知不觉背单词",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
+  "//": [
+    "图标说明：icons/ 下三个 PNG 由 _tmp_gen_icons.py 类似的脚本生成（蓝底白书+文字线）。",
+    "TODO【设计】：当前是代码画的占位图标，不是正式设计稿。等有品牌视觉后替换这三个文件，",
+    "  尺寸要求保持 192x192 / 512x512 / maskable 512x512，PNG 必须不透明（透明会在安卓桌面显示成黑块）。",
+    "start_url / scope 用相对路径 './' 而不是 '/'：部署到子目录（如 GitHub Pages 的 /repo/）时才不会 404。"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
