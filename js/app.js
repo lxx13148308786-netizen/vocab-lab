@@ -12,6 +12,25 @@
  *   4. 底部：加词 / 换一篇 / 单词本
  */
 
+// 测试 Supabase 连接
+(async function testSupabase() {
+  console.log('🚀 正在初始化 Supabase...');
+  if (!window.Auth || !window.Auth.client) {
+    console.error('❌ Supabase 客户端初始化失败');
+    return;
+  }
+  console.log('✅ Supabase 客户端创建成功');
+  const user = await window.Auth.getCurrentUser();
+  if (user) {
+    console.log('👤 当前已登录：', user.email);
+  } else {
+    console.log('🔓 当前未登录');
+  }
+  window.Auth.onAuthStateChange((event, user) => {
+    console.log(`🔔 认证状态变化：${event}`, user?.email || '未登录');
+  });
+})();
+
 /* ==========================================================================
  * 1. 常量与工具
  * ========================================================================== */
@@ -1630,6 +1649,24 @@ async function handleAddWord(rawInput) {
     if (!item || !item.word) return;
     if (WordPool.getWord(item.word)) return;              // 已存在就不重复加
     if (WordPool.addWord(item.word, item.pos, item.meaning, "manual", item.phonetic)) added++;
+    // 同时写入单词本（vocabBook）：手动词 source:"manual"，按设计 nextReviewDate=次日，
+    // 所以会出现在「单词本→全部单词」，但今天不进「今日单词」（明天的复习池才包含它）。
+    // 之前 Round 7 声称的这行编辑未实际落盘，导致词只进词库(anv_library)不进单词本。
+    try {
+      if (typeof VocabBook !== "undefined" && VocabBook.addWord) {
+        VocabBook.addWord({
+          word: item.word,
+          phonetic: item.phonetic,
+          pos: item.pos,
+          meaning: item.meaning,
+          source: "manual"
+        });
+      }
+    } catch (e) {
+      // 只 warn 不抛错：加词主流程（写词库）不能因为单词本写入失败而中断；
+      // 也不在控制台刷屏——单个词失败一次就记一条，不影响用户继续操作。
+      console.warn("[app] 加词写入单词本失败:", item.word, e && e.message);
+    }
   });
 
   saveLibrary();
@@ -1660,7 +1697,9 @@ async function handleSwitchNews() {
 /** 单词本：展示收藏词与已标记主动词汇 */
 function renderWordbook() {
   const words = (typeof WordPool !== "undefined") ? WordPool.getAllWords() : [];
-  const collected = words.filter(function (w) { return w.active || w.source === "wordbook"; });
+  const collected = words.filter(function (w) {
+    return w.active || w.source === "wordbook" || w.source === "news" || w.source === "manual";
+  });
 
   const body = collected.length
     ? '<div class="modal-body">' + collected.map(function (w) {

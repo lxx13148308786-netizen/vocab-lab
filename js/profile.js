@@ -24,6 +24,68 @@ var Profile = (function () {
     if (typeof toast === "function") toast(msg);
   }
 
+  /** 云端同步 UI 相关状态 */
+  var SYNC_KEY = "anv_lastCloudSync";
+  var _lastSyncTs = 0;
+  var _syncing = false;
+  (function () {
+    try {
+      var s = (typeof window !== "undefined" && window.localStorage) ? window.localStorage : null;
+      if (s) { var v = s.getItem(SYNC_KEY); if (v) _lastSyncTs = Number(v) || 0; }
+    } catch (e) { /* ignore */ }
+  })();
+  function readLastSync() { return _lastSyncTs; }
+  function storeLastSync(ts) {
+    _lastSyncTs = ts;
+    try {
+      var s = (typeof window !== "undefined" && window.localStorage) ? window.localStorage : null;
+      if (s) s.setItem(SYNC_KEY, String(ts));
+    } catch (e) { /* ignore */ }
+  }
+  function formatSyncTime(ts) {
+    var d = new Date(ts);
+    function p(n) { return String(n).padStart(2, "0"); }
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) +
+      " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+
+  function updateSyncUI() {
+    var box = (typeof document !== "undefined") ? document.getElementById("profileSyncArea") : null;
+    if (!box) return;
+    if (!window.DB || !window.DB.isLoggedIn || !window.DB.isLoggedIn()) {
+      box.innerHTML = '<div class="profile-stat-row">登录后可同步数据到云端</div>';
+      return;
+    }
+    var last = _lastSyncTs ? formatSyncTime(_lastSyncTs) : "尚未同步";
+    if (_syncing) {
+      box.innerHTML =
+        '<div class="profile-stat-row">上次同步：' + esc(last) + '</div>' +
+        '<button class="btn primary" id="profileSyncBtn" disabled>同步中…</button>';
+      return;
+    }
+    box.innerHTML =
+      '<div class="profile-stat-row">上次同步：' + esc(last) + '</div>' +
+      '<button class="btn primary" id="profileSyncBtn">立即同步</button>';
+    var b = box.querySelector("#profileSyncBtn");
+    if (b) b.addEventListener("click", doManualSync);
+  }
+
+  async function doManualSync() {
+    if (_syncing) return;
+    if (!window.DB || !window.DB.isLoggedIn || !window.DB.isLoggedIn()) { tip("请先登录"); return; }
+    _syncing = true; updateSyncUI();
+    try {
+      var res = await window.VocabBook.syncToCloud();
+      _syncing = false;
+      if (res && res.ok) { storeLastSync(Date.now()); tip("同步成功"); }
+      else { tip("同步失败：" + ((res && res.error) || "未知错误")); }
+    } catch (e) {
+      _syncing = false;
+      tip("同步失败：" + ((e && e.message) || e));
+    }
+    updateSyncUI();
+  }
+
   /** 读取词汇量测试结果 */
   function getVocabScore() {
     try {
@@ -86,8 +148,11 @@ var Profile = (function () {
       '</div>' +
       '<div class="card">' +
         '<h3>账户</h3>' +
-        '<div>未登录</div>' +
-        '<button class="btn" id="profileLoginBtn">登录 / 注册</button>' +
+        '<div id="profileAccountCard"></div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<h3>数据同步</h3>' +
+        '<div id="profileSyncArea"></div>' +
       '</div>' +
       '<div class="card">' +
         '<h3>数据管理</h3>' +
@@ -110,12 +175,11 @@ var Profile = (function () {
       });
     }
 
-    var loginBtn = contentEl.querySelector("#profileLoginBtn");
-    if (loginBtn) {
-      loginBtn.addEventListener("click", function () {
-        tip("功能开发中");
-      });
-    }
+    // 账户区根据当前登录态动态渲染（已登录显示邮箱 + 退出，未登录显示登录入口）
+    updateAccountUI();
+
+    // 数据同步卡片：未登录提示 / 已登录显示上次同步时间 + 立即同步按钮
+    updateSyncUI();
 
     var clearBtn = contentEl.querySelector("#profileClearBtn");
     if (clearBtn) {
@@ -165,6 +229,60 @@ var Profile = (function () {
     tip("所有数据已清空");
   }
 
+  /**
+   * 根据当前登录态渲染「账户」卡片区域
+   * 已登录 → 显示邮箱 + 退出按钮；未登录 → 显示登录入口
+   */
+  function updateAccountUI() {
+    var box = (typeof document !== "undefined") ? document.getElementById("profileAccountCard") : null;
+    if (!box) return;
+
+    // 认证模块未就绪：保守显示未登录入口
+    if (typeof window === "undefined" || !window.Auth || !window.Auth.getCurrentUser) {
+      renderLoggedOut(box);
+      return;
+    }
+
+    window.Auth.getCurrentUser().then(function (user) {
+      if (user) renderLoggedIn(box, user);
+      else renderLoggedOut(box);
+    }).catch(function () {
+      renderLoggedOut(box);
+    });
+  }
+
+  /** 已登录：邮箱 + 退出按钮 */
+  function renderLoggedIn(box, user) {
+    box.innerHTML =
+      '<div class="profile-stat-row">已登录：<b>' + esc(user.email || "") + '</b></div>' +
+      '<button class="btn danger" id="profileLogoutBtn">退出登录</button>';
+    var out = box.querySelector("#profileLogoutBtn");
+    if (out) {
+      out.addEventListener("click", function () {
+        window.Auth.signOut().then(function (res) {
+          if (res && res.error) { tip(res.error.message || "退出失败"); return; }
+          // 退出成功：刷新页面回到未登录态（onAuthStateChange 也会触发）
+          if (typeof window !== "undefined" && window.location) window.location.reload();
+        });
+      });
+    }
+  }
+
+  /** 未登录：登录 / 注册入口 */
+  function renderLoggedOut(box) {
+    box.innerHTML =
+      '<div class="profile-stat-row">未登录</div>' +
+      '<button class="btn" id="profileLoginBtn">登录 / 注册</button>';
+    var login = box.querySelector("#profileLoginBtn");
+    if (login) {
+      login.addEventListener("click", function () {
+        if (typeof window !== "undefined" && window.AuthUI && window.AuthUI.open) {
+          window.AuthUI.open("signin");
+        }
+      });
+    }
+  }
+
   /** 底部操作栏（加词 / 单词本 / 刷词）
  *
  * 底部栏只属于主界面那四个 Tab（单词表 / 新闻 / 词汇段 / 检测）。
@@ -206,6 +324,15 @@ function openProfile() {
     var backBtn = (typeof document !== "undefined") ? document.getElementById("profileBackBtn") : null;
     if (backBtn) {
       backBtn.addEventListener("click", closeProfile);
+    }
+
+    // 监听登录状态变化，实时更新账户区（退出 / 登录后即便不刷新也同步）
+    if (typeof window !== "undefined" && window.Auth && window.Auth.onAuthStateChange) {
+      window.Auth.onAuthStateChange(function () {
+        updateAccountUI();
+        // 登录态变化会直接影响同步卡片（未登录→提示，已登录→可同步）
+        updateSyncUI();
+      });
     }
   }
 

@@ -15,15 +15,36 @@
     新增服务商时：把域名加进 connect-src，同时在 js/ai.js 的 AI_CONFIG 里加
     对应 provider（baseUrl + proxyPath），并在 proxy_server.py 的 UPSTREAM 加路由。
   -->
-  <meta http-equiv="Content-Security-Policy" content="connect-src 'self' http://127.0.0.1:* http://localhost:* https://open.bigmodel.cn https://api.deepseek.com;">
+  <meta http-equiv="Content-Security-Policy" content="connect-src 'self' http://127.0.0.1:* http://localhost:* https://open.bigmodel.cn https://api.deepseek.com https://api.dictionaryapi.dev https://jiivykhocecurgtaujtq.supabase.co;">
   <meta name="theme-color" content="#2563eb">
     <!-- iOS 添加到主屏幕的图标。不配的话 iOS 会截页面首屏当图标，
          白底上几乎不可辨；192 那张是 iOS 唯一认可的尺寸。 -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
   <link rel="manifest" href="manifest.json">
   <title>AI 新闻背单词 · 每日阅读</title>
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- Supabase 用户认证：SDK → 配置 → 认证模块（加载顺序不可乱） -->
+  <!--
+    Supabase SDK 多 CDN 兜底加载：cdn.jsdelivr.net 在国内常 ERR_CONNECTION_RESET，
+    用 document.write 在同一解析阶段同步回退到 fastly / testingcf 镜像
+    （三者同源 npm 包、内容一致，只是边缘节点不同，国内可达性更好）。
+    全部失败时 window.supabase 仍为 undefined，js/auth.js 会自动降级为「离线模式」
+    —— 单词本本地照常可用，仅云端同步禁用，应用不再崩溃。
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>window.supabase||document.write('<script src="https://fastly.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
+  <script>window.supabase||document.write('<script src="https://testingcf.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
+  <!-- 配置 -->
+  <script src="config.js"></script>
+  <!-- 认证模块（防御式：SDK 缺失时降级 stub，不抛错） -->
+  <script src="js/auth.js"></script>
+  <!-- 登录 / 注册弹窗交互 -->
+  <script src="js/authUI.js"></script>
+  <!-- 云端数据库（单词数据同步）：依赖上面的 window.Auth，供 js/vocabBook.js 调用 -->
+  <script src="js/db.js"></script>
 </head>
 <body>
   <div class="app">
@@ -163,6 +184,24 @@
 
   <!-- 轻提示 -->
   <div class="toast" id="toast"></div>
+
+  <!-- 登录 / 注册弹窗（默认隐藏，由 js/authUI.js 控制显隐） -->
+  <div class="auth-mask hidden" id="authModal">
+    <div class="auth-modal">
+      <div class="auth-head">
+        <h3 class="auth-title" id="authTitle">登录</h3>
+        <button class="auth-close" id="authCloseBtn" type="button" aria-label="关闭">×</button>
+      </div>
+      <input class="input" id="authEmail" type="email" placeholder="请输入邮箱" autocomplete="email" />
+      <input class="input" id="authPassword" type="password" placeholder="请输入密码" autocomplete="current-password" />
+      <div id="authPassword2Wrap" class="hidden">
+        <input class="input" id="authPassword2" type="password" placeholder="请再次输入密码" autocomplete="new-password" />
+      </div>
+      <button class="btn primary" id="authSubmitBtn" type="button">登录</button>
+      <div class="auth-switch" id="authSwitch">还没有账号？去注册</div>
+      <div class="auth-error hidden" id="authError"></div>
+    </div>
+  </div>
 
   <!-- 注意加载顺序：数据 → 词库/状态机 → 已读记录 → 新闻匹配 → AI 调用 → 主逻辑 -->
   <script src="js/data.js"></script>

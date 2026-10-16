@@ -725,6 +725,22 @@ code {
 }
 .vb-sort .vb-arrow { font-weight: 700; }
 
+/* 方向切换按钮：蓝底蓝字，强调为独立控件（最新在前 ⇄ 最早在前） */
+.vb-dir {
+  padding: 5px 10px;
+  border: 1px solid #2563eb;
+  border-radius: 999px;
+  background: #eff6ff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+.vb-dir:active { background: #dbeafe; }
+
 /* 卡片列表 */
 .vb-list { display: flex; flex-direction: column; gap: 8px; }
 .vb-card {
@@ -1684,3 +1700,82 @@ code {
 }
 .net-offline-bar.hidden { display: none; }
 .net-offline-bar b { color: #fff; }
+
+/* ---------- 登录 / 注册弹窗（authModal） ---------- */
+/* 沿用页面现有风格：浅色背景 #f5f6f8、主蓝 #2563eb、边框 #dcdfe5。
+   输入框/按钮直接复用已有的 .input / .btn / .btn.primary，这里只管遮罩与卡片布局。
+   z-index 取 100，高于 .modal-mask(95) / 底部栏(85) / .vt-page(60)，确保始终最上层。 */
+.auth-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.auth-mask.hidden { display: none; }
+/* 简单淡入动画（display:none → flex 时重新触发） */
+.auth-mask:not(.hidden) { animation: authMaskIn .18s ease; }
+@keyframes authMaskIn { from { opacity: 0; } to { opacity: 1; } }
+
+.auth-modal {
+  width: 90%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 18px 18px;
+  box-sizing: border-box;
+  box-shadow: 0 12px 40px rgba(17, 24, 39, 0.18);
+}
+.auth-mask:not(.hidden) .auth-modal { animation: authModalIn .2s ease; }
+@keyframes authModalIn {
+  from { opacity: 0; transform: translateY(12px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.auth-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.auth-title { margin: 0; font-size: 17px; font-weight: 600; color: #111827; }
+.auth-close {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+}
+.auth-close:active { color: #374151; }
+
+/* 输入框间距由 .input 自带 margin-top 提供；这里只处理确认密码行的显隐 */
+#authPassword2Wrap.hidden { display: none; }
+
+.auth-switch {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+  cursor: pointer;
+  user-select: none;
+}
+.auth-switch:hover { color: #2563eb; }
+
+.auth-error {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #dc2626;
+  line-height: 1.6;
+}
+.auth-error.hidden { display: none; }
+
+/* 移动端：弹窗占满可用宽度（小屏下 90% 本就接近满宽，这里去掉最大宽度限制更彻底） */
+@media (max-width: 420px) {
+  .auth-modal { width: 100%; }
+}

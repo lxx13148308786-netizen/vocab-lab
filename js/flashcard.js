@@ -19,6 +19,12 @@ var Flashcard = (function () {
   var totalCount = 0;
   var busy = false;  // 反馈期间禁止点击
 
+  // 本轮学习统计（用于写入 learning_logs）
+  var sessNew = 0;           // 本轮「今日新词」已学数
+  var sessReview = 0;        // 本轮「复习/候补」已学数
+  var sessSec = 0;           // 本轮累计学习时长（秒，含每题反应时长）
+  var loggedThisRound = true;// 本轮是否已写入学习日志（防重复/漏记）
+
   /* ---------- 工具 ---------- */
   function esc(text) {
     return String(text == null ? "" : text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -138,7 +144,27 @@ var Flashcard = (function () {
     if (progressBar) progressBar.style.width = ((qIndex / total) * 100) + "%";
   }
 
+  /* ---------- 学习日志：本轮结束后写入（本地 + 云端累加） ---------- */
+  function flushLearningLog() {
+    if (loggedThisRound) return;
+    if (sessNew === 0 && sessReview === 0 && sessSec === 0) { loggedThisRound = true; return; }
+    loggedThisRound = true;
+    try {
+      if (typeof window !== "undefined" && window.DB && window.DB.updateLearningLog) {
+        // 未登录时只写本地，登录后下次 updateLearningLog 补传云端
+        window.DB.updateLearningLog(vbToday(), {
+          new_words_count: sessNew,
+          review_words_count: sessReview,
+          total_study_seconds: Math.round(sessSec)
+        });
+      }
+    } catch (e) {
+      console.warn("[Flashcard] 学习日志写入失败:", e && e.message);
+    }
+  }
+
   function showResult() {
+    flushLearningLog();   // 本轮答完，落账
     var optionsEl = getOptionsEl();
     var resultEl = getResultEl();
     var resultText = getResultText();
@@ -161,6 +187,11 @@ var Flashcard = (function () {
 
     totalCount++;
     if (isCorrect) correctCount++;
+
+    // 累计本轮学习数据（新词 vs 复习按模式区分；时长取每题反应时长）
+    if (currentMode === "today-new") sessNew++;
+    else sessReview++;
+    sessSec += reactionMs / 1000;
 
     // 更新单词状态
     if (typeof VocabBook !== "undefined" && VocabBook.updateWordStatus) {
@@ -213,6 +244,7 @@ var Flashcard = (function () {
 
   /** 开始新一轮 */
   function startNewRound() {
+    flushLearningLog();   // 先把上一轮（可能没答完）的进度落账
     var pool = getPool(currentMode);
     // 候补复习每次随机抽10个
     if (currentMode === "standby" && pool.length > 10) {
@@ -223,6 +255,10 @@ var Flashcard = (function () {
     correctCount = 0;
     totalCount = 0;
     busy = false;
+    sessNew = 0;
+    sessReview = 0;
+    sessSec = 0;
+    loggedThisRound = false;
 
     var resultEl = getResultEl();
     if (resultEl) resultEl.classList.add("hidden");
@@ -250,6 +286,7 @@ var Flashcard = (function () {
   function close() {
     var page = getPage();
     if (!page) return;
+    flushLearningLog();   // 中途退出也落账（已记过则跳过）
     page.classList.add("hidden");
   }
 
@@ -296,7 +333,9 @@ var Flashcard = (function () {
       getQuestions: function () { return questions; },
       getQIndex: function () { return qIndex; },
       getCorrectCount: function () { return correctCount; },
-      getTotalCount: function () { return totalCount; }
+      getTotalCount: function () { return totalCount; },
+      answerCurrent: function (idx) { handleAnswer(idx); },
+      getSession: function () { return { new: sessNew, review: sessReview, sec: sessSec, logged: loggedThisRound }; }
     }
   };
 })();

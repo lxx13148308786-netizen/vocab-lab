@@ -119,6 +119,39 @@ var VocabBookUI = (function () {
   }
 
   /* ==========================================================================
+   * 排序 / 筛选偏好持久化（localStorage）
+   * --------------------------------------------------------------------------
+   * 需求：排序方式 + 方向 + 筛选档位记住用户选择，下次打开保持。
+   * 与四档状态筛选互不干扰（各自独立 state 字段，分别读取 / 写入）。
+   * ========================================================================== */
+
+  var PREFS_KEY = "anv_vocabBookUI_prefs";
+
+  function loadPrefs() {
+    try {
+      if (typeof localStorage === "undefined") return;
+      var raw = localStorage.getItem(PREFS_KEY);
+      if (!raw) return;
+      var p = JSON.parse(raw);
+      if (!p || typeof p !== "object") return;
+      if (p.filter && FILTERS.some(function (f) { return f.key === p.filter; })) state.filter = p.filter;
+      if (p.sort && SORTS.some(function (s) { return s.key === p.sort; })) state.sort = p.sort;
+      if (typeof p.asc === "boolean") state.asc = p.asc;
+    } catch (e) { /* 解析失败则用默认值，不阻断渲染 */ }
+  }
+
+  function savePrefs() {
+    try {
+      if (typeof localStorage === "undefined") return;
+      localStorage.setItem(PREFS_KEY, JSON.stringify({
+        filter: state.filter,
+        sort: state.sort,
+        asc: state.asc
+      }));
+    } catch (e) { /* 隐私模式 / 配额满：写不进就忽略 */ }
+  }
+
+  /* ==========================================================================
    * 4. 取数
    * ========================================================================== */
 
@@ -150,16 +183,26 @@ var VocabBookUI = (function () {
       list = list.filter(function (item) { return filter.statuses.indexOf(item.status) >= 0; });
     }
 
+    // 严格 + 稳定排序：主键（添加时间 / 词频）完全相同时（如同时间戳、同词频档），
+    // 用单词字典序兜底，杜绝数组操作 / 同步合并导致的顺序乱。
     var dir = state.asc ? 1 : -1;
     var natural = (state.sort === "freq") ? -1 : 1;
     list.sort(function (a, b) {
+      var primary;
       if (state.sort === "freq") {
         var ra = freqRank(a.word);
         var rb = freqRank(b.word);
-        if (ra !== rb) return (ra - rb) * dir * natural;
-        return (Number(a.addedAt) - Number(b.addedAt)) * dir;
+        primary = (ra !== rb) ? (ra - rb) * natural : (Number(a.addedAt) - Number(b.addedAt));
+      } else {
+        primary = Number(a.addedAt) - Number(b.addedAt);
       }
-      return (Number(a.addedAt) - Number(b.addedAt)) * dir;
+      if (primary !== 0) return primary * dir;
+      // tiebreaker：同主键按单词字典序，保证绝对稳定、不串序
+      var wa = String(a.word || "").toLowerCase();
+      var wb = String(b.word || "").toLowerCase();
+      if (wa < wb) return -1 * dir;
+      if (wa > wb) return 1 * dir;
+      return 0;
     });
 
     return list;
@@ -349,8 +392,21 @@ var VocabBookUI = (function () {
 
   function applySort(key) {
     if (!key) return;
-    if (state.sort === key) state.asc = !state.asc;
-    else { state.sort = key; state.asc = false; }
+    if (state.sort === key) {
+      // 再次点击同一排序方式 = 翻转方向（快捷操作），等价于点击方向切换按钮
+      state.asc = !state.asc;
+    } else {
+      state.sort = key;
+      // 切换排序方式时保持用户已选方向，不自动重置
+    }
+    savePrefs();
+    render();
+  }
+
+  /** 方向切换按钮：最新在前(降序) ⇄ 最早在前(升序) */
+  function toggleDir() {
+    state.asc = !state.asc;
+    savePrefs();
     render();
   }
 
@@ -611,6 +667,7 @@ var VocabBookUI = (function () {
   }
 
   function init() {
+    loadPrefs();   // 恢复排序 / 方向 / 筛选偏好（localStorage）
     bindEvents();
     if (typeof VocabBook !== "undefined" && VocabBook.subscribe) {
       VocabBook.subscribe(function () { render(); });

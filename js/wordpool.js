@@ -30,7 +30,7 @@ var STATUS_FLOW = {
 var VALID_STATUS = Object.keys(STATUS_FLOW);
 
 /** 合法来源 */
-var VALID_SOURCE = ["manual", "wordbook", "review", "frequency"];
+var VALID_SOURCE = ["manual", "wordbook", "review", "frequency", "news"];
 
 /** 每日配额 */
 var DAILY_NEW_LIMIT     = 10;
@@ -241,7 +241,7 @@ var WordPool = {
       }
 
       if (!w) {
-        w = WordPool.addWord(key, v.pos || "", v.meaning || "", "wordbook", v.phonetic || "");
+        w = WordPool.addWord(key, v.pos || "", v.meaning || "", (v.source === "manual" ? "manual" : "news"), v.phonetic || "");
       }
       if (!w) return;
 
@@ -310,9 +310,9 @@ var WordPool = {
     reviewWords.forEach(function (w) { pickedIds[String(w.word || w.id).toLowerCase()] = true; });
     standbyWords.forEach(function (w) { pickedIds[String(w.word || w.id).toLowerCase()] = true; });
 
-    // 1) 当天从新闻收录的词（addDate === today 且 status === new）
+    // 1) 当天从新闻收录的词（addDate === today 且 status === new 且来源为 news）
     var todayNewFromNews = wordLibrary.filter(function (w) {
-      return w.addDate === dateStr && w.status === "new" && !pickedIds[w.id];
+      return w.addDate === dateStr && w.status === "new" && w.source === "news" && !pickedIds[w.id];
     });
     todayNewFromNews.forEach(function (w) {
       if (newWords.length >= DAILY_NEW_LIMIT) return;
@@ -326,7 +326,7 @@ var WordPool = {
     // 2) 补差：词频池（status === new 的未排进每日的词），按词频排序补足
     if (newWords.length < DAILY_NEW_LIMIT) {
       var freqPool = wordLibrary.filter(function (w) {
-        return w.status === "new" && !pickedIds[w.id];
+        return w.status === "new" && !pickedIds[w.id] && w.source !== "manual";
       }).sort(function (a, b) {
         // rank 小的优先（高频优先），无 rank 的排后面
         var ra = Number(a.rank) || 99999;

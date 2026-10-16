@@ -109,6 +109,18 @@ function normalizeVocabWord(text) {
     .toLowerCase();
 }
 
+/**
+ * 来源归一化（统一 source 语义）：
+ *   - 只有显式 "manual" 才是「手动添加」；
+ *   - 其余（未传、以及旧数据的 "long_press" / "cloud" / "app" / "wordbook"）一律按 "news" 处理，
+ *     兼容旧数据，同时让「今日新词只取新闻来源」的过滤可靠生效。
+ * @param {string} s
+ * @returns {"news"|"manual"}
+ */
+function normalizeVocabSource(s) {
+  return s === "manual" ? "manual" : "news";
+}
+
 /** 浅拷贝一条记录 */
 function copyVocabRecord(record) {
   return record ? Object.assign({}, record) : null;
@@ -239,7 +251,7 @@ function migrateV1ToV2() {
       addedAt: Number(item.addedAt) || Date.now(),
       nextReviewDate: nextReviewDate,
       reviewCount: Number(item.reviewCount) || 0,
-      source: String(item.source || "long_press"),
+      source: normalizeVocabSource(item.source),
       sourceNewsId: String(item.sourceNewsId || "")
     };
   }).filter(Boolean);
@@ -306,7 +318,7 @@ function loadVocabBook() {
         addedAt: addedAt,
         nextReviewDate: nextReviewDate,
         reviewCount: Number(item.reviewCount) || 0,
-        source: String(item.source || "long_press"),
+        source: normalizeVocabSource(item.source),
         sourceNewsId: String(item.sourceNewsId || "")
       };
     })
@@ -343,11 +355,159 @@ function findVocabRecord(word) {
   return null;
 }
 
-/* ==========================================================================
- * 5. 对外 API：VocabBook
- * ========================================================================== */
+/**
+ * 补全已存在记录的缺失字段（不覆盖已填内容）。
+ * 规则：
+ *   - meaning / pos：仅当记录为空且新数据有值时补；但若该记录是「用户手动添加且已带释义」，
+ *     视为用户已编辑过的完整记录，不回写 meaning/pos，避免覆盖用户自己的版本。
+ *   - phonetic / rank：客观数据，记录里缺失即补，不覆盖已有值。
+ * @param {Object} rec 真实记录对象（会被原地修改）
+ * @param {Object|string} data 新数据
+ * @returns {boolean} 是否有改动
+ */
+function backfillVocabRecord(rec, data) {
+  var raw = (typeof data === "string") ? { word: data } : (data || {});
+  var changed = false;
+  var userComplete = rec.source === "manual" && !!rec.meaning;
+  if (!userComplete) {
+    if (!rec.meaning && raw.meaning) { rec.meaning = String(raw.meaning); changed = true; }
+    if (!rec.pos && raw.pos) { rec.pos = String(raw.pos); changed = true; }
+  }
+  if (!rec.phonetic && raw.phonetic) { rec.phonetic = String(raw.phonetic); changed = true; }
+  var newRank = (raw.rank !== undefined && raw.rank !== null) ? raw.rank : null;
+  if ((rec.rank === undefined || rec.rank === null) && newRank !== null) {
+    rec.rank = newRank; changed = true;
+  }
+  return changed;
+}
 
-var VocabBook = {
+  /* ==========================================================================
+   * 5. 对外 API：VocabBook
+   * ========================================================================== */
+
+  /* ---------- 云端同步（Supabase，本地优先、异步、不阻塞本地使用） ---------- */
+  function isCloudApiReady() {
+    return (typeof window !== "undefined") && !!window.DB;
+  }
+
+  // 单个单词异步同步到云端（fire-and-forget，失败仅打印控制台）
+  function syncWordToCloud(rec) {
+    if (!rec || !isCloudApiReady()) return;
+    try {
+      window.DB.upsertWord(copyVocabRecord(rec)).catch(function (e) {
+        console.warn("[VocabBook] 同步单词到云端失败:", e && e.message);
+      });
+    } catch (e) {
+      console.warn("[VocabBook] 同步单词到云端异常:", e && e.message);
+    }
+  }
+
+  // 批量异步同步到云端
+  function syncWordsToCloud(recs) {
+    if (!recs || !recs.length || !isCloudApiReady()) return;
+    try {
+      window.DB.upsertWords(recs.map(copyVocabRecord)).catch(function (e) {
+        console.warn("[VocabBook] 批量同步到云端失败:", e && e.message);
+      });
+    } catch (e) {
+      console.warn("[VocabBook] 批量同步到云端异常:", e && e.message);
+    }
+  }
+
+  // 云端删除（fire-and-forget）
+  function deleteWordFromCloud(word) {
+    if (!word || !isCloudApiReady()) return;
+    try {
+      window.DB.deleteWord(word).catch(function (e) {
+        console.warn("[VocabBook] 云端删除单词失败:", e && e.message);
+      });
+    } catch (e) {
+      console.warn("[VocabBook] 云端删除单词异常:", e && e.message);
+    }
+  }
+
+  // 云端拉回的记录补全字段，保证与本地 schema 一致
+  function normalizeCloudRecord(r) {
+    if (!r || typeof r.word !== "string" || !r.word) return null;
+    return {
+      word: normalizeVocabWord(r.word),
+      phonetic: String(r.phonetic || ""),
+      pos: String(r.pos || ""),
+      meaning: String(r.meaning || ""),
+      status: VOCAB_STATUSES.indexOf(r.status) >= 0 ? r.status : "new",
+      addedAt: Number(r.addedAt) || Date.now(),
+      nextReviewDate: r.nextReviewDate || calcVocabNextReviewDate("new", vocabToday()),
+      reviewCount: Number(r.reviewCount) || 0,
+      source: normalizeVocabSource(r.source),
+      sourceNewsId: String(r.sourceNewsId || "")
+    };
+  }
+
+  // 登录成功后从云端拉取并覆盖本地（第一版：云端为准）
+  function pullFromCloudOnLogin() {
+    if (!isCloudApiReady() || !window.DB.isLoggedIn()) return;
+    if (window.VocabBook && window.VocabBook.syncFromCloud) window.VocabBook.syncFromCloud();
+  }
+
+  // 订阅登录态：登录即拉取
+  if (typeof window !== "undefined" && window.Auth && window.Auth.onAuthStateChange) {
+    window.Auth.onAuthStateChange(function (event, user) {
+      if (user) pullFromCloudOnLogin();
+    });
+  }
+
+  /* ----------------------------------------------------------------------
+   * 音标自动补全（免费 API：dictionaryapi.dev）
+   * ---------------------------------------------------------------------- */
+
+  /**
+   * 查单词音标。
+   * 解析规则：优先用返回数组里某条的顶层 phonetic；
+   * 没有就遍历 phonetics 数组，取第一个带 text 的。
+   * 查不到 / 404 / 网络异常 / JSON 解析失败 → 一律返回 ''，
+   * 绝不抛错、绝不阻塞主流程（调用方自己决定要不要等）。
+   * @param {string} word
+   * @returns {Promise<string>}
+   */
+  function fetchPhonetic(word) {
+    var w = normalizeVocabWord(word);
+    if (!w) return Promise.resolve("");
+    var url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(w);
+    if (typeof fetch !== "function") return Promise.resolve("");
+    console.info("[VocabBook] 查音标 GET:", w, url);
+    return fetch(url)
+      .then(function (resp) {
+        // 单词不存在时 API 返回 404 + {title:"No Definitions Found"}，算查不到
+        if (!resp || !resp.ok) return "";
+        return resp.json().then(function (json) {
+          if (!json) return "";
+          // 成功时返回的是数组；这里兼容一下非数组的情况，少一层假设
+          var entries = Array.isArray(json) ? json : [json];
+          // 1) 顶层 phonetic 优先
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i] && entries[i].phonetic) return String(entries[i].phonetic);
+          }
+          // 2) 退而求其次：遍历每条的 phonetics，取第一个有 text 的
+          for (var j = 0; j < entries.length; j++) {
+            var phs = entries[j] && entries[j].phonetics;
+            if (Array.isArray(phs)) {
+              for (var k = 0; k < phs.length; k++) {
+                if (phs[k] && phs[k].text) return String(phs[k].text);
+              }
+            }
+          }
+          return "";
+        }).catch(function () {
+          return "";   // JSON 解析失败当查不到
+        });
+      })
+      .catch(function (e) {
+        console.warn("[VocabBook] 音标查询失败:", (e && e.message) || e);
+        return "";
+      });
+  }
+
+  var VocabBook = {
 
   /** 四档状态列表（方便外部校验） */
   STATUSES: VOCAB_STATUSES,
@@ -369,7 +529,17 @@ var VocabBook = {
     var data = (typeof wordData === "string") ? { word: wordData } : (wordData || {});
     var word = normalizeVocabWord(data.word);
     if (!word) return false;
-    if (findVocabRecord(word)) return false;
+    var existing = findVocabRecord(word);
+    if (existing) {
+      // 已存在 → 只补全缺失字段，不覆盖用户已编辑的完整记录；有改动才落盘+同步
+      var backfilled = backfillVocabRecord(existing, data);
+      if (backfilled) {
+        persistVocabBook();
+        notifyVocabListeners();
+        syncWordToCloud(existing);
+      }
+      return backfilled; // true=已补全；false=已存在且无变化 / 用户完整记录
+    }
 
     var now = Date.now();
     var today = vocabToday();
@@ -378,16 +548,34 @@ var VocabBook = {
       phonetic: String(data.phonetic || ""),
       pos: String(data.pos || ""),
       meaning: String(data.meaning || ""),
+      rank: (data.rank !== undefined && data.rank !== null) ? data.rank : null,
       status: "new",
       addedAt: Number(data.addedAt) || now,
       nextReviewDate: calcVocabNextReviewDate("new", today),
       reviewCount: Number(data.reviewCount) || 0,
-      source: String(data.source || "long_press"),
+      source: normalizeVocabSource(data.source),
       sourceNewsId: String(data.sourceNewsId || "")
     });
 
     persistVocabBook();
     notifyVocabListeners();
+    syncWordToCloud(findVocabRecord(word));
+
+    // 用户没填音标 → 后台查一次自动补上（非阻塞：先以空音标存好，查到再回填 + 重新同步云端）
+    if (!data.phonetic) {
+      console.info("[VocabBook] 未填音标，后台查音标:", word);
+      fetchPhonetic(word).then(function (ph) {
+        if (!ph) return;                         // 查不到就维持空，不报错、不阻塞
+        var rec = findVocabRecord(word);
+        if (!rec || rec.phonetic) return;         // 词被删了，或已被别的流程填上，不覆盖
+        rec.phonetic = ph;
+        persistVocabBook();
+        notifyVocabListeners();
+        syncWordToCloud(rec);                     // 补上的音标同步到云端（syncToCloud / db.js 都不用改）
+        console.info("[VocabBook] 音标补全:", word, ph);
+      }).catch(function () { /* 查音标失败无所谓，本地已经存好这个词 */ });
+    }
+
     return true;
   },
 
@@ -403,6 +591,7 @@ var VocabBook = {
     if (vocabBook.length === before) return false;
     persistVocabBook();
     notifyVocabListeners();
+    deleteWordFromCloud(word);
     return true;
   },
 
@@ -415,35 +604,77 @@ var VocabBook = {
   batchAdd(wordsArray, source) {
     loadVocabBook();
     var arr = Array.isArray(wordsArray) ? wordsArray : [];
-    var success = 0, skipped = 0, failed = 0;
+    var success = 0, skipped = 0, failed = 0, backfilled = 0;
     var now = Date.now();
     var today = vocabToday();
 
+    var addedRecs = [];
     arr.forEach(function (raw) {
       var word = normalizeVocabWord((raw && typeof raw === "object") ? raw.word : raw);
       if (!word) { failed++; return; }
-      if (findVocabRecord(word)) { skipped++; return; }
+      var ex = findVocabRecord(word);
+      if (ex) {
+        // 已存在 → 补全缺失字段（不覆盖用户完整记录）；有改动才计入 backfilled
+        if (backfillVocabRecord(ex, raw)) {
+          addedRecs.push(ex);
+          backfilled++;
+        } else {
+          skipped++;
+        }
+        return;
+      }
 
-      vocabBook.push({
+      var rec = {
         word: word,
         phonetic: String((raw && raw.phonetic) || ""),
         pos: String((raw && raw.pos) || ""),
         meaning: String((raw && raw.meaning) || ""),
+        rank: (raw && (raw.rank !== undefined && raw.rank !== null)) ? raw.rank : null,
         status: "new",
         addedAt: now,
         nextReviewDate: calcVocabNextReviewDate("new", today),
         reviewCount: 0,
-        source: String(source || "long_press"),
+        source: normalizeVocabSource(source),
         sourceNewsId: ""
-      });
+      };
+      vocabBook.push(rec);
+      addedRecs.push(rec);
       success++;
     });
 
-    if (success > 0) {
+    if (success > 0 || backfilled > 0) {
+      persistVocabBook();
+      notifyVocabListeners();
+      syncWordsToCloud(addedRecs);
+    }
+    return { success: success, skipped: skipped, failed: failed, backfilled: backfilled };
+  },
+
+  /**
+   * 重建单词本（导入词典时的「保留已有 / 覆盖」选项入口）
+   * @param {Array<string|Object>} wordsArray 词典词列表
+   * @param {"keep"|"overwrite"} [mode="keep"]
+   *        - keep：等价于 batchAdd，新增缺失词 + 补全已有空壳词，不动其它词（默认、最安全）
+   *        - overwrite：先移除「非手动添加」的词（news/dict 导入的旧词），保留用户手动词，
+   *                     再用新词列表批量并入，相当于用一本词典重置单词本内容。
+   * @param {string} [source="news"] 新词的来源标记
+   * @returns {{success:number, skipped:number, failed:number, backfilled:number}}
+   */
+  rebuildBook(wordsArray, mode, source) {
+    loadVocabBook();
+    var arr = Array.isArray(wordsArray) ? wordsArray : [];
+    if (mode === "overwrite") {
+      // 覆盖模式：只保留用户手动添加的词，其余（新闻/旧词典导入）先清掉
+      var kept = [];
+      vocabBook.forEach(function (r) {
+        if (r.source === "manual") kept.push(r);
+      });
+      vocabBook = kept;
       persistVocabBook();
       notifyVocabListeners();
     }
-    return { success: success, skipped: skipped, failed: failed };
+    // 无论哪种模式，最后统一走 batchAdd（新增 + 补全已有空壳）
+    return this.batchAdd(arr, source || "news");
   },
 
   /** 查一条记录（返回拷贝） */
@@ -531,6 +762,7 @@ var VocabBook = {
 
     persistVocabBook();
     notifyVocabListeners();
+    syncWordToCloud(copyVocabRecord(record));
     return copyVocabRecord(record);
   },
 
@@ -610,6 +842,7 @@ var VocabBook = {
     if (record.meaning === "" && data.meaning) record.meaning = String(data.meaning);
     persistVocabBook();
     notifyVocabListeners();
+    syncWordToCloud(copyVocabRecord(record));
     return copyVocabRecord(record);
   },
 
@@ -632,6 +865,49 @@ var VocabBook = {
       try { store.removeItem(VOCAB_BOOK_KEY); } catch (e) { /* ignore */ }
     }
     notifyVocabListeners();
+  },
+
+  /** 全量同步本地单词本到云端（手动「立即同步」/ 登录拉取后兜底都会用到） */
+  syncToCloud() {
+    if (!isCloudApiReady() || !window.DB.isLoggedIn()) {
+      return Promise.resolve({ ok: false, error: "未登录" });
+    }
+    return window.DB.syncLocalToCloud(VocabBook.getAllWords())
+      .then(function (res) {
+        if (res && res.error) return { ok: false, error: res.error };
+        return { ok: true, count: VocabBook.getAllWords().length };
+      })
+      .catch(function (e) { return { ok: false, error: (e && e.message) || "同步失败" }; });
+  },
+
+  /** 从云端拉取并覆盖本地（登录时由内部调用；第一版：云端为准） */
+  syncFromCloud() {
+    if (!isCloudApiReady() || !window.DB.isLoggedIn()) {
+      return Promise.resolve(null);
+    }
+    return window.DB.syncCloudToLocal()
+      .then(function (cloud) {
+        if (!cloud) return null;
+        if (cloud.length > 0) {
+          var cleaned = [];
+          for (var i = 0; i < cloud.length; i++) {
+            var n = normalizeCloudRecord(cloud[i]);
+            if (n) cleaned.push(n);
+          }
+          vocabBook = cleaned;
+          vocabLoaded = true;
+          persistVocabBook();
+          notifyVocabListeners();
+          return cleaned;
+        }
+        // 云端为空：把本地上传，保证首次登录不丢数据
+        return window.DB.syncLocalToCloud(VocabBook.getAllWords())
+          .then(function () { return []; });
+      })
+      .catch(function (e) {
+        console.warn("[VocabBook] 云端拉取失败:", e && e.message);
+        return null;
+      });
   },
 
   /** 内部测试接口 */
@@ -657,7 +933,10 @@ var VocabBook = {
       persistVocabBook();
       return copyVocabRecord(rec);
     }
-  }
+  },
+
+  /** 查音标（免费 API：dictionaryapi.dev），查不到返回 ''，不抛错 */
+  fetchPhonetic: fetchPhonetic
 };
 
 // 浏览器环境下挂 window；Node 环境下导出

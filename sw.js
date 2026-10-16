@@ -33,7 +33,7 @@
  * -------------------------------------------------------------------------- */
 
 /** 缓存版本号：任何被预缓存的文件内容变了都要 +1 */
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v10";
 
 /** 缓存名：anv = AI News Vocab。带上版本号是为了 activate 时能精确删旧缓存 */
 const CACHE_NAME = "anv-vocab-" + CACHE_VERSION;
@@ -64,6 +64,7 @@ const PRECACHE_URLS = [
   "./js/vocabBook.js",
   "./js/vocabBookUI.js",
   "./js/profile.js",
+  "./js/db.js",
   "./js/flashcard.js",
   "./js/readHistory.js",
   "./js/wordbank.js",

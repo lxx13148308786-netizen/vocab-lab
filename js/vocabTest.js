@@ -1342,21 +1342,28 @@ function loadTestBank(force) {
         return r.json();
       })
       .then(function (json) {
-        // 兼容两种格式：{_meta, words:[...]} 或直接 ["word", ...]
+        // 兼容两种格式：{_meta, words:[...]}（对象数组或字符串数组）或直接 ["word", ...]
         const raw = Array.isArray(json) ? json : (json && json.words);
         if (!Array.isArray(raw)) throw new Error("词表格式不正确");
         const meta = (json && json._meta) || {};
-        // 归一化 + 过滤：跟 previewDictImport 用同一套规则，
+        // 归一化 + 过滤 + 按词频排序：跟 previewDictImport 用同一套规则，
         // 保证「加载时看到的词数」和「导入时实际处理的词数」一致。
+        // 现在 words 是对象数组 [{word,pos,meaning,phonetic,rank}]，便于 batchAdd 补全释义。
         const words = raw
           .map(normalizeImportWord)
-          .filter(isValidImportWord);
+          .filter(function (o) { return o && isValidImportWord(o.word); })
+          .sort(function (a, b) {
+            const ra = (a.rank == null) ? Infinity : a.rank;
+            const rb = (b.rank == null) ? Infinity : b.rank;
+            return ra - rb;
+          });
         const dict = {
           id: dictId,
           name: meta.name || known.name,
           words: words,
           meta: meta,
-          placeholder: meta.status === "PLACEHOLDER"
+          placeholder: meta.status === "PLACEHOLDER",
+          partial: !!meta.status && meta.status.indexOf("PARTIAL") === 0
         };
         dictCache[dictId] = dict;
         return dict;
@@ -1366,7 +1373,8 @@ function loadTestBank(force) {
   /**
    * 归一化一个待导入词，规则必须与 VocabBook 内部的 normalizeVocabWord 一致：
    * 去首尾空白 → 去首尾非字母数字 → 转小写。
-   * 归一化后还要过一次词形校验：只放行「字母开头 + 字母/连字符」的单个词。
+   * 支持「对象条目」{word,pos,meaning,...} 与「纯字符串」两种来源，统一抽成
+   * {word, pos, meaning, phonetic, rank} 对象，方便 batchAdd 直接补全释义。
    *
    * 为什么必须在这里也做一遍：VocabBook.findVocabRecord 比对时会归一化，
    * 所以 isInVocabBook("Apple") 能正确命中已有的 "apple"。
@@ -1374,39 +1382,119 @@ function loadTestBank(force) {
    * 会漏进 batchAdd —— 一部分被救回、一部分被判 failed，
    * 结果就是「预演说能导入 N 个，实际只成功 N-几个」，数字对不上。
    *
-   * @param {string} raw
-   * @returns {string} 归一化后的词；无效时返回空串
+   * @param {string|Object} raw
+   * @returns {{word:string,pos:string,meaning:string,phonetic:string,rank:(number|null)}|null}
+   *          归一化后词形为空（纯符号/数字）或非法 → 返回 null
    */
   function normalizeImportWord(raw) {
-    return String(raw == null ? "" : raw).trim()
+    let word, pos = "", meaning = "", phonetic = "", rank = null;
+    if (raw && typeof raw === "object") {
+      word = raw.word;
+      pos = raw.pos || "";
+      meaning = raw.meaning || "";
+      phonetic = raw.phonetic || "";
+      rank = (raw.rank !== undefined && raw.rank !== null) ? raw.rank : null;
+    } else {
+      word = raw;
+    }
+    const w = String(word == null ? "" : word).trim()
       .replace(/^[^A-Za-z0-9]+/, "")
       .replace(/[^A-Za-z0-9]+$/, "")
       .toLowerCase();
+    if (!w) return null;
+    return { word: w, pos: pos, meaning: meaning, phonetic: phonetic, rank: rank };
   }
 
-  /** 词形是否合法：单个英文单词（可含连字符），不含空格 */
+  /** 词形是否合法：英文单词或词组（可含连字符与空格），首位须为字母/数字 */
   function isValidImportWord(w) {
-    return /^[a-z][a-z-]*$/.test(w);
+    return /^[a-z0-9][a-z0-9 -]*$/.test(w);
   }
 
   /**
-   * 统计「选中词典导入后」的实际结果（不落库，纯预演）
-   * @param {Array<string>} words 词典词表
-   * @returns {{inBook:Array, willImport:Array, invalid:Array}}
+   * 根据「用户词汇量」动态计算基础词分层阈值。
+   * 词汇量越大，认为用户已掌握的基础词范围越大，剥离区间随之上移。
+   * 默认基准 hard=2000 / soft=4000（与产品约定一致），随词汇量温和平移。
+   * @param {number} vocabSize 当前单词本词条数
+   * @returns {{hard:number, soft:number}}
    */
-  function previewDictImport(words) {
-    const inBook = [], willImport = [], invalid = [];
+  function computeDictThresholds(vocabSize) {
+    const v = Math.max(0, Number(vocabSize) || 0);
+    // 每多 1000 词，hard 阈值 +150，soft 基准 = hard + 2000；并夹紧在合理范围
+    let hard = Math.round(2000 + (v / 1000) * 150);
+    hard = Math.max(800, Math.min(hard, 6000));
+    let soft = hard + 2000;
+    soft = Math.min(soft, 9000);
+    return { hard: hard, soft: soft };
+  }
+
+  /**
+   * 判断一个词典词是否应被「基础词剥离」排除。
+   * 规则（与需求一致）：
+   *   - rank 缺失（无词频信息）→ 保留（无法判定为基础词）
+   *   - rank < hard  → 永远剥离（最基础的高频词，默认已掌握）
+   *   - hard<=rank<=soft → 看开关 includeSoft：默认剥离，打开则保留
+   *   - rank > soft  → 保留
+   * @param {{rank:(number|null)}} obj
+   * @param {{hard:number,soft:number}} th
+   * @param {boolean} includeSoft
+   * @returns {boolean} true=应剥离（排除）
+   */
+  function isBasicWordStripped(obj, th, includeSoft) {
+    const rank = obj && obj.rank;
+    if (rank == null) return false;
+    if (rank < th.hard) return true;
+    if (rank <= th.soft) return !includeSoft;
+    return false;
+  }
+
+  /**
+   * 统计「选中词典导入后」的实际结果（不落库，纯预演）。
+   * 同时叠加：基础词剥离过滤、已知/已掌握跳过、已有词补全计数。
+   * @param {Array<string|Object>} rawWords 词典原始词表（对象数组或字符串数组）
+   * @param {Object} [opts] {includeSoft:boolean}
+   * @returns {{toImport:Array<Object>, backfill:Array<Object>, skippedKnown:Array<Object>,
+   *            filteredBasic:Array<Object>, invalid:Array<string>, thresholds:Object}}
+   */
+  function previewDictImport(rawWords, opts) {
+    opts = opts || {};
+    const includeSoft = !!opts.includeSoft;
+    const vocabSize = (typeof VocabBook !== "undefined" && VocabBook.getAllWords)
+      ? VocabBook.getAllWords().length : 0;
+    const th = computeDictThresholds(vocabSize);
+
+    const toImport = [], backfill = [], skippedKnown = [], filteredBasic = [], invalid = [];
     const seen = {};
-    (words || []).forEach(function (raw) {
-      const w = normalizeImportWord(raw);
-      // 归一化后为空（纯符号/数字）或含空格等非法字符 → 剔除
-      if (!w || !isValidImportWord(w)) { invalid.push(String(raw)); return; }
-      if (seen[w]) return;                              // 词表内部去重
-      seen[w] = true;
-      if (typeof VocabBook !== "undefined" && VocabBook.isInVocabBook(w)) inBook.push(w);
-      else willImport.push(w);
+    (rawWords || []).forEach(function (raw) {
+      const obj = normalizeImportWord(raw);
+      if (!obj || !isValidImportWord(obj.word)) {
+        invalid.push(typeof raw === "string" ? raw : (raw && raw.word) || String(raw));
+        return;
+      }
+      if (seen[obj.word]) return;                    // 词表内部去重
+      seen[obj.word] = true;
+
+      // 1) 基础词剥离（动态阈值）
+      if (isBasicWordStripped(obj, th, includeSoft)) {
+        filteredBasic.push(obj);
+        return;
+      }
+      // 2) 已在本单词本里：已知/已掌握 → 跳过；其余 → 待补全（仍走 batchAdd 补全缺失释义）
+      if (typeof VocabBook !== "undefined" && VocabBook.isInVocabBook(obj.word)) {
+        const rec = (typeof VocabBook.getWord === "function") ? VocabBook.getWord(obj.word) : null;
+        if (rec && (rec.status === "known" || rec.status === "mastered")) {
+          skippedKnown.push(obj);
+        } else {
+          backfill.push(obj);
+        }
+        return;
+      }
+      // 3) 新词 → 待导入
+      toImport.push(obj);
     });
-    return { inBook: inBook, willImport: willImport, invalid: invalid };
+    return {
+      toImport: toImport, backfill: backfill, skippedKnown: skippedKnown,
+      filteredBasic: filteredBasic, invalid: invalid, thresholds: th
+    };
   }
 
   /**
@@ -1490,9 +1578,10 @@ function preloadDictCounts(listEl) {
           countEl.textContent = "0 词（待补全）";
           return;
         }
-        // 占位词表要标出来，否则「100 词」会被当成完整版，用户导完才发现只有 100 个。
+        // 占位词表 / 待补音标词频 要标出来，否则「100 词」会被当成完整版，
+        // 用户导完才发现只有 100 个 / 缺音标词频。
         countEl.textContent = dict.words.length + " 词" +
-          (dict.placeholder ? "（占位）" : "");
+          (dict.placeholder ? "（占位）" : (dict.partial ? "（待补音标/词频）" : ""));
       }).catch(function () {
         if (countEl) {
           countEl.textContent = "词数未知（加载失败）";
@@ -1518,9 +1607,14 @@ function preloadDictCounts(listEl) {
       '<div class="modal-head"><h3>从内置词典导入</h3>' +
       '<button class="modal-close" data-cancel>×</button></div>' +
       '<div class="modal-body">' +
-      '<p class="hint">选择一本词典，确认后会一次性导入其中全部单词到单词本。' +
-      '已在单词本里的词会自动跳过。</p>' +
+      '<p class="hint">选择一本词典，确认后会导入其中单词到单词本。' +
+      '已在本里的词会补全缺失释义（空壳词不再空着），已知/已掌握的词自动跳过。</p>' +
       '<ul class="vt-dict-list">' + rows + "</ul>" +
+      '<div class="vt-dict-opts" id="vtDictOpts" style="display:none">' +
+      '  <label class="vt-opt"><input type="checkbox" id="vtIncBasic"> 包含基础词（词频 ' +
+      '<span id="vtThHint"></span> 区间）</label>' +
+      '  <label class="vt-opt"><input type="checkbox" id="vtRebuild"> 重建单词本（覆盖：清掉旧导入词，仅留手动词）</label>' +
+      "</div>" +
       '<div class="vt-textarea" id="vtDictDetail" style="display:none"></div>' +
       "</div>" +
       '<div class="modal-actions">' +
@@ -1532,49 +1626,64 @@ function preloadDictCounts(listEl) {
 
     const confirmBtn = modal.modal.querySelector("#vtDictConfirm");
     const detail = modal.modal.querySelector("#vtDictDetail");
-    let selected = null;          // {dict, willImport, inBook}
+    const optsBox = modal.modal.querySelector("#vtDictOpts");
+    const incBasic = modal.modal.querySelector("#vtIncBasic");
+    const rebuild = modal.modal.querySelector("#vtRebuild");
+    const thHint = modal.modal.querySelector("#vtThHint");
+    let selected = null;          // {dict, plan}
 
     modal.modal.querySelector("[data-cancel]").addEventListener("click", modal.close);
 
-    // 点某一本词典 → 加载词表 → 显示总数与去重后的可导入数
+    // 重新计算预览（切换「包含基础词」开关时也要刷新计数）
+    function recompute(dict) {
+      const includeSoft = !!incBasic.checked;
+      const pv = previewDictImport(dict.words, { includeSoft: includeSoft });
+      selected = { dict: dict, plan: pv };
+      const importN = pv.toImport.length + pv.backfill.length;
+      thHint.textContent = pv.thresholds.hard + "~" + pv.thresholds.soft;
+      detail.style.display = "block";
+      let html =
+        '<b>' + dict.name + "</b> 共 <b>" + dict.words.length + "</b> 词" +
+        (dict.placeholder ? "（<b>占位词表</b>，正式版会补全）"
+          : (dict.partial ? "（<b>待补音标/词频</b>，释义已就绪）" : "")) +
+        "<br>将导入 <b>" + pv.toImport.length + "</b> 个新词，" +
+        "<b>" + pv.backfill.length + "</b> 个空壳词补全释义，" +
+        "<b>" + pv.skippedKnown.length + "</b> 个已知/已掌握跳过" +
+        (pv.filteredBasic.length ? "，<b>" + pv.filteredBasic.length + "</b> 个基础词剥离" : "") +
+        (pv.invalid.length ? "，<b>" + pv.invalid.length + "</b> 个格式无效剔除" : "") +
+        (pv.toImport.length || pv.backfill.length
+          ? "<br><span class=\"hint\">导入后状态为「新词」，首次复习安排在明天，不会立刻进入今日复习池。</span>"
+          : "");
+      detail.innerHTML = html;
+      const canImport = (pv.toImport.length + pv.backfill.length) > 0;
+      if (canImport) confirmBtn.removeAttribute("disabled");
+      else confirmBtn.setAttribute("disabled", "");
+      confirmBtn.textContent = canImport
+        ? ("导入 " + (pv.toImport.length + pv.backfill.length) + " 个词")
+        : "没有可导入的词";
+    }
+
+    // 点某一本词典 → 加载词表 → 显示总数与分层后的可导入数
     function onPick(e) {
       const li = e.target.closest ? e.target.closest("[data-dict]") : null;
       if (!li) return;
       const id = li.getAttribute("data-dict");
       const countEl = li.querySelector("[data-count]");
-      // 预载通常已经把词数写好了，这里只在还没拿到时兜底显示「载入中…」。
-      // loadBuiltinDict 有 dictCache 兜底，正常走的是微任务级返回，不会有可见等待。
       if (countEl && !countEl.getAttribute("data-loaded")) countEl.textContent = "载入中…";
       selected = null;
       confirmBtn.setAttribute("disabled", "");
       confirmBtn.textContent = "请先选择词典";
+      optsBox.style.display = "block";
 
       loadBuiltinDict(id).then(function (dict) {
-        const pv = previewDictImport(dict.words);
-        selected = { dict: dict, willImport: pv.willImport, inBook: pv.inBook };
         if (countEl) {
-          countEl.textContent = dict.words.length + " 词" + (dict.placeholder ? "（占位）" : "");
+          countEl.textContent = dict.words.length + " 词" +
+            (dict.placeholder ? "（占位）" : (dict.partial ? "（待补音标/词频）" : ""));
           countEl.setAttribute("data-loaded", "1");
         }
-        detail.style.display = "block";
-        detail.innerHTML =
-          '<b>' + dict.name + "</b> 共 <b>" + dict.words.length + "</b> 词" +
-          (dict.placeholder ? "（<b>占位词表</b>，正式版会补全）" : "") +
-          "<br>其中 <b>" + pv.willImport.length + "</b> 个可导入，" +
-          "<b>" + pv.inBook.length + "</b> 个已在单词本中会跳过" +
-          (pv.invalid && pv.invalid.length ? "，<b>" + pv.invalid.length + "</b> 个格式无效已剔除" : "") +
-          (pv.willImport.length
-            ? "<br><span class=\"hint\">导入后状态为「新词」，首次复习安排在明天，不会立刻进入今日复习池。</span>"
-            : "");
-        confirmBtn.removeAttribute("disabled");
-        confirmBtn.textContent = pv.willImport.length
-          ? ("导入 " + pv.willImport.length + " 个词")
-          : "没有可导入的新词";
+        recompute(dict);
       }).catch(function (err) {
-        if (countEl) {
-          countEl.textContent = "加载失败";
-          countEl.setAttribute("data-loaded", "");
-        }
+        if (countEl) { countEl.textContent = "加载失败"; countEl.setAttribute("data-loaded", ""); }
         detail.style.display = "block";
         detail.innerHTML = '<span style="color:#b91c1c">词典加载失败：' +
           String(err && err.message || err) + "</span>";
@@ -1582,22 +1691,36 @@ function preloadDictCounts(listEl) {
     }
     const listEl = modal.modal.querySelector(".vt-dict-list");
     listEl.addEventListener("click", onPick);
-    // 打开弹窗就把三本词典的词数拉出来（原来只有点了某本才加载，
-    // 列表就一直停在「载入中…」，看着像加载失败）。见 preloadDictCounts 注释。
+    // 切换「包含基础词」开关时，若已选词典则重算
+    incBasic.addEventListener("change", function () {
+      if (selected && selected.dict) recompute(selected.dict);
+    });
+    // 打开弹窗就把三本词典的词数拉出来（见 preloadDictCounts 注释）。
     preloadDictCounts(listEl);
 
     // 确认导入
     confirmBtn.addEventListener("click", function () {
-      if (!selected || !selected.willImport.length) { modal.close(); return; }
-      const r = (typeof VocabBook !== "undefined")
-        ? VocabBook.batchAdd(selected.willImport, SRC_DICT)
-        : { success: 0, skipped: 0, failed: 0 };
+      if (!selected || !selected.plan) { modal.close(); return; }
+      const pv = selected.plan;
+      const toImport = pv.toImport.concat(pv.backfill); // 新词 + 需补全的已有词一起送进 batchAdd
+      if (!toImport.length) { modal.close(); return; }
 
-      // 补足今日新词（需求 8）
-      const refill = refillTodayNewWords(selected.willImport);
+      let r;
+      const mode = rebuild.checked ? "overwrite" : "keep";
+      if (typeof VocabBook !== "undefined") {
+        r = VocabBook.rebuildBook(toImport, mode, SRC_DICT);
+      } else {
+        r = { success: 0, skipped: 0, failed: 0, backfilled: 0 };
+      }
 
-      let msg = "成功导入 " + r.success + " 个词";
-      if (r.skipped) msg += "，重复 " + r.skipped + " 个已跳过";
+      // 补足今日新词（仅新增的新词才补；补全与覆盖不影响今日池）
+      const newWords = pv.toImport.map(function (o) { return o.word; });
+      const refill = refillTodayNewWords(newWords);
+
+      let msg = "导入 " + r.success + " 个新词";
+      if (r.backfilled) msg += "，补全 " + r.backfilled + " 个空壳词";
+      if (r.skipped) msg += "，跳过 " + r.skipped + " 个";
+      if (pv.filteredBasic.length) msg += "；基础词剥离 " + pv.filteredBasic.length + " 个";
       if (refill.added > 0) msg += "；今日新词已补 " + refill.added + " 个（现共 " + refill.after + " 个）";
       tip(msg);
 
